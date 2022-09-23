@@ -1,36 +1,26 @@
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
 import whisper
-import logging
 import os
-import shutil
-import time
-logging.basicConfig(
-    format="[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
+import librosa
+from typing import BinaryIO
 
-logger = logging.getLogger("whisper-webservice")
 
 app = FastAPI()
 
-logger.info("Loading the model...")
 
-model = whisper.load_model("base")
+model_name= os.getenv("ASR_MODEL", "base")
+model = whisper.load_model(model_name)
 
-logger.info("Model loaded! Webserver ready!")
+
 
 @app.post("/transcribe")
 def transcribe_file(
                 audio_file: UploadFile = File(...) 
                 ):
-    file_location = os.path.join(os.getcwd(),f"files/{audio_file.filename}")
-    with open(file_location, "wb+") as file_object:
-        shutil.copyfileobj(audio_file.file, file_object) 
-    
+
     # load audio and pad/trim it to fit 30 seconds
-    audio = whisper.load_audio(file_location)
+    audio, _ = librosa.load(audio_file.file, sr=16000)
     audio = whisper.pad_or_trim(audio)
 
     # make log-Mel spectrogram and move to the same device as the model
@@ -48,4 +38,12 @@ def transcribe_file(
 
 
 def start():
-    uvicorn.run(app, host="0.0.0.0", port="9000", log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=9000, log_level="info")
+
+def file2npf32(ifile_obj: BinaryIO):
+    """
+    Takes a file object, resamples it to 16kHz, mixes it down to mono and returns it as a numpy array of float32
+    """
+
+    data, sr = librosa.load(ifile_obj, sr=16000)
+    
