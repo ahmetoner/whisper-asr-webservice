@@ -13,7 +13,7 @@ whisper_asr = "whisper_asr.webservice:start"
 
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 unidecode = "^1.3.4"
 fastapi = "^0.75.1"
 uvicorn = { extras = ["standard"], version = "^0.18.2" }
