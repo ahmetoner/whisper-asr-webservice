@@ -27,6 +27,14 @@ Starting the Webservice:
 poetry run whisper_asr
 ```
 
+# Quick start
+
+After running the docker image or ``poetry run whisper_asr`` interactive Swagger API documentation is available at [localhost:9000/docs](localhost:9000/docs)
+
+Simply upload your sound file and choose either **translate** or **transcribe**. Optionally you can provide the language of the input file, otherwise it will be automatically detected.
+
+
+
 ## Build
 
 Run
@@ -63,4 +71,3 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 * Github pipeline
 * Unit tests
 * CUDA version of Docker image
-* Multiple language support
