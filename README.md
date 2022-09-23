@@ -27,7 +27,7 @@ poetry run whisper_asr
 
 # Quick start
 
-After running the docker image or ``poetry run whisper_asr`` interactive Swagger API documentation is available at [localhost:9000/docs](localhost:9000/docs)
+After running the docker image or ``poetry run whisper_asr`` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
 Simply upload your sound file and choose either **translate** or **transcribe**. Optionally you can provide the language of the input file, otherwise it will be automatically detected.
 
