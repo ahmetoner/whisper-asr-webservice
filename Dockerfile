@@ -17,8 +17,7 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
 
-COPY poetry.lock pyproject.toml ./
+COPY . /app
 RUN poetry install
 
-COPY . /app
 CMD [ "poetry", "run", "whisper_asr"]
