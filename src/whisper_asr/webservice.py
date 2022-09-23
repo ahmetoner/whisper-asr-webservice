@@ -1,10 +1,11 @@
+import enum
 import uvicorn
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Query
 import whisper
 import os
 import librosa
-from typing import BinaryIO
-
+from typing import BinaryIO, Union
+from .languages import LANGUAGES
 
 app = FastAPI()
 
@@ -14,27 +15,23 @@ model = whisper.load_model(model_name)
 
 
 
-@app.post("/transcribe")
+@app.post("/asr")
 def transcribe_file(
-                audio_file: UploadFile = File(...) 
+                audio_file: UploadFile = File(...),
+                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+                language: Union[str, None] = Query(default=None, enum=list(LANGUAGES.keys())),
                 ):
 
-    # load audio and pad/trim it to fit 30 seconds
+
     audio, _ = librosa.load(audio_file.file, sr=16000)
-    audio = whisper.pad_or_trim(audio)
+    options_dict = {"task" : task}
+    if language:
+        options_dict["language"] = language    
+    
+    result = model.transcribe(audio, **options_dict)
 
-    # make log-Mel spectrogram and move to the same device as the model
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+    return result
 
-    # detect the spoken language
-    _, probs = model.detect_language(mel)
-    print(f"Detected language: {max(probs, key=probs.get)}")
-
-    # decode the audio
-    options = whisper.DecodingOptions()
-    result = whisper.decode(model, mel, options)
-
-    return { "text": result.text}
 
 
 def start():
