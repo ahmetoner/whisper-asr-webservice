@@ -40,10 +40,5 @@ def transcribe_file(
 def start():
     uvicorn.run(app, host="0.0.0.0", port=9000, log_level="info")
 
-def file2npf32(ifile_obj: BinaryIO):
-    """
-    Takes a file object, resamples it to 16kHz, mixes it down to mono and returns it as a numpy array of float32
-    """
 
-    data, sr = librosa.load(ifile_obj, sr=16000)
     
