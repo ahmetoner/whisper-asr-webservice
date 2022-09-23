@@ -60,5 +60,6 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 ## TODO
 
 * Detailed README file
-* Github ipeline
+* Github pipeline
 * Unit tests
+* CUDA version of Docker image
