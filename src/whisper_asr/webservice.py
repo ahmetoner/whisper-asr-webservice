@@ -1,15 +1,36 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, File, UploadFile
 import whisper
+import logging
+import os
+import shutil
+import time
+logging.basicConfig(
+    format="[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+logger = logging.getLogger("whisper-webservice")
 
 app = FastAPI()
+
+logger.info("Loading the model...")
+
 model = whisper.load_model("base")
 
-@app.post("/asr")
-def asr_result(req: Request):
+logger.info("Model loaded! Webserver ready!")
+
+@app.post("/transcribe")
+def transcribe_file(
+                audio_file: UploadFile = File(...) 
+                ):
+    file_location = os.path.join(os.getcwd(),f"files/{audio_file.filename}")
+    with open(file_location, "wb+") as file_object:
+        shutil.copyfileobj(audio_file.file, file_object) 
     
     # load audio and pad/trim it to fit 30 seconds
-    audio = whisper.load_audio("audio.mp3")
+    audio = whisper.load_audio(file_location)
     audio = whisper.pad_or_trim(audio)
 
     # make log-Mel spectrogram and move to the same device as the model
@@ -23,7 +44,7 @@ def asr_result(req: Request):
     options = whisper.DecodingOptions()
     result = whisper.decode(model, mel, options)
 
-    return "test"
+    return { "text": result.text}
 
 
 def start():
