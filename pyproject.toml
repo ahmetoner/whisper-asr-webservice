@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "whisper-asr-webservice"
+version = "1.0.0"
+description = "Whisper ASR Webservice is a general-purpose speech recognition webservice. "
+authors = [
+    "Ahmet Öner",
+    "Besim Alibegovic",
+]
+packages = [{ include = "whisper_asr", from = "src" }]
+
+[tool.poetry.scripts]
+whisper_asr = "whisper_asr.webservice:start"
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+unidecode = "^1.3.4"
+fastapi = "^0.75.1"
+uvicorn = { extras = ["standard"], version = "^0.18.2" }
+whisper = {git = "https://github.com/openai/whisper.git"}
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
