@@ -90,4 +90,9 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 * Github pipeline
 * Unit tests
 * CUDA version of Docker image
-* Hosted Swagger documentation with descriptions 
+* Hosted Swagger documentation with descriptions
+* VTT and SRT output
+* Recognize from path
+* Batch recognition from given path/folder
+* Live recognition support with HLS
+* gRPC support
