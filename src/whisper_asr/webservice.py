@@ -4,7 +4,7 @@ import whisper
 import os
 import ffmpeg
 from typing import BinaryIO, Union
-from .languages import LANGUAGES
+from .languages import LANGUAGES, TO_LANGUAGE_CODE
 import numpy as np
 
 SAMPLE_RATE=16000
@@ -14,8 +14,6 @@ app = FastAPI()
 
 model_name= os.getenv("ASR_MODEL", "base")
 model = whisper.load_model(model_name)
-
-
 
 @app.post("/asr")
 def transcribe_file(
@@ -31,6 +29,28 @@ def transcribe_file(
         options_dict["language"] = language    
     
     result = model.transcribe(audio, **options_dict)
+
+    return result
+
+@app.post("/detect-language")
+def language_detection(
+                audio_file: UploadFile = File(...),
+                ):
+
+
+    # load audio and pad/trim it to fit 30 seconds
+    audio = load_audio(audio_file.file)
+    audio = whisper.pad_or_trim(audio)
+
+    # make log-Mel spectrogram and move to the same device as the model
+    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+    # detect the spoken language
+    _, probs = model.detect_language(mel)
+    detected_lang_code = max(probs, key=probs.get)
+    
+    result = { "detected_language": LANGUAGES[detected_lang_code],
+              "langauge_code" : detected_lang_code }
 
     return result
 
