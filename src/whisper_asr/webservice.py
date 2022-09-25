@@ -1,4 +1,3 @@
-from io import BytesIO
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Query
 import whisper
