@@ -1,5 +1,9 @@
-name: This a workflow title 
-on: [push] # When pushing to any branch then run this action
+name: Publish Docker Image
+on:
+  push:
+    branches:
+      - 'main'
+
 # Env variable
 env:
   DOCKER_USER: ${{secrets.DOCKER_USER}}
@@ -20,3 +24,7 @@ jobs:
       run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
     - name: Docker Push
       run: docker push $DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
+    - name: Docker Tag Latest
+      run: docker tag $DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }} $DOCKER_USER/$REPO_NAME:latest
+    - name: Docker Push Latest
+      run: docker push $DOCKER_USER/$REPO_NAME:latest
