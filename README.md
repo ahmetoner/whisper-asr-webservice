@@ -29,7 +29,28 @@ poetry run whisper_asr
 
 After running the docker image or ``poetry run whisper_asr`` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
-Simply upload your sound file and choose either **translate** or **transcribe**. Optionally you can provide the language of the input file, otherwise it will be automatically detected.
+There are two endpoints available: 
+- /asr
+-  /detect-language
+
+## Automatic Speech recognition service /asr
+
+If you choose the **transcribe** task, transcribes the uploaded sound file. 
+You can provide the language or it will be automatically recognized. 
+If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
+
+Returns a json with following fields:
+- **text** : Contains the full transcript
+- **segments** : Contains an entry per segment. Each entry  provides time stamps, transcript, token ids and other metadata
+- **language**: detected or provided language (as a language code)
+
+## Language detection service /detect-language
+
+Detects the language spoken in the uploaded sound file. For longer files it only processes first 30 seconds.
+
+Returns a json with following fields:
+-  **detected_language**
+- **langauge_code**
 
 
 
@@ -69,3 +90,4 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 * Github pipeline
 * Unit tests
 * CUDA version of Docker image
+* Hosted Swagger documentation with descriptions 
