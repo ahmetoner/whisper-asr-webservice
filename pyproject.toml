@@ -23,7 +23,6 @@ tqdm = "^4.64.1"
 transformers = "^4.22.1"
 python-multipart = "^0.0.5"
 ffmpeg-python = "^0.2.0"
-librosa = "^0.9.2"
 
 
 [tool.poetry.dev-dependencies]
