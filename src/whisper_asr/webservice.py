@@ -6,6 +6,7 @@ import ffmpeg
 from typing import BinaryIO, Union
 from .languages import LANGUAGES, TO_LANGUAGE_CODE
 import numpy as np
+from threading import Lock
 
 SAMPLE_RATE=16000
 
@@ -14,6 +15,8 @@ app = FastAPI()
 
 model_name= os.getenv("ASR_MODEL", "base")
 model = whisper.load_model(model_name)
+
+model_lock = Lock()
 
 @app.post("/asr")
 def transcribe_file(
@@ -27,8 +30,8 @@ def transcribe_file(
     options_dict = {"task" : task}
     if language:
         options_dict["language"] = language    
-    
-    result = model.transcribe(audio, **options_dict)
+    with model_lock:
+        result = model.transcribe(audio, **options_dict)
 
     return result
 
