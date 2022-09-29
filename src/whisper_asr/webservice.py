@@ -49,7 +49,8 @@ def language_detection(
     mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
     # detect the spoken language
-    _, probs = model.detect_language(mel)
+    with model_lock:
+        _, probs = model.detect_language(mel)
     detected_lang_code = max(probs, key=probs.get)
     
     result = { "detected_language": LANGUAGES[detected_lang_code],
