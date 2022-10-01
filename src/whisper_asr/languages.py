@@ -116,3 +116,5 @@ TO_LANGUAGE_CODE = {
     "sinhalese": "si",
     "castilian": "es",
 }
+
+LANGUAGE_CODES = sorted(list(LANGUAGES.keys()))
