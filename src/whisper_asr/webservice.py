@@ -9,6 +9,7 @@ from typing import BinaryIO, Union
 from .languages import LANGUAGES, LANGUAGE_CODES
 import numpy as np
 from io import StringIO
+from threading import Lock
 
 SAMPLE_RATE=16000
 
@@ -18,6 +19,8 @@ app = FastAPI()
 model_name= os.getenv("ASR_MODEL", "base")
 model = whisper.load_model(model_name)
 
+model_lock = Lock()
+
 @app.post("/asr")
 def transcribe_file(
                 audio_file: UploadFile = File(...),
@@ -25,13 +28,7 @@ def transcribe_file(
                 language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
                 ):
 
-
-    audio = load_audio(audio_file.file)
-    options_dict = {"task" : task}
-    if language:
-        options_dict["language"] = language    
-    
-    result = model.transcribe(audio, **options_dict)
+    result = run_asr(audio_file.file, task, language)
 
     return result
 
@@ -49,7 +46,8 @@ def language_detection(
     mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
     # detect the spoken language
-    _, probs = model.detect_language(mel)
+    with model_lock:
+        _, probs = model.detect_language(mel)
     detected_lang_code = max(probs, key=probs.get)
     
     result = { "detected_language": LANGUAGES[detected_lang_code],
@@ -65,12 +63,7 @@ def transcribe_file2srt(
                 ):
 
 
-    audio = load_audio(audio_file.file)
-    options_dict = {"task" : task}
-    if language:
-        options_dict["language"] = language    
-    
-    result = model.transcribe(audio, **options_dict)
+    result = run_asr(audio_file.file, task, language)
     
     srt_file = StringIO()
     write_srt(result["segments"], file = srt_file)
@@ -87,12 +80,7 @@ def transcribe_file2vtt(
                 ):
 
 
-    audio = load_audio(audio_file.file)
-    options_dict = {"task" : task}
-    if language:
-        options_dict["language"] = language    
-    
-    result = model.transcribe(audio, **options_dict)
+    result = run_asr(audio_file.file, task, language)
     
     vtt_file = StringIO()
     write_vtt(result["segments"], file = vtt_file)
@@ -100,6 +88,17 @@ def transcribe_file2vtt(
     vtt_filename = f"{audio_file.filename.split('.')[0]}.vtt"
     return StreamingResponse(vtt_file, media_type="text/plain", 
                              headers={'Content-Disposition': f'attachment; filename="{vtt_filename}"'})
+
+
+def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None] ):
+    audio = load_audio(file)
+    options_dict = {"task" : task}
+    if language:
+        options_dict["language"] = language    
+    with model_lock:   
+        result = model.transcribe(audio, **options_dict)
+        
+    return result
 
 
 def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
