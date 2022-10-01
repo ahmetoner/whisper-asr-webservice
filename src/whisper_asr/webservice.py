@@ -1,11 +1,14 @@
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Query
+from fastapi.responses import StreamingResponse
 import whisper
+from whisper.utils import write_srt, write_vtt
 import os
 import ffmpeg
 from typing import BinaryIO, Union
-from .languages import LANGUAGES, TO_LANGUAGE_CODE
+from .languages import LANGUAGES, LANGUAGE_CODES
 import numpy as np
+from io import StringIO
 
 SAMPLE_RATE=16000
 
@@ -19,7 +22,7 @@ model = whisper.load_model(model_name)
 def transcribe_file(
                 audio_file: UploadFile = File(...),
                 task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=list(LANGUAGES.keys())),
+                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
                 ):
 
 
@@ -53,6 +56,51 @@ def language_detection(
               "langauge_code" : detected_lang_code }
 
     return result
+
+@app.post("/get-srt", response_class=StreamingResponse)
+def transcribe_file2srt(
+                audio_file: UploadFile = File(...),
+                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+                ):
+
+
+    audio = load_audio(audio_file.file)
+    options_dict = {"task" : task}
+    if language:
+        options_dict["language"] = language    
+    
+    result = model.transcribe(audio, **options_dict)
+    
+    srt_file = StringIO()
+    write_srt(result["segments"], file = srt_file)
+    srt_file.seek(0)
+    srt_filename = f"{audio_file.filename.split('.')[0]}.srt"
+    return StreamingResponse(srt_file, media_type="text/plain", 
+                             headers={'Content-Disposition': f'attachment; filename="{srt_filename}"'})
+    
+@app.post("/get-vtt", response_class=StreamingResponse)
+def transcribe_file2vtt(
+                audio_file: UploadFile = File(...),
+                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+                ):
+
+
+    audio = load_audio(audio_file.file)
+    options_dict = {"task" : task}
+    if language:
+        options_dict["language"] = language    
+    
+    result = model.transcribe(audio, **options_dict)
+    
+    vtt_file = StringIO()
+    write_vtt(result["segments"], file = vtt_file)
+    vtt_file.seek(0)
+    vtt_filename = f"{audio_file.filename.split('.')[0]}.vtt"
+    return StreamingResponse(vtt_file, media_type="text/plain", 
+                             headers={'Content-Disposition': f'attachment; filename="{vtt_filename}"'})
+
 
 def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
     """

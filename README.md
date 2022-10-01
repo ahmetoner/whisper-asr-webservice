@@ -46,14 +46,19 @@ poetry run whisper_asr
 
 After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
-There are two endpoints available: 
+There are four endpoints available: 
 - /asr
--  /detect-language
+- /get-srt
+- /get-vtt
+- /detect-language
+
 
 ## Automatic Speech recognition service /asr
 
-If you choose the **transcribe** task, transcribes the uploaded sound file. 
+If you choose the **transcribe** task, transcribes the uploaded file. Both audio and video files are supported (as long as ffmpeg supports it).
+
 You can provide the language or it will be automatically recognized. 
+
 If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
 
 Returns a json with following fields:
@@ -61,9 +66,15 @@ Returns a json with following fields:
 - **segments**: Contains an entry per segment. Each entry  provides time stamps, transcript, token ids and other metadata
 - **language**: Detected or provided language (as a language code)
 
+## Subtitle generating services /get-srt and /get-vtt
+
+These two POST endpoints have the same interface as /asr but they return a subtitle file (either srt or vtt).
+
+Note that you can also upload video formats directly as long as they are supported by ffmpeg.
+
 ## Language detection service /detect-language
 
-Detects the language spoken in the uploaded sound file. For longer files it only processes first 30 seconds.
+Detects the language spoken in the uploaded file. For longer files it only processes first 30 seconds.
 
 Returns a json with following fields:
 - **detected_language**
@@ -102,7 +113,6 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 * Unit tests
 * CUDA version of Docker image
 * Hosted Swagger documentation with descriptions
-* VTT and SRT output
 * Recognize from path
 * Batch recognition from given path/folder
 * Live recognition support with HLS
