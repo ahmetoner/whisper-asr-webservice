@@ -1,0 +1,28 @@
+name: Publish Docker Image
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:        
+      - '*'
+
+# Env variable
+env:
+  DOCKER_USER: ${{secrets.DOCKER_USER}}
+  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+  REPO_NAME: ${{secrets.REPO_NAME_GPU}}
+jobs:
+  push-image-to-docker-hub:  # job name
+    runs-on: ubuntu-latest  # runner name : (ubuntu latest version) 
+    steps:
+    - uses: actions/checkout@v2 # first action : checkout source code
+    - name: docker login
+      run: | # log into docker hub account
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD  
+    - name: Build the Docker image # push The image to the docker hub
+      run: docker build . --file Dockerfile.gpu --tag $DOCKER_USER/$REPO_NAME:$GITHUB_REF_NAME
+    - name: Docker Push
+      run: docker push $DOCKER_USER/$REPO_NAME:$GITHUB_REF_NAME
+    - name: Docker Tag Latest
+      run: docker tag $DOCKER_USER/$REPO_NAME:$GITHUB_REF_NAME $DOCKER_USER/$REPO_NAME:latest
+    - name: Docker Push Latest
+      run: docker push $DOCKER_USER/$REPO_NAME:latest
