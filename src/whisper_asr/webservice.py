@@ -10,14 +10,18 @@ from .languages import LANGUAGES, LANGUAGE_CODES
 import numpy as np
 from io import StringIO
 from threading import Lock
+import torch
 
 SAMPLE_RATE=16000
 
 app = FastAPI()
 
-
 model_name= os.getenv("ASR_MODEL", "base")
-model = whisper.load_model(model_name)
+
+if torch.cuda.is_available():
+    model = whisper.load_model(model_name).cuda()
+else:
+    model = whisper.load_model(model_name)
 
 model_lock = Lock()
 
@@ -32,11 +36,11 @@ def transcribe_file(
 
     return result
 
+
 @app.post("/detect-language")
 def language_detection(
                 audio_file: UploadFile = File(...),
                 ):
-
 
     # load audio and pad/trim it to fit 30 seconds
     audio = load_audio(audio_file.file)
@@ -55,13 +59,13 @@ def language_detection(
 
     return result
 
+
 @app.post("/get-srt", response_class=StreamingResponse)
 def transcribe_file2srt(
                 audio_file: UploadFile = File(...),
                 task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
                 language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
                 ):
-
 
     result = run_asr(audio_file.file, task, language)
     
@@ -71,14 +75,14 @@ def transcribe_file2srt(
     srt_filename = f"{audio_file.filename.split('.')[0]}.srt"
     return StreamingResponse(srt_file, media_type="text/plain", 
                              headers={'Content-Disposition': f'attachment; filename="{srt_filename}"'})
-    
+
+
 @app.post("/get-vtt", response_class=StreamingResponse)
 def transcribe_file2vtt(
                 audio_file: UploadFile = File(...),
                 task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
                 language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
                 ):
-
 
     result = run_asr(audio_file.file, task, language)
     
@@ -131,6 +135,3 @@ def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
 
 def start():
     uvicorn.run(app, host="0.0.0.0", port=9000, log_level="info")
-
-
-    

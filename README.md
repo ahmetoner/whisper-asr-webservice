@@ -3,29 +3,27 @@
 Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
 ## Run (Docker Hub)
-Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
+Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on docker hub for CPU and GPU.
+
+For CPU: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
+
 
 ```sh
-docker pull onerahmet/openai-whisper-asr-webservice
-
-docker run -d -p 9000:9000 onerahmet/openai-whisper-asr-webservice
-# or
 docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice
+```
 
+For GPU: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice-gpu
+```sh
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice-gpu
+```
+```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
-
 ```
 Available ASR_MODELs are `tiny`, `base`, `small`, `medium` and `large`
 
 For English-only applications, the `.en` models tend to perform better, especially for the `tiny.en` and `base.en` models. We observed that the difference becomes less significant for the `small.en` and `medium.en` models.
 
 ## Run (Development Environment)
-
-Enable venv:
-```sh
-python3.9 -m venv venv
-source venv/bin/activate
-```
 
 Install poetry with following command:
 ```sh
@@ -92,26 +90,33 @@ Configuring the Model
 export ASR_MODEL=base
 ```
 
-## Docker
-
-Build Image
+## Docker Build
+### For CPU
 ```sh
+# Build Image
 docker build -t whisper-asr-webservice .
-```
 
-Run Container
-```sh
+# Run Container
 docker run -d -p 9000:9000 whisper-asr-webservice
 # or
 docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
 ```
 
+### For GPU
+```sh
+# Build Image
+docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
+
+# Run Container
+docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
+# or
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-gpu
+```
+
 ## TODO
 
 * Detailed README file
-* Github pipeline
 * Unit tests
-* CUDA version of Docker image
 * Hosted Swagger documentation with descriptions
 * Recognize from path
 * Batch recognition from given path/folder
