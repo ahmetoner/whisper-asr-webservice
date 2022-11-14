@@ -126,7 +126,3 @@ def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
         raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
-
-
-def start():
-    uvicorn.run(app, host="0.0.0.0", port=9000, log_level="info")
