@@ -40,6 +40,11 @@ Starting the Webservice:
 poetry run whisper_asr
 ```
 
+Only for GPU: Install cuda version of torch:
+```sh
+poe install-torch-cuda117
+```
+
 ## Quick start
 
 After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
