@@ -9,12 +9,12 @@ Docker Hub: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
 
 For CPU:
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice/latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 For GPU:
 ```sh
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice/latest-gpu
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
