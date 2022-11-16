@@ -17,7 +17,7 @@ python = "^3.9"
 unidecode = "^1.3.4"
 uvicorn = { extras = ["standard"], version = "^0.18.2" }
 torch = "1.10.1"
-whisper = {git = "https://github.com/openai/whisper.git", rev="9f70a352f9f8630ab3aa0d06af5cb9532bd8c21d"}
+whisper = {git = "https://github.com/openai/whisper.git", rev="eff383b27b783e280c089475852ba83f20f64998"}
 tqdm = "^4.64.1"
 transformers = "^4.22.1"
 python-multipart = "^0.0.5"
