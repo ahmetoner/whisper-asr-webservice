@@ -4,22 +4,14 @@ import uvicorn
 import time
 import json
 import urllib
-from fastapi import FastAPI, File, UploadFile, Query
-from fastapi.responses import StreamingResponse
-from starlette.responses import Response
-from .languages import LANGUAGES
-import whisper
-from whisper.utils import write_srt, write_vtt
-import os
-import ffmpeg
-from typing import BinaryIO, Union
-from .languages import LANGUAGES, LANGUAGE_CODES
-import numpy as np
-from io import StringIO
-from threading import Lock
-import torch
 
-SAMPLE_RATE=16000
+from fastapi import FastAPI, Form
+from starlette.responses import Response
+
+import torch
+import whisper
+
+from threading import Lock
 
 app = FastAPI()
 
@@ -37,8 +29,10 @@ else:
 
 model_lock = Lock()
 
+
 def time_ms():
     return time.time_ns() // 1_000_000
+
 
 class PrettyJSONResponse(Response):
     media_type = "application/json"
@@ -54,11 +48,12 @@ class PrettyJSONResponse(Response):
 
 
 @app.get("/status")
-async def status():
+def status():
     return {"status": "OK"}
 
-@app.get("/transcribe", response_class=PrettyJSONResponse)
-def transcribe_file(audio_url: str):
+
+@app.get("/transcribe/url", response_class=PrettyJSONResponse)
+def transcribe_url(audio_url: str):
     start_time = time_ms()
 
     url_filename = audio_url.split("/")[-1]
@@ -81,6 +76,36 @@ def transcribe_file(audio_url: str):
     result["duration_ms"] = (time_ms() - start_time)
 
     return result
+
+
+@app.post("/transcribe/bytes", response_class=PrettyJSONResponse)
+def transcribe_bytes(audio_bytes: str = Form()):
+    start_time = time_ms()
+
+    audio_obj = base64.b64decode(audio_bytes)
+
+    tmp_filename = f"{time_ms()}-bytes.mp3"
+
+    tmp_file = open(tmp_filename, 'wb')
+    tmp_file.write(audio_obj)
+    tmp_file.close()
+
+    audio = whisper.load_audio(tmp_filename)
+
+    options_dict = {
+        "language": "en"
+    }
+
+    result = model.transcribe(audio, **options_dict)
+
+    if os.path.exists(tmp_filename):
+        os.remove(tmp_filename)
+
+    result["model"] = core_model
+    result["duration_ms"] = (time_ms() - start_time)
+
+    return result
+
 
 def start():
     uvicorn.run(app, host="0.0.0.0", port=9000, log_level="debug")
