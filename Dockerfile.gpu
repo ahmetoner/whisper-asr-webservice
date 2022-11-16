@@ -3,6 +3,7 @@ FROM nvidia/cuda:11.6.0-base-ubuntu20.04
 ENV PYTHON_VERSION=3.9
 ENV POETRY_VERSION=1.2.0
 ENV POETRY_VENV=/opt/poetry-venv
+ENV TORCH_CUDA_ARCH_LIST="8.6"
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
@@ -27,5 +28,10 @@ WORKDIR /app
 
 COPY . /app
 RUN poetry install
+
+RUN . $(poetry env info --path)/bin/activate \
+    && pip uninstall --yes torch \
+    && pip cache purge \
+    && pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 
 CMD [ "poetry", "run", "whisper_asr"]
