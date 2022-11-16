@@ -1,8 +1,8 @@
-FROM nvidia/cuda:11.6.0-base-ubuntu20.04
+FROM nvidia/cuda:11.7.0-base-ubuntu20.04
 
 ENV PYTHON_VERSION=3.9
 ENV POETRY_VERSION=1.2.0
-ENV POETRY_VENV=/opt/poetry-venv
+ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
@@ -26,6 +26,9 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 WORKDIR /app
 
 COPY . /app
-RUN poetry install
 
-CMD [ "poetry", "run", "whisper_asr"]
+RUN poetry config virtualenvs.in-project true
+RUN poetry install
+RUN poe install-torch-cuda117
+
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "whisper_asr.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]

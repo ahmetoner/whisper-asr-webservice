@@ -5,16 +5,16 @@ Whisper is a general-purpose speech recognition model. It is trained on a large 
 ## Run (Docker Hub)
 Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on docker hub for CPU and GPU.
 
-For CPU: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
+Docker Hub: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
 
-
+For CPU:
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice
+docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
 ```
 
-For GPU: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice-gpu
+For GPU:
 ```sh
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice-gpu
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
@@ -38,6 +38,11 @@ poetry install
 Starting the Webservice:
 ```sh
 poetry run whisper_asr
+```
+
+Only for GPU: Install cuda version of torch:
+```sh
+poe install-torch-cuda117
 ```
 
 ## Quick start
