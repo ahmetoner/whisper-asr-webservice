@@ -1,6 +1,13 @@
+import os
+import typing
 import uvicorn
+import time
+import json
+import urllib
 from fastapi import FastAPI, File, UploadFile, Query
 from fastapi.responses import StreamingResponse
+from starlette.responses import Response
+from .languages import LANGUAGES
 import whisper
 from whisper.utils import write_srt, write_vtt
 import os
@@ -16,122 +23,64 @@ SAMPLE_RATE=16000
 
 app = FastAPI()
 
-model_name= os.getenv("ASR_MODEL", "base")
+core_model = os.getenv("ASR_MODEL", "medium.en")
+if ".en" not in core_model:
+    core_model = f"{core_model}.en"
+
+if core_model not in ["tiny.en", "base.en", "small.en", "medium.en"]:
+    core_model = "medium.en"
 
 if torch.cuda.is_available():
-    model = whisper.load_model(model_name).cuda()
+    model = whisper.load_model(core_model).cuda()
 else:
-    model = whisper.load_model(model_name)
+    model = whisper.load_model(core_model)
 
 model_lock = Lock()
 
-@app.post("/asr")
-def transcribe_file(
-                audio_file: UploadFile = File(...),
-                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                ):
+def time_ms():
+    return time.time_ns() // 1_000_000
 
-    result = run_asr(audio_file.file, task, language)
+class PrettyJSONResponse(Response):
+    media_type = "application/json"
+
+    def render(self, content: typing.Any) -> bytes:
+        return json.dumps(
+            content,
+            ensure_ascii=False,
+            allow_nan=False,
+            indent=4,
+            separators=(", ", ": "),
+        ).encode("utf-8")
+
+
+@app.get("/status")
+async def status():
+    return {"status": "OK"}
+
+@app.get("/transcribe", response_class=PrettyJSONResponse)
+def transcribe_file(audio_url: str):
+    start_time = time_ms()
+
+    url_filename = audio_url.split("/")[-1]
+    tmp_filename = f"{time_ms()}-{url_filename}.mp3"
+
+    urllib.request.urlretrieve(audio_url, tmp_filename)
+
+    audio = whisper.load_audio(tmp_filename)
+
+    options_dict = {
+        "language": "en"
+    }
+
+    result = model.transcribe(audio, **options_dict)
+
+    if os.path.exists(tmp_filename):
+        os.remove(tmp_filename)
+
+    result["model"] = core_model
+    result["duration_ms"] = (time_ms() - start_time)
 
     return result
-
-
-@app.post("/detect-language")
-def language_detection(
-                audio_file: UploadFile = File(...),
-                ):
-
-    # load audio and pad/trim it to fit 30 seconds
-    audio = load_audio(audio_file.file)
-    audio = whisper.pad_or_trim(audio)
-
-    # make log-Mel spectrogram and move to the same device as the model
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
-
-    # detect the spoken language
-    with model_lock:
-        _, probs = model.detect_language(mel)
-    detected_lang_code = max(probs, key=probs.get)
-    
-    result = { "detected_language": LANGUAGES[detected_lang_code],
-              "langauge_code" : detected_lang_code }
-
-    return result
-
-
-@app.post("/get-srt", response_class=StreamingResponse)
-def transcribe_file2srt(
-                audio_file: UploadFile = File(...),
-                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                ):
-
-    result = run_asr(audio_file.file, task, language)
-    
-    srt_file = StringIO()
-    write_srt(result["segments"], file = srt_file)
-    srt_file.seek(0)
-    srt_filename = f"{audio_file.filename.split('.')[0]}.srt"
-    return StreamingResponse(srt_file, media_type="text/plain", 
-                             headers={'Content-Disposition': f'attachment; filename="{srt_filename}"'})
-
-
-@app.post("/get-vtt", response_class=StreamingResponse)
-def transcribe_file2vtt(
-                audio_file: UploadFile = File(...),
-                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                ):
-
-    result = run_asr(audio_file.file, task, language)
-    
-    vtt_file = StringIO()
-    write_vtt(result["segments"], file = vtt_file)
-    vtt_file.seek(0)
-    vtt_filename = f"{audio_file.filename.split('.')[0]}.vtt"
-    return StreamingResponse(vtt_file, media_type="text/plain", 
-                             headers={'Content-Disposition': f'attachment; filename="{vtt_filename}"'})
-
-
-def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None] ):
-    audio = load_audio(file)
-    options_dict = {"task" : task}
-    if language:
-        options_dict["language"] = language    
-    with model_lock:   
-        result = model.transcribe(audio, **options_dict)
-        
-    return result
-
-
-def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
-    """
-    Open an audio file object and read as mono waveform, resampling as necessary.
-    Modified from https://github.com/openai/whisper/blob/main/whisper/audio.py to accept a file object
-    Parameters
-    ----------
-    file: BinaryIO
-        The audio file like object
-    sr: int
-        The sample rate to resample the audio if necessary
-    Returns
-    -------
-    A NumPy array containing the audio waveform, in float32 dtype.
-    """
-    try:
-        # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-        # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-        out, _ = (
-            ffmpeg.input("pipe:", threads=0)
-            .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-            .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
-        )
-    except ffmpeg.Error as e:
-        raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
-
-    return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
-
 
 def start():
-    uvicorn.run(app, host="0.0.0.0", port=9000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=9000, log_level="debug")
