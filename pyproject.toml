@@ -30,7 +30,7 @@ pytest = "^6.2.5"
 poethepoet = "^0.10.0"
 
 [tool.poe.tasks]
-install-torch-cuda117 = "pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch_stable.html"
+install-torch-cuda117 = "pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
