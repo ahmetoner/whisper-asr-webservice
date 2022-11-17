@@ -11,8 +11,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
-
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION} \
+    && $POETRY_VENV/bin/pip install torch==1.13.0+cpu -f https://download.pytorch.org/whl/torch
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
@@ -21,7 +21,6 @@ WORKDIR /app
 COPY . /app
 
 RUN poetry config virtualenvs.in-project true
-RUN poetry lock
 RUN poetry install
 
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "whisper_asr.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]
