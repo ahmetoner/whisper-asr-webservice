@@ -716,7 +716,7 @@ resolved_reference = "eff383b27b783e280c089475852ba83f20f64998"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6823c7a87d90d3ab1706baf8d97eb72eb5cbc9dfb7981bc42a7889c69eab6f0e"
+content-hash = "9f0092b1075495124cf973279e077cffe9251ddfd97095c318569ca3c1c4a4ee"
 
 [metadata.files]
 anyio = [
