@@ -19,7 +19,8 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION} \
+    && $POETRY_VENV/bin/pip install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
@@ -28,10 +29,6 @@ WORKDIR /app
 COPY . /app
 
 RUN poetry config virtualenvs.in-project true
-RUN poetry lock
 RUN poetry install
-
-ARG TARGETPLATFORM
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then poe install-torch-cuda117; fi;
 
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "whisper_asr.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]
