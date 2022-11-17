@@ -15,8 +15,10 @@ jobs:
       matrix:
         include:
           - docker_file: Dockerfile
+            platforms: linux/arm64,linux/amd64
           - docker_file: Dockerfile.gpu
             tag_extension: -gpu
+            platforms: linux/amd64
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -33,4 +35,4 @@ jobs:
       run: |
         DOCKER_IMAGE_LATEST=$DOCKER_USER/$REPO_NAME:latest${{ matrix.tag_extension }}
         DOCKER_IMAGE_VERSION=$DOCKER_USER/$REPO_NAME:$GITHUB_REF_NAME${{ matrix.tag_extension }}
-        docker buildx build . --no-cache --platform=linux/arm64,linux/amd64 -t "${DOCKER_IMAGE_LATEST}" -t "${DOCKER_IMAGE_VERSION}" -f ${{ matrix.docker_file }} --push
+        docker buildx build . --no-cache --platform=${{ matrix.platforms }} -t "${DOCKER_IMAGE_LATEST}" -t "${DOCKER_IMAGE_VERSION}" -f ${{ matrix.docker_file }} --push
