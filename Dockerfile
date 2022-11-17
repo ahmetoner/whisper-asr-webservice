@@ -21,6 +21,7 @@ WORKDIR /app
 COPY . /app
 
 RUN poetry config virtualenvs.in-project true
+RUN poetry lock
 RUN poetry install
 
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "whisper_asr.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]

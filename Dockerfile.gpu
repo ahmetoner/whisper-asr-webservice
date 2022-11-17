@@ -28,6 +28,7 @@ WORKDIR /app
 COPY . /app
 
 RUN poetry config virtualenvs.in-project true
+RUN poetry lock
 RUN poetry install
 RUN poe install-torch-cuda117
 
