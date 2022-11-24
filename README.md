@@ -16,6 +16,17 @@ For GPU:
 ```sh
 docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
+
+For MacOS (CPU only):
+
+GPU passthrough does not work on macOS due to fundamental design limitations of Docker. Docker actually runs containers within a LinuxVM on macOS. If you wish to run GPU-accelerated containers, I'm afraid Linux is your only option.
+
+The `:latest` image tag provides both amd64 and arm64 architectures:
+
+```sh
+docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
+```
+
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
@@ -52,7 +63,7 @@ gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 whisper_asr.webservice:app 
 
 After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
-There are 2 endpoints available: 
+There are 2 endpoints available:
 - /asr (JSON, SRT, VTT)
 - /detect-language
 
@@ -65,7 +76,7 @@ Note that you can also upload video formats directly as long as they are support
 
 You can get SRT and VTT output as a file from /asr endpoint.
 
-You can provide the language or it will be automatically recognized. 
+You can provide the language or it will be automatically recognized.
 
 If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
 
