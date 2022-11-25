@@ -20,6 +20,16 @@ For GPU:
 docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
+For MacOS (CPU only):
+
+GPU passthrough does not work on macOS due to fundamental design limitations of Docker. Docker actually runs containers within a LinuxVM on macOS. If you wish to run GPU-accelerated containers, I'm afraid Linux is your only option.
+
+The `:latest` image tag provides both amd64 and arm64 architectures:
+
+```sh
+docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
+```
+
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
