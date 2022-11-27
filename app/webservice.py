@@ -1,6 +1,7 @@
-import uvicorn
-from fastapi import FastAPI, File, UploadFile, Query, Response
+from fastapi import FastAPI, File, UploadFile, Query, applications
 from fastapi.responses import StreamingResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
 from whisper.utils import write_srt, write_vtt
 import os
@@ -28,8 +29,19 @@ app = FastAPI(
     license_info={
         "name": "MIT License",
         "url": projectMetada['License']
-    },
+    }
 )
+app.mount("/assets", StaticFiles(directory="static/assets"), name="static")
+
+def swagger_monkey_patch(*args, **kwargs):
+    return get_swagger_ui_html(
+        *args,
+        **kwargs,
+        swagger_favicon_url="",
+        swagger_css_url="/assets/css/swagger-ui.css",
+        swagger_js_url="/assets/js/swagger-ui-bundle.js",
+    )
+applications.get_swagger_ui_html = swagger_monkey_patch
 
 model_name= os.getenv("ASR_MODEL", "base")
 
@@ -130,3 +142,5 @@ def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
         raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
+
+
