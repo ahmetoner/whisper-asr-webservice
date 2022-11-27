@@ -31,7 +31,7 @@ app = FastAPI(
         "url": projectMetada['License']
     }
 )
-app.mount("/assets", StaticFiles(directory="static/assets"), name="static")
+app.mount("/assets", StaticFiles(directory="app/static/assets"), name="static")
 
 def swagger_monkey_patch(*args, **kwargs):
     return get_swagger_ui_html(
