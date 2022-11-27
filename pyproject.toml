@@ -9,11 +9,7 @@ authors = [
     "Besim Alibegovic",
 ]
 readme = "README.md"
-packages = [{ include = "whisper_asr", from = "src" }]
-
-[tool.poetry.scripts]
-whisper_asr = "whisper_asr.webservice:start"
-
+packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
