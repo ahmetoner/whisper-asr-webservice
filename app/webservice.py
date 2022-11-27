@@ -17,18 +17,18 @@ import importlib.metadata
 
 SAMPLE_RATE=16000
 
-projectMetada = importlib.metadata.metadata('whisper-asr-webservice')
+projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
-    title=projectMetada['Name'].title().replace('-', ' '),
-    description=projectMetada['Summary'],
-    version=projectMetada['Version'],
+    title=projectMetadata['Name'].title().replace('-', ' '),
+    description=projectMetadata['Summary'],
+    version=projectMetadata['Version'],
     contact={
-        "url": projectMetada['Home-page']
+        "url": projectMetadata['Home-page']
     },
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={
         "name": "MIT License",
-        "url": projectMetada['License']
+        "url": projectMetadata['License']
     }
 )
 app.mount("/assets", StaticFiles(directory="app/static/assets"), name="static")
