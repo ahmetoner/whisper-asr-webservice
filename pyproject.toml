@@ -1,11 +1,14 @@
 [tool.poetry]
 name = "whisper-asr-webservice"
-version = "1.0.1-beta"
-description = "Whisper ASR Webservice is a general-purpose speech recognition webservice. "
+version = "1.0.4"
+description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
+homepage  = "https://github.com/ahmetoner/whisper-asr-webservice/"
+license = "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"
 authors = [
     "Ahmet Öner",
     "Besim Alibegovic",
 ]
+readme = "README.md"
 packages = [{ include = "whisper_asr", from = "src" }]
 
 [tool.poetry.scripts]

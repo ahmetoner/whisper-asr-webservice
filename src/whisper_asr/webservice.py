@@ -12,18 +12,22 @@ from io import StringIO
 from threading import Lock
 import torch
 
+import importlib.metadata 
+
 SAMPLE_RATE=16000
 
+projectMetada = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
-    title="Webservice API",
-    description="OpenAI Whisper ASR Webservice API",
+    title=projectMetada['Name'].title().replace('-', ' '),
+    description=projectMetada['Summary'],
+    version=projectMetada['Version'],
     contact={
-        "url": "https://github.com/ahmetoner/whisper-asr-webservice/",
+        "url": projectMetada['Home-page']
     },
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={
         "name": "MIT License",
-        "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE",
+        "url": projectMetada['License']
     },
 )
 
