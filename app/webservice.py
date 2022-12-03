@@ -5,6 +5,8 @@ from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
 from whisper.utils import write_srt, write_vtt
 import os
+from os import path
+from pathlib import Path
 import ffmpeg
 from typing import BinaryIO, Union
 from .languages import LANGUAGES, LANGUAGE_CODES
@@ -12,7 +14,7 @@ import numpy as np
 from io import StringIO
 from threading import Lock
 import torch
-
+import fastapi_offline_swagger_ui
 import importlib.metadata 
 
 SAMPLE_RATE=16000
@@ -31,25 +33,25 @@ app = FastAPI(
         "url": projectMetada['License']
     }
 )
-app.mount("/assets", StaticFiles(directory="static/assets"), name="static")
 
-def swagger_monkey_patch(*args, **kwargs):
-    return get_swagger_ui_html(
-        *args,
-        **kwargs,
-        swagger_favicon_url="",
-        swagger_css_url="/assets/css/swagger-ui.css",
-        swagger_js_url="/assets/js/swagger-ui-bundle.js",
-    )
-applications.get_swagger_ui_html = swagger_monkey_patch
+assets_path = fastapi_offline_swagger_ui.__path__[0]
+if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
+    app.mount("/assets", StaticFiles(directory=assets_path), name="static")
+    def swagger_monkey_patch(*args, **kwargs):
+        return get_swagger_ui_html(
+            *args,
+            **kwargs,
+            swagger_favicon_url="",
+            swagger_css_url="/assets/swagger-ui.css",
+            swagger_js_url="/assets/swagger-ui-bundle.js",
+        )
+    applications.get_swagger_ui_html = swagger_monkey_patch
 
 model_name= os.getenv("ASR_MODEL", "base")
-
 if torch.cuda.is_available():
     model = whisper.load_model(model_name).cuda()
 else:
     model = whisper.load_model(model_name)
-
 model_lock = Lock()
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
@@ -142,5 +144,3 @@ def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
         raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
-
-
