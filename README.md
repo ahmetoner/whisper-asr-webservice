@@ -34,7 +34,7 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webser
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
 
-Available ASR_MODELs are `tiny`, `base`, `small`, `medium` and `large`
+Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
 
 For English-only applications, the `.en` models tend to perform better, especially for the `tiny.en` and `base.en` models. We observed that the difference becomes less significant for the `small.en` and `medium.en` models.
 
@@ -64,7 +64,7 @@ poetry install
 Starting the Webservice:
 
 ```sh
-gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## Quick start
