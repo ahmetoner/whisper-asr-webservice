@@ -4,12 +4,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
 from whisper.utils import write_srt, write_vtt
+from whisper import tokenizer
 import os
 from os import path
 from pathlib import Path
 import ffmpeg
 from typing import BinaryIO, Union
-from .languages import LANGUAGES, LANGUAGE_CODES
 import numpy as np
 from io import StringIO
 from threading import Lock
@@ -18,6 +18,7 @@ import fastapi_offline_swagger_ui
 import importlib.metadata 
 
 SAMPLE_RATE=16000
+LANGUAGE_CODES=sorted(list(tokenizer.LANGUAGES.keys()))
 
 projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
@@ -101,7 +102,7 @@ def language_detection(
         _, probs = model.detect_language(mel)
     detected_lang_code = max(probs, key=probs.get)
     
-    result = { "detected_language": LANGUAGES[detected_lang_code],
+    result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
               "langauge_code" : detected_lang_code }
 
     return result
