@@ -64,6 +64,7 @@ def transcribe(
                 audio_file: UploadFile = File(...),
                 task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
                 language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+                prompt: Union[str, None] = Query(default=None),
                 output : Union[str, None] = Query(default="json", enum=["json", "vtt", "srt"]),
                 ):
 
@@ -108,11 +109,13 @@ def language_detection(
     return result
 
 
-def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None] ):
+def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None], prompt: Union[str, None] ):
     audio = load_audio(file)
     options_dict = {"task" : task}
     if language:
         options_dict["language"] = language    
+    if prompt:
+        options_dict["prompt"] = prompt    
     with model_lock:   
         result = model.transcribe(audio, **options_dict)
         
