@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
-from whisper.utils import write_srt, write_vtt
+from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 from whisper import tokenizer
 import os
 from os import path
@@ -64,25 +64,27 @@ def transcribe(
                 audio_file: UploadFile = File(...),
                 task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
                 language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                output : Union[str, None] = Query(default="json", enum=["json", "vtt", "srt"]),
+                output : Union[str, None] = Query(default="txt", enum=[ "txt", "vtt", "srt", "tsv", "json"]),
                 ):
 
     result = run_asr(audio_file.file, task, language)
     filename = audio_file.filename.split('.')[0]
+    myFile = StringIO()
     if(output == "srt"):
-        srt_file = StringIO()
-        write_srt(result["segments"], file = srt_file)
-        srt_file.seek(0)
-        return StreamingResponse(srt_file, media_type="text/plain", 
-                                headers={'Content-Disposition': f'attachment; filename="{filename}.srt"'})
+        WriteSRT(ResultWriter).write_result(result, file = myFile)
     elif(output == "vtt"):
-        vtt_file = StringIO()
-        write_vtt(result["segments"], file = vtt_file)
-        vtt_file.seek(0)
-        return StreamingResponse(vtt_file, media_type="text/plain", 
-                                headers={'Content-Disposition': f'attachment; filename="{filename}.vtt"'})
+        WriteVTT(ResultWriter).write_result(result, file = myFile)
+    elif(output == "tsv"):
+        WriteTSV(ResultWriter).write_result(result, file = myFile)
+    elif(output == "json"):
+        WriteJSON(ResultWriter).write_result(result, file = myFile)
+    elif(output == "txt"):
+        WriteTXT(ResultWriter).write_result(result, file = myFile)
     else:
-        return result
+        return 'Please select an output method!'
+    myFile.seek(0)
+    return StreamingResponse(myFile, media_type="text/plain", 
+                            headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
 
 
 @app.post("/detect-language", tags=["Endpoints"])

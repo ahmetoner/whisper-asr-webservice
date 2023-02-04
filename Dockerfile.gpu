@@ -1,7 +1,6 @@
-FROM nvidia/cuda:11.7.0-base-ubuntu20.04
+FROM nvidia/cuda:11.7.0-base-ubuntu22.04
 
-ENV PYTHON_VERSION=3.9
-ENV POETRY_VERSION=1.2.0
+ENV PYTHON_VERSION=3.11
 ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -19,7 +18,7 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION} \
+    && $POETRY_VENV/bin/pip install poetry \
     && $POETRY_VENV/bin/pip install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
