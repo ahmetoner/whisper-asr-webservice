@@ -62,7 +62,7 @@ poetry install
 Starting the Webservice:
 
 ```sh
-poetry run gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## Quick start
