@@ -43,15 +43,13 @@ For English-only applications, the `.en` models tend to perform better, especial
 Install poetry with following command:
 
 ```sh
-pip3 install poetry==1.2.2
+pip3 install poetry
 ```
 
 Install torch with following command:
 
 ```sh
-# for cpu:
-pip3 install torch==1.13.0+cpu -f https://download.pytorch.org/whl/torch
-# for gpu:
+# just for GPU:
 pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 ```
 
@@ -64,16 +62,16 @@ poetry install
 Starting the Webservice:
 
 ```sh
-gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## Quick start
 
-After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
+After running the docker image interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
 There are 2 endpoints available:
 
-- /asr (JSON, SRT, VTT)
+- /asr (TXT, VTT, SRT, TSV, JSON)
 - /detect-language
 
 ## Automatic Speech recognition service /asr
@@ -82,7 +80,7 @@ If you choose the **transcribe** task, transcribes the uploaded file. Both audio
 
 Note that you can also upload video formats directly as long as they are supported by ffmpeg.
 
-You can get SRT and VTT output as a file from /asr endpoint.
+You can get TXT, VTT, SRT, TSV and JSON output as a file from /asr endpoint.
 
 You can provide the language or it will be automatically recognized.
 
