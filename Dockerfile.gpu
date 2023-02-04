@@ -1,6 +1,6 @@
 FROM nvidia/cuda:11.7.0-base-ubuntu22.04
 
-ENV PYTHON_VERSION=3.11
+ENV PYTHON_VERSION=3.10
 ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
