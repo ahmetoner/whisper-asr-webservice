@@ -43,7 +43,7 @@ For English-only applications, the `.en` models tend to perform better, especial
 Install poetry with following command:
 
 ```sh
-pip3 install poetry==1.2.2
+pip3 install poetry
 ```
 
 Install torch with following command:
@@ -73,7 +73,7 @@ After running the docker image or `poetry run whisper_asr` interactive Swagger A
 
 There are 2 endpoints available:
 
-- /asr (JSON, SRT, VTT)
+- /asr (TXT, VTT, SRT, TSV, JSON)
 - /detect-language
 
 ## Automatic Speech recognition service /asr
@@ -82,7 +82,7 @@ If you choose the **transcribe** task, transcribes the uploaded file. Both audio
 
 Note that you can also upload video formats directly as long as they are supported by ffmpeg.
 
-You can get SRT and VTT output as a file from /asr endpoint.
+You can get TXT, VTT, SRT, TSV and JSON output as a file from /asr endpoint.
 
 You can provide the language or it will be automatically recognized.
 
