@@ -64,12 +64,12 @@ poetry install
 Starting the Webservice:
 
 ```sh
-gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+poetry run gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## Quick start
 
-After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
+After running the docker image interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
 There are 2 endpoints available:
 
