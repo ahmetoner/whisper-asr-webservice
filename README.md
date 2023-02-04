@@ -49,9 +49,7 @@ pip3 install poetry
 Install torch with following command:
 
 ```sh
-# for cpu:
-pip3 install torch==1.13.0+cpu -f https://download.pytorch.org/whl/torch
-# for gpu:
+# just for GPU:
 pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 ```
 
