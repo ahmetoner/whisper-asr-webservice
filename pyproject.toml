@@ -16,14 +16,14 @@ python = "^3.11"
 unidecode = "^1.3.4"
 uvicorn = { extras = ["standard"], version = "^0.18.2" }
 gunicorn = "^20.1.0"
-openai-whisper = {git = "https://github.com/openai/whisper.git", rev="7858aa9c08d98f75575035ecd6481f462d66ca27"}
 tqdm = "^4.64.1"
 transformers = "^4.22.1"
 python-multipart = "^0.0.5"
 ffmpeg-python = "^0.2.0"
 fastapi = "^0.85.0"
-fastapi-offline-swagger-ui = {git = "https://github.com/ahmetoner/fastapi-offline-swagger-ui"}
+fastapi-offline-swagger-ui = { git = "https://github.com/ahmetoner/fastapi-offline-swagger-ui" }
 torch="^1.13.0"
+openai-whisper = { git = "https://github.com/openai/whisper.git", tag = "v20230124" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
