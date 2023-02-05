@@ -1,6 +1,6 @@
 ![Whisper ASR Webservice](https://github.com/ahmetoner/whisper-asr-webservice/blob/docs/docs/assets/img/banner.png?raw=true)
 ![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
-![Release](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
 ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
@@ -37,6 +37,7 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webser
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
+![Whisper ASR Webservice](https://github.com/ahmetoner/whisper-asr-webservice/blob/docs/docs/assets/img/swagger-ui.png?raw=true)
 
 Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
 
