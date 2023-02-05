@@ -1,6 +1,6 @@
 ![Whisper ASR Webservice](https://github.com/ahmetoner/whisper-asr-webservice/blob/docs/docs/assets/img/banner.png?raw=true)
 ![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
-![Release](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
 ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
