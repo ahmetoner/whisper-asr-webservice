@@ -104,7 +104,7 @@ Detects the language spoken in the uploaded file. For longer files it only proce
 Returns a json with following fields:
 
 - **detected_language**
-- **langauge_code**
+- **language_code**
 
 ## Build
 

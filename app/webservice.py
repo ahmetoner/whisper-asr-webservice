@@ -106,7 +106,7 @@ def language_detection(
     detected_lang_code = max(probs, key=probs.get)
     
     result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
-              "langauge_code" : detected_lang_code }
+              "language_code" : detected_lang_code }
 
     return result
 
