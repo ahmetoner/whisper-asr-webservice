@@ -5,6 +5,15 @@ from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
 from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 from whisper import tokenizer
+from faster_whisper import WhisperModel
+from .faster_whisper.utils import (
+    ResultWriter as faster_whisper_ResultWriter,
+    WriteTXT as faster_whisper_WriteTXT,
+    WriteSRT as faster_whisper_WriteSRT,
+    WriteVTT as faster_whisper_WriteVTT,
+    WriteTSV as faster_whisper_WriteTSV,
+    WriteJSON as faster_whisper_WriteJSON,
+)
 import os
 from os import path
 from pathlib import Path
@@ -48,12 +57,22 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
         )
     applications.get_swagger_ui_html = swagger_monkey_patch
 
-model_name= os.getenv("ASR_MODEL", "base")
+whisper_model_name= os.getenv("ASR_MODEL", "base")
+faster_whisper_model_path = "/root/.cache/faster_whisper"
 if torch.cuda.is_available():
-    model = whisper.load_model(model_name).cuda()
+    whisper_model = whisper.load_model(whisper_model_name).cuda()
+    faster_whisper_model = WhisperModel(faster_whisper_model_path, device="cuda", compute_type="float16")
 else:
-    model = whisper.load_model(model_name)
+    whisper_model = whisper.load_model(whisper_model_name)
+    faster_whisper_model = WhisperModel(faster_whisper_model_path)
 model_lock = Lock()
+
+def get_modal(faster: bool = False):
+    if faster:
+        return faster_whisper_model
+
+    return whisper_model
+
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
@@ -61,28 +80,18 @@ async def index():
 
 @app.post("/asr", tags=["Endpoints"])
 def transcribe(
-                audio_file: UploadFile = File(...),
-                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                initial_prompt: Union[str, None] = Query(default=None),
-                output : Union[str, None] = Query(default="txt", enum=[ "txt", "vtt", "srt", "tsv", "json"]),
-                ):
+    audio_file: UploadFile = File(...),
+    task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+    initial_prompt: Union[str, None] = Query(default=None),
+    output : Union[str, None] = Query(default="txt", enum=[ "txt", "vtt", "srt", "tsv", "json"]),
+    faster: Union[bool, None] = Query(default=False, enum=[False, True])
+):
 
-    result = run_asr(audio_file.file, task, language, initial_prompt)
+    result = run_asr(audio_file.file, task, language, initial_prompt, faster)
     filename = audio_file.filename.split('.')[0]
     myFile = StringIO()
-    if(output == "srt"):
-        WriteSRT(ResultWriter).write_result(result, file = myFile)
-    elif(output == "vtt"):
-        WriteVTT(ResultWriter).write_result(result, file = myFile)
-    elif(output == "tsv"):
-        WriteTSV(ResultWriter).write_result(result, file = myFile)
-    elif(output == "json"):
-        WriteJSON(ResultWriter).write_result(result, file = myFile)
-    elif(output == "txt"):
-        WriteTXT(ResultWriter).write_result(result, file = myFile)
-    else:
-        return 'Please select an output method!'
+    write_result(result, myFile, output, faster)
     myFile.seek(0)
     return StreamingResponse(myFile, media_type="text/plain", 
                             headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
@@ -90,28 +99,35 @@ def transcribe(
 
 @app.post("/detect-language", tags=["Endpoints"])
 def language_detection(
-                audio_file: UploadFile = File(...),
-                ):
-
+    audio_file: UploadFile = File(...),
+    faster: Union[bool, None] = Query(default=False, enum=[False, True]),
+):
     # load audio and pad/trim it to fit 30 seconds
     audio = load_audio(audio_file.file)
     audio = whisper.pad_or_trim(audio)
 
-    # make log-Mel spectrogram and move to the same device as the model
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
-
     # detect the spoken language
     with model_lock:
-        _, probs = model.detect_language(mel)
-    detected_lang_code = max(probs, key=probs.get)
-    
-    result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
-              "language_code" : detected_lang_code }
+        model = get_modal(faster)
+        if faster:
+            segments, info = model.transcribe(audio, beam_size=5)
+            detected_lang_code = info.language
+        else:
+            # make log-Mel spectrogram and move to the same device as the model
+            mel = whisper.log_mel_spectrogram(audio).to(model.device)
+            _, probs = model.detect_language(mel)
+            detected_lang_code = max(probs, key=probs.get)
+
+        result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
+                  "language_code" : detected_lang_code }
 
     return result
 
 
-def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None], initial_prompt: Union[str, None] ):
+def run_asr(
+    file: BinaryIO, task: Union[str, None], language: Union[str, None],
+    initial_prompt: Union[str, None], faster: Union[bool, None],
+):
     audio = load_audio(file)
     options_dict = {"task" : task}
     if language:
@@ -119,9 +135,56 @@ def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None], 
     if initial_prompt:
         options_dict["initial_prompt"] = initial_prompt    
     with model_lock:   
-        result = model.transcribe(audio, **options_dict)
-        
+        model = get_modal(faster)
+        if faster:
+            # TODO: options_dict
+            segments = []
+            text = ""
+            i = 0
+            segment_generator, info = model.transcribe(audio, beam_size=5)
+            for segment in segment_generator:
+                segments.append(segment)
+                text = text + segment.text
+            result = {
+                "language": options_dict.get("language", info.language),
+                "segments": segments,
+                "text": text,
+            }
+        else:
+            result = model.transcribe(audio, **options_dict)
+
     return result
+
+
+def write_result(
+    result: dict, file: BinaryIO, output: Union[str, None], faster: Union[bool, None]
+):
+    if faster:
+        if(output == "srt"):
+            faster_whisper_WriteSRT(ResultWriter).write_result(result, file = file)
+        elif(output == "vtt"):
+            faster_whisper_WriteVTT(ResultWriter).write_result(result, file = file)
+        elif(output == "tsv"):
+            faster_whisper_WriteTSV(ResultWriter).write_result(result, file = file)
+        elif(output == "json"):
+            faster_whisper_WriteJSON(ResultWriter).write_result(result, file = file)
+        elif(output == "txt"):
+            faster_whisper_WriteTXT(ResultWriter).write_result(result, file = file)
+        else:
+            return 'Please select an output method!'
+    else:
+        if(output == "srt"):
+            WriteSRT(ResultWriter).write_result(result, file = file)
+        elif(output == "vtt"):
+            WriteVTT(ResultWriter).write_result(result, file = file)
+        elif(output == "tsv"):
+            WriteTSV(ResultWriter).write_result(result, file = file)
+        elif(output == "json"):
+            WriteJSON(ResultWriter).write_result(result, file = file)
+        elif(output == "txt"):
+            WriteTXT(ResultWriter).write_result(result, file = file)
+        else:
+            return 'Please select an output method!'
 
 
 def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
