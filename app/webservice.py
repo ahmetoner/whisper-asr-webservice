@@ -137,11 +137,10 @@ def run_asr(
     with model_lock:   
         model = get_modal(faster)
         if faster:
-            # TODO: options_dict
             segments = []
             text = ""
             i = 0
-            segment_generator, info = model.transcribe(audio, beam_size=5)
+            segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict)
             for segment in segment_generator:
                 segments.append(segment)
                 text = text + segment.text

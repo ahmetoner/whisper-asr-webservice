@@ -70,6 +70,11 @@ Starting the Webservice:
 poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
+With docker compose:
+```sh
+docker-compose up --build
+```
+
 ## Quick start
 
 After running the docker image interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)

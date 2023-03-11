@@ -13,12 +13,18 @@ services:
               count: 1
               capabilities: [gpu]
     environment:
-      - ASR_MODEL=large
+      - ASR_MODEL=base
     ports:
       - 9000:9000
     volumes:
       - ./app:/app/app
-      - ~/.cache/poetry:/root/.cache/poetry
-      - ~/.cache/whisper:/root/.cache/whisper
-      - ~/.cache/faster_whisper:/root/.cache/faster_whisper
+      - cache-pip:/root/.cache/pip
+      - cache-poetry:/root/.cache/poetry
+      - cache-whisper:/root/.cache/whisper
+      - cache-faster-whisper:/root/.cache/faster_whisper
 
+volumes:
+  cache-pip:
+  cache-poetry:
+  cache-whisper:
+  cache-faster-whisper:
