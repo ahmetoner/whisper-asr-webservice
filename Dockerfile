@@ -10,7 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry
+    && $POETRY_VENV/bin/pip install poetry==1.4.0
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
