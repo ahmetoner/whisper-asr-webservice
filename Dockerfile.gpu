@@ -24,11 +24,19 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
 
-COPY . /app
+COPY poetry.lock pyproject.toml ./
 
 RUN poetry config virtualenvs.in-project true
-RUN poetry install
+RUN poetry install --no-root
 
+COPY . .
+
+RUN poetry install
 RUN $POETRY_VENV/bin/pip install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 
-ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "app.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]
+ENV ASR_MODEL="base"
+
+# TODO: Skip based on ENV variable
+RUN ./faster_whisper_model_conversion.sh ${ASR_MODEL}
+
+CMD gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker

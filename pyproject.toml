@@ -22,8 +22,9 @@ python-multipart = "^0.0.5"
 ffmpeg-python = "^0.2.0"
 fastapi = "^0.85.0"
 fastapi-offline-swagger-ui = { git = "https://github.com/ahmetoner/fastapi-offline-swagger-ui" }
-torch = "=1.12.0"
 openai-whisper = { git = "https://github.com/openai/whisper.git", tag = "v20230124" }
+faster-whisper = { git = "https://github.com/guillaumekln/faster-whisper.git" }
+ctranslate2 = "^3.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
