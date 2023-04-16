@@ -1320,21 +1320,13 @@ files = [
 
 [[package]]
 name = "torch"
-version = "1.13.1+cpu"
+version = "1.13.0"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "torch-1.13.1+cpu-cp310-cp310-linux_x86_64.whl", hash = "sha256:11692523b87c45b79ddfb5148b12a713d85235d399915490d94e079521f7e014"},
-    {file = "torch-1.13.1+cpu-cp310-cp310-win_amd64.whl", hash = "sha256:207ab3700cd9c4349f4fd1892597eb3d385eb78221c0f2974ec54b8ea903aa00"},
-    {file = "torch-1.13.1+cpu-cp311-cp311-linux_x86_64.whl", hash = "sha256:dc185f2fdbb1f84855929d3ba7b36c74f218789d26a0e0268cb0586d466c8c24"},
-    {file = "torch-1.13.1+cpu-cp37-cp37m-linux_x86_64.whl", hash = "sha256:2dd7e5f584c7ea5d8f038fd1fa40465785f797df0c7d06c432f5e72d9817115a"},
-    {file = "torch-1.13.1+cpu-cp37-cp37m-win_amd64.whl", hash = "sha256:02e387834a3489396f1871f83f7a795610d09ef3da01aa431493b08eac5c6666"},
-    {file = "torch-1.13.1+cpu-cp38-cp38-linux_x86_64.whl", hash = "sha256:4a8b84834eb12b3428c24e9f264c9bd6a2cf449fffc191374e7dbb2b950fc6d7"},
-    {file = "torch-1.13.1+cpu-cp38-cp38-win_amd64.whl", hash = "sha256:43394e66487543c112044194e9bdecc6f48c869d692a9d0c755b95d642b29535"},
-    {file = "torch-1.13.1+cpu-cp39-cp39-linux_x86_64.whl", hash = "sha256:71636a5c21927236f4974d2355fb3f66a0b707c28219b0135ff65ed0f0e61287"},
-    {file = "torch-1.13.1+cpu-cp39-cp39-win_amd64.whl", hash = "sha256:988ee77c0975b4c3f570dfc62277b1e300bbbe7cc000ce2720e2e8c730fb9ce5"},
+    {file = "torch-1.13.0-cp310-none-macosx_10_9_x86_64.whl", hash = "sha256:49a949b8136b32b2ec0724cbf4c6678b54e974b7d68f19f1231eea21cde5c23b"},
 ]
 
 [package.dependencies]
@@ -1344,10 +1336,88 @@ typing-extensions = "*"
 opt-einsum = ["opt-einsum (>=3.3)"]
 
 [package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/cpu"
-reference = "pytorch"
+type = "url"
+url = "https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_10_9_x86_64.whl"
+[[package]]
+name = "torch"
+version = "1.13.0"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "torch-1.13.0-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:0fdd38c96230947b1ed870fed4a560252f8d23c3a2bf4dab9d2d42b18f2e67c8"},
+]
 
+[package.dependencies]
+typing-extensions = "*"
+
+[package.extras]
+opt-einsum = ["opt-einsum (>=3.3)"]
+
+[package.source]
+type = "url"
+url = "https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_11_0_arm64.whl"
+[[package]]
+name = "torch"
+version = "1.13.0"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "torch-1.13.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:d2d2753519415d154de4d3e64d2eaaeefdba6b6fd7d69d5ffaef595988117700"},
+]
+
+[package.dependencies]
+typing-extensions = "*"
+
+[package.extras]
+opt-einsum = ["opt-einsum (>=3.3)"]
+
+[package.source]
+type = "url"
+url = "https://download.pytorch.org/whl/torch-1.13.0-cp310-cp310-manylinux2014_aarch64.whl"
+[[package]]
+name = "torch"
+version = "1.13.0+cpu"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "torch-1.13.0%2Bcpu-cp310-cp310-linux_x86_64.whl", hash = "sha256:b37a1a701fa00bcb9d508ebc509c3137df5f1cb9287548ee674893ac9561fbae"},
+]
+
+[package.dependencies]
+typing-extensions = "*"
+
+[package.extras]
+opt-einsum = ["opt-einsum (>=3.3)"]
+
+[package.source]
+type = "url"
+url = "https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-linux_x86_64.whl"
+[[package]]
+name = "torch"
+version = "1.13.0+cpu"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "torch-1.13.0%2Bcpu-cp310-cp310-win_amd64.whl", hash = "sha256:6fe6a7b8c7fcb4ba5f9d20854ecd4d6a8644c5cb12ff9b72d1523c6dcf543606"},
+]
+
+[package.dependencies]
+typing-extensions = "*"
+
+[package.extras]
+opt-einsum = ["opt-einsum (>=3.3)"]
+
+[package.source]
+type = "url"
+url = "https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-win_amd64.whl"
 [[package]]
 name = "tqdm"
 version = "4.65.0"
@@ -1705,4 +1775,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0d2a4ba6f1e65a0f46b076567c2987c4fe4d7790183a8abb4787bc84fa583c64"
+content-hash = "33d6980715550c4046a913119b3b2d2c49c3b98e3948e6b0fc68a6af2ee2af96"
