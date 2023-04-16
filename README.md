@@ -6,6 +6,13 @@
 
 Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
+## Features
+Current release (v1.1.0) supports following whisper models:
+
+- [openai/whisper](https://github.com/openai/whisper)@[v20230314](https://github.com/openai/whisper/releases/tag/v20230314)
+- [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
+- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (Coming soon)
+
 ## Usage
 
 Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on docker hub for CPU and GPU.
@@ -68,6 +75,18 @@ Starting the Webservice:
 
 ```sh
 poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+```
+
+With docker compose:
+
+For CPU:
+```sh
+docker-compose up --build
+```
+
+For GPU:
+```sh
+docker-compose up --build -f docker-compose.gpu.yml
 ```
 
 ## Quick start

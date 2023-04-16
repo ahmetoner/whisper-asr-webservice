@@ -1,0 +1,30 @@
+version: "3.4"
+
+services:
+  whisper-asr-webservice-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - ASR_MODEL=base
+    ports:
+      - 9000:9000
+    volumes:
+      - ./app:/app/app
+      - cache-pip:/root/.cache/pip
+      - cache-poetry:/root/.cache/poetry
+      - cache-whisper:/root/.cache/whisper
+      - cache-faster-whisper:/root/.cache/faster_whisper
+
+volumes:
+  cache-pip:
+  cache-poetry:
+  cache-whisper:
+  cache-faster-whisper:

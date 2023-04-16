@@ -1,3 +1,4 @@
+FROM swaggerapi/swagger-ui:v4.18.2 AS swagger-ui
 FROM python:3.10-slim
 
 ENV POETRY_VENV=/app/.venv
@@ -17,6 +18,8 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 WORKDIR /app
 
 COPY . /app
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
