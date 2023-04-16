@@ -59,35 +59,60 @@ model_lock = Lock()
 async def index():
     return "/docs"
 
+
 @app.post("/asr", tags=["Endpoints"])
 def transcribe(
-                audio_file: UploadFile = File(...),
-                task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-                language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-                initial_prompt: Union[str, None] = Query(default=None),
-                output : Union[str, None] = Query(default="txt", enum=[ "txt", "vtt", "srt", "tsv", "json"]),
-                encode : bool = Query(default=True, description="Encode audio first through ffmpeg")
-                ):
-
+        audio_file: UploadFile = File(...),
+        task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+        language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+        output: Union[str, None] = Query(default="json", enum=["json", "vtt", "srt"]),
+        encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
+        callback_url: str = Query(default=None),
+        callback_headers: str = Query(default=None),
+        callback_cookies: str = Query(default=None),
+        callback_extra_payload: str = Query(default=None),
+        callback_transcription_key: str = Query(default=None),
+        callback_transcription_prepend: str = Query(default=None),
+        callback_json_key: str = Query(default=None),
+        callback_method: str = Query(default="POST", enum=["POST", "PATCH", "PUT"]),
+):
     result = run_asr(audio_file.file, task, language, initial_prompt, encode)
     filename = audio_file.filename.split('.')[0]
-    myFile = StringIO()
-    if(output == "srt"):
-        WriteSRT(ResultWriter).write_result(result, file = myFile)
-    elif(output == "vtt"):
-        WriteVTT(ResultWriter).write_result(result, file = myFile)
-    elif(output == "tsv"):
-        WriteTSV(ResultWriter).write_result(result, file = myFile)
-    elif(output == "json"):
-        WriteJSON(ResultWriter).write_result(result, file = myFile)
-    elif(output == "txt"):
-        WriteTXT(ResultWriter).write_result(result, file = myFile)
-    else:
-        return 'Please select an output method!'
-    myFile.seek(0)
-    return StreamingResponse(myFile, media_type="text/plain", 
-                            headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
 
+    if (output == "srt"):
+        srt_file = StringIO()
+        write_srt(result["segments"], file=srt_file)
+        srt_file.seek(0)
+        response = StreamingResponse(srt_file, media_type="text/plain",
+                                     headers={'Content-Disposition': f'attachment; filename="{filename}.srt"'})
+    elif (output == "vtt"):
+        vtt_file = StringIO()
+        write_vtt(result["segments"], file=vtt_file)
+        vtt_file.seek(0)
+        response = StreamingResponse(vtt_file, media_type="text/plain",
+                                     headers={'Content-Disposition': f'attachment; filename="{filename}.vtt"'})
+    else:
+        response = result
+
+    if callback_url is not None:
+        callback_payload = {}
+        if callback_transcription_key is not None and 'text' in result:
+            if callback_transcription_prepend is not None:
+                callback_payload[callback_transcription_key] = callback_transcription_prepend + result['text']
+            else:
+                callback_payload[callback_transcription_key] = result['text']
+        if callback_json_key is not None:
+            callback_payload[callback_json_key] = result
+        if callback_extra_payload is not None:
+            callback_payload |= callback_extra_payload
+        if callback_headers is not None:
+            callback_headers = json.loads(callback_headers)
+        if callback_cookies is not None:
+            callback_cookies = json.loads(callback_cookies)
+
+        requests.request(callback_method, callback_url, data=callback_payload, headers=callback_headers, cookies=callback_cookies)
+
+    return response
 
 @app.post("/detect-language", tags=["Endpoints"])
 def language_detection(
