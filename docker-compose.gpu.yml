@@ -1,10 +1,17 @@
 version: "3.4"
 
 services:
-  whisper-asr-webservice:
+  whisper-asr-webservice-gpu:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     environment:
       - ASR_MODEL=base
     ports:
