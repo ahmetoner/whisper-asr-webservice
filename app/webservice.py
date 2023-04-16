@@ -7,6 +7,7 @@ from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, 
 from whisper import tokenizer
 from faster_whisper import WhisperModel
 from .faster_whisper.utils import (
+    model_converter as faster_whisper_model_converter,
     ResultWriter as faster_whisper_ResultWriter,
     WriteTXT as faster_whisper_WriteTXT,
     WriteSRT as faster_whisper_WriteSRT,
@@ -23,7 +24,6 @@ import numpy as np
 from io import StringIO
 from threading import Lock
 import torch
-import fastapi_offline_swagger_ui
 import importlib.metadata 
 
 SAMPLE_RATE=16000
@@ -44,7 +44,7 @@ app = FastAPI(
     }
 )
 
-assets_path = fastapi_offline_swagger_ui.__path__[0]
+assets_path = os.getcwd() + "/swagger-ui-assets"
 if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
     def swagger_monkey_patch(*args, **kwargs):
@@ -58,7 +58,9 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
     applications.get_swagger_ui_html = swagger_monkey_patch
 
 whisper_model_name= os.getenv("ASR_MODEL", "base")
-faster_whisper_model_path = "/root/.cache/faster_whisper"
+faster_whisper_model_path = os.path.join("/root/.cache/faster_whisper", whisper_model_name)
+faster_whisper_model_converter(whisper_model_name, faster_whisper_model_path)
+
 if torch.cuda.is_available():
     whisper_model = whisper.load_model(whisper_model_name).cuda()
     faster_whisper_model = WhisperModel(faster_whisper_model_path, device="cuda", compute_type="float16")
@@ -67,12 +69,10 @@ else:
     faster_whisper_model = WhisperModel(faster_whisper_model_path)
 model_lock = Lock()
 
-def get_modal(faster: bool = False):
-    if faster:
+def get_model(method: str = "openai-whisper"):
+    if method == "faster-whisper":
         return faster_whisper_model
-
     return whisper_model
-
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
@@ -80,27 +80,25 @@ async def index():
 
 @app.post("/asr", tags=["Endpoints"])
 def transcribe(
-    audio_file: UploadFile = File(...),
+    method: Union[str, None] = Query(default="openai-whisper", enum=["openai-whisper", "faster-whisper"]),
     task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
     language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
     initial_prompt: Union[str, None] = Query(default=None),
-    output : Union[str, None] = Query(default="txt", enum=[ "txt", "vtt", "srt", "tsv", "json"]),
-    faster: Union[bool, None] = Query(default=False, enum=[False, True])
+    audio_file: UploadFile = File(...),
+    output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
 
-    result = run_asr(audio_file.file, task, language, initial_prompt, faster)
+    result = run_asr(audio_file.file, task, language, initial_prompt, method)
     filename = audio_file.filename.split('.')[0]
     myFile = StringIO()
-    write_result(result, myFile, output, faster)
+    write_result(result, myFile, output, method)
     myFile.seek(0)
-    return StreamingResponse(myFile, media_type="text/plain", 
-                            headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
-
+    return StreamingResponse(myFile, media_type="text/plain", headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
 
 @app.post("/detect-language", tags=["Endpoints"])
 def language_detection(
     audio_file: UploadFile = File(...),
-    faster: Union[bool, None] = Query(default=False, enum=[False, True]),
+    method: Union[str, None] = Query(default="openai-whisper", enum=["openai-whisper", "faster-whisper"])
 ):
     # load audio and pad/trim it to fit 30 seconds
     audio = load_audio(audio_file.file)
@@ -108,8 +106,8 @@ def language_detection(
 
     # detect the spoken language
     with model_lock:
-        model = get_modal(faster)
-        if faster:
+        model = get_model(method)
+        if method == "faster-whisper":
             segments, info = model.transcribe(audio, beam_size=5)
             detected_lang_code = info.language
         else:
@@ -118,15 +116,16 @@ def language_detection(
             _, probs = model.detect_language(mel)
             detected_lang_code = max(probs, key=probs.get)
 
-        result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
-                  "language_code" : detected_lang_code }
+        result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code" : detected_lang_code }
 
     return result
 
-
 def run_asr(
-    file: BinaryIO, task: Union[str, None], language: Union[str, None],
-    initial_prompt: Union[str, None], faster: Union[bool, None],
+    file: BinaryIO, 
+    task: Union[str, None], 
+    language: Union[str, None],
+    initial_prompt: Union[str, None], 
+    method: Union[str, None],
 ):
     audio = load_audio(file)
     options_dict = {"task" : task}
@@ -135,8 +134,8 @@ def run_asr(
     if initial_prompt:
         options_dict["initial_prompt"] = initial_prompt    
     with model_lock:   
-        model = get_modal(faster)
-        if faster:
+        model = get_model(method)
+        if method == "faster-whisper":
             segments = []
             text = ""
             i = 0
@@ -154,11 +153,10 @@ def run_asr(
 
     return result
 
-
 def write_result(
-    result: dict, file: BinaryIO, output: Union[str, None], faster: Union[bool, None]
+    result: dict, file: BinaryIO, output: Union[str, None], method: Union[str, None]
 ):
-    if faster:
+    if method == "faster-whisper":
         if(output == "srt"):
             faster_whisper_WriteSRT(ResultWriter).write_result(result, file = file)
         elif(output == "vtt"):
@@ -184,7 +182,6 @@ def write_result(
             WriteTXT(ResultWriter).write_result(result, file = file)
         else:
             return 'Please select an output method!'
-
 
 def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
     """
