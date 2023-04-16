@@ -1,8 +1,12 @@
-# Whisper ASR Webservice
+![Whisper ASR Webservice](https://github.com/ahmetoner/whisper-asr-webservice/blob/main/docs/assets/img/banner.png?raw=true)
+![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
+![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
+![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
 Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
-## Run (Docker Hub)
+## Usage
 
 Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on docker hub for CPU and GPU.
 
@@ -33,6 +37,7 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webser
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
+![Swagger UI](https://github.com/ahmetoner/whisper-asr-webservice/blob/main/docs/assets/img/swagger-ui.png?raw=true)
 
 Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
 
@@ -43,15 +48,13 @@ For English-only applications, the `.en` models tend to perform better, especial
 Install poetry with following command:
 
 ```sh
-pip3 install poetry==1.2.2
+pip3 install poetry
 ```
 
 Install torch with following command:
 
 ```sh
-# for cpu:
-pip3 install torch==1.13.0+cpu -f https://download.pytorch.org/whl/torch
-# for gpu:
+# just for GPU:
 pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 ```
 
@@ -64,16 +67,16 @@ poetry install
 Starting the Webservice:
 
 ```sh
-gunicorn --bind 0.0.0.0:9001 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## Quick start
 
-After running the docker image or `poetry run whisper_asr` interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
+After running the docker image interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
 
 There are 2 endpoints available:
 
-- /asr (JSON, SRT, VTT)
+- /asr (TXT, VTT, SRT, TSV, JSON)
 - /detect-language
 
 ## Automatic Speech recognition service /asr
@@ -82,7 +85,7 @@ If you choose the **transcribe** task, transcribes the uploaded file. Both audio
 
 Note that you can also upload video formats directly as long as they are supported by ffmpeg.
 
-You can get SRT and VTT output as a file from /asr endpoint.
+You can get TXT, VTT, SRT, TSV and JSON output as a file from /asr endpoint.
 
 You can provide the language or it will be automatically recognized.
 
@@ -101,7 +104,7 @@ Detects the language spoken in the uploaded file. For longer files it only proce
 Returns a json with following fields:
 
 - **detected_language**
-- **langauge_code**
+- **language_code**
 
 ## Build
 
@@ -128,7 +131,7 @@ docker build -t whisper-asr-webservice .
 # Run Container
 docker run -d -p 9000:9000 whisper-asr-webservice
 # or
-docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
+docker run -d -p 9001:9000 -e ASR_MODEL=base whisper-asr-webservice3
 ```
 
 ### For GPU

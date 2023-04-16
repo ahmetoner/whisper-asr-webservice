@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 import whisper
-from whisper.utils import write_srt, write_vtt
+from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 from whisper import tokenizer
 import os
 from os import path
@@ -66,6 +66,7 @@ def transcribe(
         task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
         language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
         output: Union[str, None] = Query(default="json", enum=["json", "vtt", "srt"]),
+        encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
         callback_url: str = Query(default=None),
         callback_headers: str = Query(default=None),
         callback_cookies: str = Query(default=None),
@@ -75,7 +76,7 @@ def transcribe(
         callback_json_key: str = Query(default=None),
         callback_method: str = Query(default="POST", enum=["POST", "PATCH", "PUT"]),
 ):
-    result = run_asr(audio_file.file, task, language)
+    result = run_asr(audio_file.file, task, language, initial_prompt, encode)
     filename = audio_file.filename.split('.')[0]
 
     if (output == "srt"):
@@ -113,14 +114,14 @@ def transcribe(
 
     return response
 
-
 @app.post("/detect-language", tags=["Endpoints"])
 def language_detection(
                 audio_file: UploadFile = File(...),
+                encode : bool = Query(default=True, description="Encode audio first through ffmpeg")
                 ):
 
     # load audio and pad/trim it to fit 30 seconds
-    audio = load_audio(audio_file.file)
+    audio = load_audio(audio_file.file, encode)
     audio = whisper.pad_or_trim(audio)
 
     # make log-Mel spectrogram and move to the same device as the model
@@ -132,23 +133,25 @@ def language_detection(
     detected_lang_code = max(probs, key=probs.get)
     
     result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code],
-              "langauge_code" : detected_lang_code }
+              "language_code" : detected_lang_code }
 
     return result
 
 
-def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None] ):
-    audio = load_audio(file)
+def run_asr(file: BinaryIO, task: Union[str, None], language: Union[str, None], initial_prompt: Union[str, None], encode=True):
+    audio = load_audio(file, encode)
     options_dict = {"task" : task}
     if language:
         options_dict["language"] = language    
+    if initial_prompt:
+        options_dict["initial_prompt"] = initial_prompt    
     with model_lock:   
         result = model.transcribe(audio, **options_dict)
         
     return result
 
 
-def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
+def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
     """
     Open an audio file object and read as mono waveform, resampling as necessary.
     Modified from https://github.com/openai/whisper/blob/main/whisper/audio.py to accept a file object
@@ -156,21 +159,26 @@ def load_audio(file: BinaryIO, sr: int = SAMPLE_RATE):
     ----------
     file: BinaryIO
         The audio file like object
+    encode: Boolean
+        If true, encode audio stream to WAV before sending to whisper
     sr: int
         The sample rate to resample the audio if necessary
     Returns
     -------
     A NumPy array containing the audio waveform, in float32 dtype.
     """
-    try:
-        # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-        # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-        out, _ = (
-            ffmpeg.input("pipe:", threads=0)
-            .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-            .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
-        )
-    except ffmpeg.Error as e:
-        raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+    if encode:
+        try:
+            # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
+            # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
+            out, _ = (
+                ffmpeg.input("pipe:", threads=0)
+                .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
+            )
+        except ffmpeg.Error as e:
+            raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+    else:
+        out = file.read()
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
