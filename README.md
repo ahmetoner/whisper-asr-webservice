@@ -9,7 +9,7 @@ Whisper is a general-purpose speech recognition model. It is trained on a large 
 ## Features
 Current release (v1.1.0) supports following whisper models:
 
-- [openai/whisper](https://github.com/openai/whisper)@[v20230314](https://github.com/openai/whisper/releases/tag/v20230314)
+- [openai/whisper](https://github.com/openai/whisper)@[v20230124](https://github.com/openai/whisper/releases/tag/v20230124)
 - [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
 - [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (Coming soon)
 
