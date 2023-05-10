@@ -38,6 +38,7 @@ torch = [
   {markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-linux_x86_64.whl"},
   {markers = "sys_platform == 'win' and platform_machine == 'amd64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-win_amd64.whl"},
 ]
+pytube = {git = "https://github.com/pytube/pytube.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

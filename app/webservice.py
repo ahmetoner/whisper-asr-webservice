@@ -25,8 +25,13 @@ from io import StringIO
 from threading import Lock
 import torch
 import importlib.metadata 
+from pytube import YouTube
+import io 
+import tempfile
+import uuid
 
 SAMPLE_RATE=16000
+
 LANGUAGE_CODES=sorted(list(tokenizer.LANGUAGES.keys()))
 
 projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
@@ -121,6 +126,24 @@ def language_detection(
         result = { "detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code" : detected_lang_code }
 
     return result
+
+@app.post("/asr-youtube", tags=["Endpoints"])
+def transcribe_youtube(
+    url: str = Query(..., description="The YouTube video URL to transcribe"),
+    method: Union[str, None] = Query(default="openai-whisper", enum=["openai-whisper", "faster-whisper"]),
+    task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+    initial_prompt: Union[str, None] = Query(default=None),
+    encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
+    output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
+):
+    audio_file = download_youtube_audio(url, encode)
+    result = run_asr(audio_file, task, language, initial_prompt, method, encode)
+    filename = f"transcription-{uuid.uuid4().hex}"
+    myFile = StringIO()
+    write_result(result, myFile, output, method)
+    myFile.seek(0)
+    return StreamingResponse(myFile, media_type="text/plain", headers={'Content-Disposition': f'attachment; filename="{filename}.{output}"'})
 
 def run_asr(
     file: BinaryIO, 
@@ -217,3 +240,30 @@ def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
         out = file.read()
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
+
+
+def download_youtube_audio(url: str, encode:bool) -> BinaryIO:
+    yt = YouTube(url)
+
+    # Filter out audio streams and select the one with the highest quality
+    audio_stream = yt.streams.filter(only_audio=True).first()
+
+    # Download the audio stream into a temporary file
+    with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_file:
+        temp_file_path = temp_file.name
+
+    # Download the audio file to the path of the temporary file
+    audio_stream.download(filename=temp_file_path)
+
+    # Load audio from the temporary file and return it as a binary file object
+    with open(temp_file_path, 'rb') as temp_audio_file:
+        audio_file = io.BytesIO(temp_audio_file.read())
+
+    # Clean up the temporary file
+    os.remove(temp_file_path)
+
+    # Set the file cursor back to the beginning
+    audio_file.seek(0)
+
+    return audio_file
+
