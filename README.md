@@ -11,7 +11,6 @@ Current release (v1.1.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230124](https://github.com/openai/whisper/releases/tag/v20230124)
 - [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
-- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (Coming soon)
 
 ## Usage
 
@@ -22,13 +21,13 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
 For CPU:
 
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 For GPU:
 
 ```sh
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest-gpu
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
 For MacOS (CPU only):
@@ -38,7 +37,7 @@ GPU passthrough does not work on macOS due to fundamental design limitations of 
 The `:latest` image tag provides both amd64 and arm64 architectures:
 
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base onerahmet/openai-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 ```sh
@@ -131,6 +130,16 @@ Build .whl package
 
 ```sh
 poetry build
+```
+
+Configuring the ASR Engine
+
+```sh
+export ASR_ENGINE=openai_whisper
+```
+or
+```sh
+export ASR_ENGINE=faster_whisper
 ```
 
 Configuring the Model
