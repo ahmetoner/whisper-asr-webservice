@@ -14,7 +14,7 @@ model_path = os.path.join("/root/.cache/faster_whisper", model_name)
 model_converter(model_name, model_path)
 
 if torch.cuda.is_available():
-    model = WhisperModel(model_path, device="cuda", compute_type="float16")
+    model = WhisperModel(model_path, device="cuda", compute_type="float32")
 else:
     model = WhisperModel(model_path, device="cpu", compute_type="int8")
 model_lock = Lock()
