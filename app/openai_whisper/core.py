@@ -15,18 +15,19 @@ else:
 model_lock = Lock()
 
 def transcribe(
-    audio, 
-    task: Union[str, None], 
+    audio,
+    task: Union[str, None],
     language: Union[str, None],
-    initial_prompt: Union[str, None], 
+    initial_prompt: Union[str, None],
+    word_timestamps: Union[bool, None],
     output
 ):
     options_dict = {"task" : task}
     if language:
-        options_dict["language"] = language    
+        options_dict["language"] = language
     if initial_prompt:
-        options_dict["initial_prompt"] = initial_prompt    
-    with model_lock:   
+        options_dict["initial_prompt"] = initial_prompt
+    with model_lock:
         result = model.transcribe(audio, **options_dict)
 
     outputFile = StringIO()

@@ -59,9 +59,14 @@ def asr(
     initial_prompt: Union[str, None] = Query(default=None),
     audio_file: UploadFile = File(...),
     encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
-    output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
+    output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+    word_timestamps : bool = Query(
+        default=False, 
+        description="World level timestamps", 
+        include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
+    )
 ):
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, output)
+    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
     return StreamingResponse(
         result, 
         media_type="text/plain", 
