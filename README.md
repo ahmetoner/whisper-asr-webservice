@@ -7,7 +7,7 @@
 Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
 ## Features
-Current release (v1.1.0) supports following whisper models:
+Current release (v1.1.1) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230124](https://github.com/openai/whisper/releases/tag/v20230124)
 - [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
@@ -21,12 +21,14 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
 For CPU:
 
 ```sh
+docker pull onerahmet/openai-whisper-asr-webservice:latest
 docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 For GPU:
 
 ```sh
+docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
 docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
@@ -109,10 +111,12 @@ You can provide the language or it will be automatically recognized.
 
 If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
 
+You can enable word level timestamps output by `word_timestamps` parameter (only with `Faster Whisper` for now).
+
 Returns a json with following fields:
 
 - **text**: Contains the full transcript
-- **segments**: Contains an entry per segment. Each entry  provides time stamps, transcript, token ids and other metadata
+- **segments**: Contains an entry per segment. Each entry provides `timestamps`, `transcript`, `token ids`, `word level timestamps` and other metadata
 - **language**: Detected or provided language (as a language code)
 
 ## Language detection service /detect-language
