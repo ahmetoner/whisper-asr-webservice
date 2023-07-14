@@ -1,4 +1,3 @@
-
 import os
 from typing import BinaryIO, Union
 from io import StringIO
@@ -9,15 +8,18 @@ import whisper
 from .utils import model_converter, ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 from faster_whisper import WhisperModel
 
-model_name= os.getenv("ASR_MODEL", "base")
-model_path = os.path.join("/root/.cache/faster_whisper", model_name)
-model_converter(model_name, model_path)
+def initialize_model():
+    model_name = os.getenv("ASR_MODEL", "base")
+    model_path = os.path.join("/root/.cache/faster_whisper", model_name)
+    model_converter(model_name, model_path)
 
-if torch.cuda.is_available():
-    model = WhisperModel(model_path, device="cuda", compute_type="float32")
-else:
-    model = WhisperModel(model_path, device="cpu", compute_type="int8")
-model_lock = Lock()
+    if torch.cuda.is_available():
+        model = WhisperModel(model_path, device="cuda", compute_type="float32")
+    else:
+        model = WhisperModel(model_path, device="cpu", compute_type="int8")
+    model_lock = Lock()
+
+    return model, model_lock
 
 def transcribe(
     audio,
@@ -27,6 +29,8 @@ def transcribe(
     word_timestamps: Union[bool, None],
     output,
 ):
+    model, model_lock = initialize_model()
+
     options_dict = {"task" : task}
     if language:
         options_dict["language"] = language
@@ -37,8 +41,7 @@ def transcribe(
     with model_lock:   
         segments = []
         text = ""
-        i = 0
-        segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict)
+        segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict, fp16=False)
         for segment in segment_generator:
             segments.append(segment)
             text = text + segment.text
@@ -47,7 +50,7 @@ def transcribe(
                 "segments": segments,
                 "text": text
             }
-    
+
     outputFile = StringIO()
     write_result(result, outputFile, output)
     outputFile.seek(0)
@@ -55,12 +58,12 @@ def transcribe(
     return outputFile
 
 def language_detection(audio):
-    # load audio and pad/trim it to fit 30 seconds
+    model, model_lock = initialize_model()
+
     audio = whisper.pad_or_trim(audio)
 
-    # detect the spoken language
     with model_lock:
-        segments, info = model.transcribe(audio, beam_size=5)
+        segments, info = model.transcribe(audio, beam_size=5, fp16=False)
         detected_lang_code = info.language
 
     return detected_lang_code
@@ -68,15 +71,16 @@ def language_detection(audio):
 def write_result(
     result: dict, file: BinaryIO, output: Union[str, None]
 ):
-    if(output == "srt"):
-        WriteSRT(ResultWriter).write_result(result, file = file)
-    elif(output == "vtt"):
-        WriteVTT(ResultWriter).write_result(result, file = file)
-    elif(output == "tsv"):
-        WriteTSV(ResultWriter).write_result(result, file = file)
-    elif(output == "json"):
-        WriteJSON(ResultWriter).write_result(result, file = file)
-    elif(output == "txt"):
-        WriteTXT(ResultWriter).write_result(result, file = file)
+    writers = {
+        "srt": WriteSRT(ResultWriter).write_result,
+        "vtt": WriteVTT(ResultWriter).write_result,
+        "tsv": WriteTSV(ResultWriter).write_result,
+        "json": WriteJSON(ResultWriter).write_result,
+        "txt": WriteTXT(ResultWriter).write_result
+    }
+
+    writer_func = writers.get(output)
+    if writer_func:
+        writer_func(result, file=file)
     else:
         return 'Please select an output method!'
