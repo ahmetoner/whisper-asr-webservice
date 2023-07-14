@@ -26,15 +26,15 @@ transformers = "^4.22.1"
 python-multipart = "^0.0.5"
 ffmpeg-python = "^0.2.0"
 fastapi = "^0.95.1"
-llvmlite = "^0.39.1"
-numba = "^0.56.4"
+llvmlite = "^0.40.1"
+numba = "^0.57.1"
 openai-whisper = "20230124"
-faster-whisper = "^0.4.1"
+faster-whisper = { url = "https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz"}
 torch = [
   {markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_11_0_arm64.whl"},
   {markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_11_0_arm64.whl"},
   {markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_10_9_x86_64.whl"},
-  {markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url="https://download.pytorch.org/whl/torch-1.13.0-cp310-cp310-manylinux2014_aarch64.whl"},
+  {markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-cp310-manylinux2014_aarch64.whl"},
   {markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-linux_x86_64.whl"},
   {markers = "sys_platform == 'win' and platform_machine == 'amd64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0%2Bcpu-cp310-cp310-win_amd64.whl"},
 ]
