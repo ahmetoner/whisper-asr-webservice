@@ -12,7 +12,7 @@ steps:
     repo: cbsiamlg/whisper-asr-webservice
     revision: ${{CF_BRANCH}}
     stage: build
-BuildingGPUDockerImage:
+  BuildingGPUDockerImage:
     stage: build
     title: Building GPU Docker Image
     type: build
