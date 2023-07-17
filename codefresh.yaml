@@ -84,7 +84,7 @@ steps:
     registry: gar-i-amlg
     when:
       steps:
-      - name: main_clone
+      - name: BuildingGPUDockerImage
         on:
         - success
       # - name: CheckBlack
@@ -105,7 +105,7 @@ steps:
     registry: gar-i-amlg
     when:
       steps:
-      - name: main_clone
+      - name: BuildingGPUDockerImage
         on:
         - success
         # - name: CheckBlack
