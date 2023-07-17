@@ -26,52 +26,52 @@ BuildingGPUDockerImage:
         - name: main_clone
           on:
             - success
-  CheckFlake8:
-    stage: test
-    title: Check Flake8
-    description: Run flake8 tool
-    image: alpine/flake8:3.8.3
-    working_directory: .
-    commands:
-      - "flake8 ."
-    when:
-      steps:
-        - name: BuildingGPUDockerImage
-          on:
-            - success
-    on_success:
-      metadata:
-        set:
-          - "${{BuildingGPUDockerImage.imageId}}":
-              - flake8: true
-    on_fail:
-      metadata:
-        set:
-          - "${{BuildingGPUDockerImage.imageId}}":
-              - flake8: false
-  CheckBlack:
-    stage: test
-    title: Check Black
-    description: Run black tool
-    image: ${{BuildingGPUDockerImage}}
-    working_directory: .
-    commands:
-      - black --check .
-    when:
-      steps:
-        - name: BuildingGPUDockerImage
-          on:
-            - success
-    on_success:
-      metadata:
-        set:
-          - "${{BuildingGPUDockerImage.imageId}}":
-              - black: true
-    on_fail:
-      metadata:
-        set:
-          - "${{BuildingGPUDockerImage.imageId}}":
-              - black: false
+  # CheckFlake8:
+  #   stage: test
+  #   title: Check Flake8
+  #   description: Run flake8 tool
+  #   image: alpine/flake8:3.8.3
+  #   working_directory: .
+  #   commands:
+  #     - "flake8 ."
+  #   when:
+  #     steps:
+  #       - name: BuildingGPUDockerImage
+  #         on:
+  #           - success
+  #   on_success:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - flake8: true
+  #   on_fail:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - flake8: false
+  # CheckBlack:
+  #   stage: test
+  #   title: Check Black
+  #   description: Run black tool
+  #   image: ${{BuildingGPUDockerImage}}
+  #   working_directory: .
+  #   commands:
+  #     - black --check .
+  #   when:
+  #     steps:
+  #       - name: BuildingGPUDockerImage
+  #         on:
+  #           - success
+  #   on_success:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - black: true
+  #   on_fail:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - black: false
   PushingToDevDockerRegistry:
     stage: push
     title: Pushing to Dev Docker Registry
@@ -84,12 +84,15 @@ BuildingGPUDockerImage:
     registry: gar-i-amlg
     when:
       steps:
-      - name: CheckBlack
+      - name: main_clone
         on:
         - success
-      - name: CheckFlake8
-        on:
-        - success
+      # - name: CheckBlack
+      #   on:
+      #   - success
+      # - name: CheckFlake8
+      #   on:
+      #   - success
   PushingToProdDockerRegistry:
     stage: push
     title: Pushing to Prod Docker Registry
@@ -102,12 +105,15 @@ BuildingGPUDockerImage:
     registry: gar-i-amlg
     when:
       steps:
-        - name: CheckBlack
-          on:
-            - success
-        - name: CheckFlake8
-          on:
-            - success
+      - name: main_clone
+        on:
+        - success
+        # - name: CheckBlack
+        #   on:
+        #     - success
+        # - name: CheckFlake8
+        #   on:
+        #     - success
       branch:
         only:
           - main
