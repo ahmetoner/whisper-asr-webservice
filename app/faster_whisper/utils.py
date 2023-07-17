@@ -4,6 +4,7 @@ from typing import TextIO
 
 from ctranslate2.converters.transformers import TransformersConverter
 
+
 def model_converter(model, model_output):
     converter = TransformersConverter("openai/whisper-" + model)
     try:
@@ -11,7 +12,10 @@ def model_converter(model, model_output):
     except Exception as e:
         print(e)
 
-def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.'):
+
+def format_timestamp(
+    seconds: float, always_include_hours: bool = False, decimal_marker: str = "."
+):
     assert seconds >= 0, "non-negative timestamp expected"
     milliseconds = round(seconds * 1000.0)
 
@@ -25,7 +29,9 @@ def format_timestamp(seconds: float, always_include_hours: bool = False, decimal
     milliseconds -= seconds * 1_000
 
     hours_marker = f"{hours:02d}:" if always_include_hours or hours > 0 else ""
-    return f"{hours_marker}{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
+    return (
+        f"{hours_marker}{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
+    )
 
 
 class ResultWriter:
@@ -36,7 +42,9 @@ class ResultWriter:
 
     def __call__(self, result: dict, audio_path: str):
         audio_basename = os.path.basename(audio_path)
-        output_path = os.path.join(self.output_dir, audio_basename + "." + self.extension)
+        output_path = os.path.join(
+            self.output_dir, audio_basename + "." + self.extension
+        )
 
         with open(output_path, "w", encoding="utf-8") as f:
             self.write_result(result, file=f)
@@ -92,6 +100,7 @@ class WriteTSV(ResultWriter):
     an environment setting a language encoding that causes the decimal in a floating point number
     to appear as a comma; also is faster and more efficient to parse & store, e.g., in C++.
     """
+
     extension: str = "tsv"
 
     def write_result(self, result: dict, file: TextIO):
@@ -106,5 +115,33 @@ class WriteJSON(ResultWriter):
     extension: str = "json"
 
     def write_result(self, result: dict, file: TextIO):
-        json.dump(result, file)
+        formatted_result = format_json(result)
+        json.dump(formatted_result, file, indent=2)
 
+
+def format_json(json_file):
+    text = json_file['text']
+    segments = [{
+        'id': 0,
+        'seek': 0,
+        'start': segment[2],
+        'end': segment[3],
+        'text': segment[4],
+        'tokens': segment[5],
+        'temperature': segment[6],
+        'avg_logprob': segment[7],
+        'compression_ratio': segment[8],
+        'no_speech_prob': segment[9],
+        'words': [{
+            'word': word[0],
+            'start': word[1],
+            'end': word[2],
+            'probability': word[3]
+        } for word in segment[10]]
+    } for segment in json_file['segments']]
+    output = {
+        "text": text,
+        "segments": segments,
+        "language": json_file["language"]
+    }
+    return output
