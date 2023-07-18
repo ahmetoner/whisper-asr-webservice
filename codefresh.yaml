@@ -13,20 +13,20 @@ steps:
     repo: cbsiamlg/whisper-asr-webservice
     revision: ${{CF_BRANCH}}
     stage: build
-  # BuildingGPUDockerImage:
-  #   stage: build
-  #   title: Building GPU Docker Image
-  #   type: build
-  #   image_name: sca/${{CF_REPO_NAME}}
-  #   working_directory: ./
-  #   tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
-  #   dockerfile: Dockerfile.gpu
-  #   buildkit: true
-  #   when:
-  #     steps:
-  #       - name: main_clone
-  #         on:
-  #           - success
+  BuildingGPUDockerImage:
+    stage: build
+    title: Building GPU Docker Image
+    type: build
+    image_name: sca/${{CF_REPO_NAME}}
+    working_directory: ./
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+    dockerfile: Dockerfile.gpu
+    buildkit: true
+    when:
+      steps:
+        - name: main_clone
+          on:
+            - success
   # CheckFlake8:
   #   stage: test
   #   title: Check Flake8
@@ -135,9 +135,9 @@ steps:
         - name: main_clone
           on:
             - success
-        # - name: BuildingGPUDockerImage
-        #   on:
-        #     - success
+        - name: BuildingGPUDockerImage
+          on:
+            - success
   DeployToDev:
     title: Deploy to dev environment
     stage: deploy
