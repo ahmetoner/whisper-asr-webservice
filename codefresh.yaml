@@ -4,6 +4,7 @@ stages:
   - build
   - test
   - push
+  - store
   - deploy
 steps:
   main_clone:
@@ -121,7 +122,7 @@ steps:
           - /^v\d+\.\d+\.\d+$/i
   StoreChart:
     title: Storing Helm chart
-    stage: deploy
+    stage: store
     type: helm
     working_directory: .
     arguments:
@@ -163,7 +164,7 @@ steps:
             - success
   DeployToProd:
     title: Deploy to prod environment
-    stage: prod
+    stage: deploy
     type: helm
     working_directory: .
     arguments:
