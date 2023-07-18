@@ -13,20 +13,20 @@ steps:
     repo: cbsiamlg/whisper-asr-webservice
     revision: ${{CF_BRANCH}}
     stage: build
-  BuildingGPUDockerImage:
-    stage: build
-    title: Building GPU Docker Image
-    type: build
-    image_name: sca/${{CF_REPO_NAME}}
-    working_directory: ./
-    tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
-    dockerfile: Dockerfile.gpu
-    buildkit: true
-    when:
-      steps:
-        - name: main_clone
-          on:
-            - success
+  # BuildingGPUDockerImage:
+  #   stage: build
+  #   title: Building GPU Docker Image
+  #   type: build
+  #   image_name: sca/${{CF_REPO_NAME}}
+  #   working_directory: ./
+  #   tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+  #   dockerfile: Dockerfile.gpu
+  #   buildkit: true
+  #   when:
+  #     steps:
+  #       - name: main_clone
+  #         on:
+  #           - success
   # CheckFlake8:
   #   stage: test
   #   title: Check Flake8
@@ -151,6 +151,8 @@ steps:
       kube_context: dev-fleet-v4
       custom_value_files:
         - "infrastructure/whisper/values.yaml"
+      custom_values:
+        - 'image_tag="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"'
     when:
       branch:
         only:
@@ -176,6 +178,8 @@ steps:
       kube_context: prod-fleet-v4
       custom_value_files:
         - "infrastructure/whisper/values.prod.yaml"
+      custom_values:
+        - 'image_tag="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"'
     when:
       branch:
         only:
