@@ -117,8 +117,6 @@ steps:
         #     - success
       branch:
         only:
-          - main
-          - /^release.*/i
           - /^v\d+\.\d+\.\d+$/i
   StoreChart:
     title: Storing Helm chart
