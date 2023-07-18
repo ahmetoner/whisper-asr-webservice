@@ -134,9 +134,9 @@ steps:
         - name: main_clone
           on:
             - success
-        - name: BuildingGPUDockerImage
-          on:
-            - success
+        # - name: BuildingGPUDockerImage
+        #   on:
+        #     - success
   DeployToDev:
     title: Deploy to dev environment
     stage: deploy
