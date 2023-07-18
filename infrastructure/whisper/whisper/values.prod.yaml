@@ -1,0 +1,20 @@
+env: prod
+serviceAccountName: splice-prod-ksa
+image:
+  name: us-docker.pkg.dev/i-amlg-prod/sca/whisper-asr-webservice
+  tag: main
+
+whisperDeployment:
+  resources:
+    limits:
+      cpu: "2000m"
+      memory: "2Gi"
+      gpu: "1"
+    request:
+      cpu: "1000m"
+      memory: "1Gi"
+      gpu: "1"
+
+whisperService:
+  port: 9000
+  targetPort: 9000

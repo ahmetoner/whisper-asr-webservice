@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "whisper-api.name" . }}-internal-ingress
+  namespace: video-services
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+{{- include "whisper-api.labels" . | nindent 2}}
+spec:
+  rules:
+    - host: devwhisper.amlg.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "whisper-api.name" . }}
+                port:
+                  number: 9000
+  ingressClassName: amlg-internal
+  tls:
+    - secretName: ingress-tls

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "whisper-api.name" . }}
+  namespace: video-services
+  {{- include "whisper-api.labels" . | nindent 2}}
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    protocol: TCP
+    port: {{ .Values.whisperService.port }}
+    targetPort: {{ .Values.whisperService.targetPort }}
+  selector:
+    app: {{ template "whisper-api.name" . }}
