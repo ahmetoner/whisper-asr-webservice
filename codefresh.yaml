@@ -124,7 +124,7 @@ steps:
     title: Storing Helm chart
     stage: store
     type: helm
-    working_directory: .
+    working_directory: ./whisper-asr-webservice
     arguments:
       action: push
       helm_version: 3.2.4
@@ -141,7 +141,7 @@ steps:
     title: Deploy to dev environment
     stage: deploy
     type: helm
-    working_directory: .
+    working_directory: ./whisper-asr-webservice
     arguments:
       action: install
       chart_name: infrastructure/whisper
@@ -166,7 +166,7 @@ steps:
     title: Deploy to prod environment
     stage: deploy
     type: helm
-    working_directory: .
+    working_directory: ./whisper-asr-webservice
     arguments:
       action: install
       chart_name: infrastructure/whisper
