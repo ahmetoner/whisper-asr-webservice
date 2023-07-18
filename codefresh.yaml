@@ -129,6 +129,7 @@ steps:
       action: push
       helm_version: 3.2.4
       chart_name: infrastructure/whisper
+      chart_repo_url: "cm://h.cfcr.io/cbsiamlg/default/"
     when:
       steps:
         - name: main_clone
