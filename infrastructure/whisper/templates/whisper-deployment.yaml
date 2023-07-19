@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "whisper-api.name" . }}
+  namespace: video-services
+{{- include "whisper-api.labels" . | nindent 2}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "whisper-api.name" . }}
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "whisper-api.name" . }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      tolerations:
+        - key: app
+          operator: Equal
+          value: splice-xcd
+          effect: NoSchedule  
+      containers:
+        - name: whisper-api
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+          resources:
+            limits:
+              cpu: {{ .Values.whisperDeployment.resources.limits.cpu }}
+              memory: {{ .Values.whisperDeployment.resources.limits.memory }}
+              nvidia.com/gpu: {{.Values.whisperDeployment.resources.limits.gpu }}
+            requests:
+              cpu: {{ .Values.whisperDeployment.resources.request.cpu }}
+              memory: {{ .Values.whisperDeployment.resources.request.memory }}
+              nvidia.com/gpu: {{ .Values.whisperDeployment.resources.request.gpu }}
+          env:
+            - name: ASR_ENGINE
+              value: faster_whisper
+            # - name: ASR_MODEL
+            #   value: medium.en
+      nodeSelector:
+        cloud.google.com/gke-nodepool: "splice-xcd-gpu-t4"

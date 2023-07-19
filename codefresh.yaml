@@ -1,0 +1,193 @@
+version: "1.0"
+mode: parallel
+stages:
+  - build
+  - test
+  - push
+  - store
+  - deploy
+steps:
+  main_clone:
+    type: git-clone
+    description: Cloning main repository...
+    repo: cbsiamlg/whisper-asr-webservice
+    revision: ${{CF_BRANCH}}
+    stage: build
+  BuildingGPUDockerImage:
+    stage: build
+    title: Building GPU Docker Image
+    type: build
+    image_name: sca/${{CF_REPO_NAME}}
+    working_directory: ./
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+    dockerfile: Dockerfile.gpu
+    buildkit: true
+    when:
+      steps:
+        - name: main_clone
+          on:
+            - success
+  # CheckFlake8:
+  #   stage: test
+  #   title: Check Flake8
+  #   description: Run flake8 tool
+  #   image: alpine/flake8:3.8.3
+  #   working_directory: .
+  #   commands:
+  #     - "flake8 ."
+  #   when:
+  #     steps:
+  #       - name: BuildingGPUDockerImage
+  #         on:
+  #           - success
+  #   on_success:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - flake8: true
+  #   on_fail:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - flake8: false
+  # CheckBlack:
+  #   stage: test
+  #   title: Check Black
+  #   description: Run black tool
+  #   image: ${{BuildingGPUDockerImage}}
+  #   working_directory: .
+  #   commands:
+  #     - black --check .
+  #   when:
+  #     steps:
+  #       - name: BuildingGPUDockerImage
+  #         on:
+  #           - success
+  #   on_success:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - black: true
+  #   on_fail:
+  #     metadata:
+  #       set:
+  #         - "${{BuildingGPUDockerImage.imageId}}":
+  #             - black: false
+  PushingToDevDockerRegistry:
+    stage: push
+    title: Pushing to Dev Docker Registry
+    type: push
+    candidate: '${{BuildingGPUDockerImage}}'
+    image_name: i-amlg-dev/sca/${{CF_REPO_NAME}}
+    tags:
+    - '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    - '${{CF_BRANCH_TAG_NORMALIZED}}'
+    registry: gar-i-amlg
+    when:
+      steps:
+      - name: BuildingGPUDockerImage
+        on:
+        - success
+      # - name: CheckBlack
+      #   on:
+      #   - success
+      # - name: CheckFlake8
+      #   on:
+      #   - success
+  PushingToProdDockerRegistry:
+    stage: push
+    title: Pushing to Prod Docker Registry
+    type: push
+    candidate: "${{BuildingGPUDockerImage}}"
+    image_name: i-amlg-prod/sca/${{CF_REPO_NAME}}
+    tags:
+      - "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+      - "${{CF_BRANCH_TAG_NORMALIZED}}"
+    registry: gar-i-amlg
+    when:
+      steps:
+      - name: BuildingGPUDockerImage
+        on:
+        - success
+        # - name: CheckBlack
+        #   on:
+        #     - success
+        # - name: CheckFlake8
+        #   on:
+        #     - success
+      branch:
+        only:
+          - /^v\d+\.\d+\.\d+$/i
+  StoreChart:
+    title: Storing Helm chart
+    stage: store
+    type: helm
+    working_directory: ./whisper-asr-webservice
+    arguments:
+      action: push
+      helm_version: 3.2.4
+      chart_name: infrastructure/whisper
+      chart_repo_url: "cm://h.cfcr.io/cbsiamlg/default/"
+    when:
+      steps:
+        - name: main_clone
+          on:
+            - success
+        - name: BuildingGPUDockerImage
+          on:
+            - success
+  DeployToDev:
+    title: Deploy to dev environment
+    stage: deploy
+    type: helm
+    working_directory: ./whisper-asr-webservice
+    arguments:
+      action: install
+      chart_name: infrastructure/whisper
+      release_name: whisper
+      namespace: video-services
+      helm_version: 3.2.4
+      kube_context: dev-fleet-v4
+      custom_value_files:
+        - "infrastructure/whisper/values.yaml"
+      custom_values:
+        - 'image_tag="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"'
+    when:
+      branch:
+        only:
+          - main
+      steps:
+        - name: StoreChart
+          on:
+            - success
+        - name: PushingToDevDockerRegistry
+          on:
+            - success
+  DeployToProd:
+    title: Deploy to prod environment
+    stage: deploy
+    type: helm
+    working_directory: ./whisper-asr-webservice
+    arguments:
+      action: install
+      chart_name: infrastructure/whisper
+      release_name: whisper
+      namespace: video-services
+      helm_version: 3.2.4
+      kube_context: prod-fleet-v4
+      custom_value_files:
+        - "infrastructure/whisper/values.prod.yaml"
+      custom_values:
+        - 'image_tag="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"'
+    when:
+      branch:
+        only:
+          - /^v\d+\.\d+\.\d+$/i
+      steps:
+        - name: StoreChart
+          on:
+            - success
+        - name: PushingToProdDockerRegistry
+          on:
+            - success
+
