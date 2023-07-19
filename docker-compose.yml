@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - ASR_MODEL=base
+      - ASR_MODEL=medium.en
+      - ASR_ENGINE=faster_whisper
     ports:
       - 9000:9000
     volumes:
