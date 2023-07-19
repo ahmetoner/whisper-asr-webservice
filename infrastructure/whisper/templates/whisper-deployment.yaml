@@ -39,7 +39,7 @@ spec:
           env:
             - name: ASR_ENGINE
               value: faster_whisper
-            - name: ASR_MODEL
-              value: medium.en
+            # - name: ASR_MODEL
+            #   value: medium.en
       nodeSelector:
         cloud.google.com/gke-nodepool: "splice-xcd-gpu-t4"
