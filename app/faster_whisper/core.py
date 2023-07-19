@@ -16,7 +16,7 @@ from .utils import (
 )
 from faster_whisper import WhisperModel
 
-model_name = os.getenv("ASR_MODEL", "medium.en")
+model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.path.join("/root/.cache/faster_whisper", model_name)
 model_converter(model_name, model_path)
 
