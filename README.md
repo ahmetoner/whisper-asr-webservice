@@ -1,35 +1,42 @@
-![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
-![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
-![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
-# Whisper ASR Webservice
+# Whisper ASR Services
 
-Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
+[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/cbsiamlg/cbsiamlg%2Fwhisper-asr-webservice%2Fwhisper-asr-webservice?type=cf-1&key=eyJhbGciOiJIUzI1NiJ9.NWE2NjU5NDNjNjNkMzkwMDAxZjY4YmIy.TIFye2w47MUSn6ruP7AgrKo9PWqkwKlQvr1prmnFyJM)]( https://g.codefresh.io/pipelines/edit/new/builds?id=64b58efa9dca5a5131770ca0&pipeline=whisper-asr-webservice&projects=cbsiamlg%2Fwhisper-asr-webservice&projectId=64b58ee7b6d08d68e09da010)
+
+## Overview
+
+This project is a modification of an open source approach to containerizing the `faster-whisper` and `openai/whisper` ASR services for Splice. The modifications allow us to maintain security and make updates to model versions as well as store the images in our GAR. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
 ## Features
-Current release (v1.1.1) supports following whisper models:
+
+AMLG updated release (v1.2.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230124](https://github.com/openai/whisper/releases/tag/v20230124)
-- [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
+- [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.6.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.6.0)
 
 ## Usage
 
-Whisper ASR Webservice now available on Docker Hub. You can find the latest version of this repository on docker hub for CPU and GPU.
+The service is available to run locally using the CPU Dockerfile. The GPU service is what is deployed.
 
-Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
+For CPU (_for local use only_):
 
-For CPU:
+You will have to build the image locally:
+`docker compose -f docker-compose.yml build` add `--dry-run` to test first.
+
+The pull is not necessary as it's in your local docker.io
+from the build above. Feel free to skip that step.
+
+The endpoint will take a moment to become available so be patient.
 
 ```sh
-docker pull onerahmet/openai-whisper-asr-webservice:latest
-docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+docker pull whisper-asr-webservice-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=medium.en -e ASR_ENGINE=faster_whisper whisper-asr-webservice-whisper-asr-webservice:latest
 ```
 
 For GPU:
 
 ```sh
-docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+docker pull us-docker.pkg.dev/i-amlg-dev/sca/whisper-asr-webservice:latest
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=medium.en -e ASR_ENGINE=faster_whisper us-docker.pkg.dev/i-amlg-dev/sca/whisper-asr-webservice:latest
 ```
 
 For MacOS (CPU only):
@@ -39,13 +46,14 @@ GPU passthrough does not work on macOS due to fundamental design limitations of 
 The `:latest` image tag provides both amd64 and arm64 architectures:
 
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper whisper-asr-webservice-whisper-asr-webservice:latest
 ```
 
 ```sh
 # Interactive Swagger API documentation is available at http://localhost:9000/docs
 ```
-![Swagger UI](https://github.com/ahmetoner/whisper-asr-webservice/blob/main/docs/assets/img/swagger-ui.png?raw=true)
+
+![Swagger UI](https://github.com/cbsiamlg/whisper-asr-webservice/blob/main/docs/assets/img/swagger-ui.png?raw=true)
 
 Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
 
@@ -63,7 +71,7 @@ Install torch with following command:
 
 ```sh
 # just for GPU:
-pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
+pip3 install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch
 ```
 
 Install packages:
@@ -81,11 +89,13 @@ poetry run gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:a
 With docker compose:
 
 For CPU:
+
 ```sh
-docker-compose up --build
+docker compose -f docker-compose.yml up
 ```
 
 For GPU:
+
 ```sh
 docker-compose up --build -f docker-compose.gpu.yml
 ```
@@ -141,7 +151,9 @@ Configuring the ASR Engine
 ```sh
 export ASR_ENGINE=openai_whisper
 ```
+
 or
+
 ```sh
 export ASR_ENGINE=faster_whisper
 ```
@@ -179,10 +191,11 @@ docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-g
 ```
 
 ## Cache
+
 The ASR model is downloaded each time you start the container, using the large model this can take some time. If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (/root/.cache/whisper) to an persistent storage. Next time you start your container the ASR Model will be taken from the cache instead of being downloaded again.
 
 **Important this will prevent you from receiving any updates to the models.**
- 
+
 ```sh
 docker run -d -p 9000:9000 -e ASR_MODEL=large -v //c/tmp/whisper:/root/.cache/whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
