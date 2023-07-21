@@ -1,3 +1,5 @@
 .git
 .venv
 venv
+docker-compose.yml
+docker-compose.gpu.yml

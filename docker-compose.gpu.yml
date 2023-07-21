@@ -11,9 +11,10 @@ services:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [gpu]
+              capabilities: [ gpu ]
     environment:
-      - ASR_MODEL=base
+      - ASR_ENGINE=faster_whisper
+      - ASR_MODEL=medium.en
     ports:
       - 9000:9000
     volumes:
