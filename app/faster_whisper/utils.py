@@ -133,9 +133,9 @@ def format_json(json_file):
         'compression_ratio': segment[8],
         'no_speech_prob': segment[9],
         'words': [{
-            'word': word[0],
-            'start': word[1],
-            'end': word[2],
+            'word': word[2],
+            'start': word[0],
+            'end': word[1],
             'probability': word[3]
         } for word in segment[10]]
     } for segment in json_file['segments']]
