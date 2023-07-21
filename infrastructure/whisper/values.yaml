@@ -8,11 +8,11 @@ whisperDeployment:
   resources:
     limits:
       cpu: "2000m"
-      memory: "10Gi"
+      memory: "8Gi"
       gpu: "1"
     request:
       cpu: "1000m"
-      memory: "8Gi"
+      memory: "6Gi"
       gpu: "1"
 
 whisperService:
