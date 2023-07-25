@@ -18,3 +18,6 @@ whisperDeployment:
 whisperService:
   port: 9000
   targetPort: 9000
+
+ingress:
+  host: whisper.amlg.io
