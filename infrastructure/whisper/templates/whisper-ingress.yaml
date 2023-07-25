@@ -8,7 +8,7 @@ metadata:
 {{- include "whisper-api.labels" . | nindent 2}}
 spec:
   rules:
-    - host: devwhisper.amlg.io
+    - host: {{.Values.ingress.host}}
       http:
         paths:
           - path: /
