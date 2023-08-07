@@ -5,6 +5,7 @@ metadata:
   namespace: video-services
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 {{- include "whisper-api.labels" . | nindent 2}}
 spec:
   rules:
