@@ -3,7 +3,7 @@ from typing import BinaryIO, Union
 from io import StringIO
 from threading import Lock
 import torch
-
+import logging
 import whisper
 from .utils import (
     model_converter,
@@ -16,15 +16,18 @@ from .utils import (
 )
 from faster_whisper import WhisperModel
 
+logging.setLevel(logging.INFO)
+
 model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.path.join("/root/.cache/faster_whisper", model_name)
 model_converter(model_name, model_path)
 
 if torch.cuda.is_available():
-    model = WhisperModel(model_path, device="cuda", compute_type="float32")
+    model = WhisperModel(model_path, device="cuda", compute_type="float16")
 else:
     model = WhisperModel(model_path, device="cpu", compute_type="int8")
 model_lock = Lock()
+logging.info(f"CUDA available: {torch.cuda.is_available()}")
 
 
 def transcribe(
