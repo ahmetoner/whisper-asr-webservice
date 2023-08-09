@@ -49,6 +49,7 @@ def transcribe(
         segments = []
         text = ""
         i = 0
+        logging.info(f"Options: {options_dict}")
         segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict)
         for segment in segment_generator:
             segments.append(segment)
@@ -60,7 +61,7 @@ def transcribe(
         }
 
     outputFile = StringIO()
-    write_result(result, outputFile, output)
+    write_result(result, outputFile, output, word_timestamps=word_timestamps)
     outputFile.seek(0)
 
     return outputFile
