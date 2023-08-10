@@ -16,7 +16,7 @@ from .utils import (
 )
 from faster_whisper import WhisperModel
 
-logging.setLevel(logging.INFO)
+# logging.setLevel(logging.INFO)
 
 model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.path.join("/root/.cache/faster_whisper", model_name)
