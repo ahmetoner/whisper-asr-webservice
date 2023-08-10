@@ -61,7 +61,7 @@ def transcribe(
         }
 
     outputFile = StringIO()
-    write_result(result, outputFile, output, word_timestamps=word_timestamps)
+    write_result(result, outputFile, output, word_timestamps=options_dict["word_timestamps"])
     outputFile.seek(0)
 
     return outputFile
