@@ -1,7 +1,7 @@
 import json
 import os
 from typing import TextIO
-import logging
+
 from ctranslate2.converters.transformers import TransformersConverter
 
 
@@ -114,45 +114,31 @@ class WriteTSV(ResultWriter):
 class WriteJSON(ResultWriter):
     extension: str = "json"
 
-    def write_result(self, result: dict, file: TextIO, word_timestamps: bool):
-        formatted_result = format_json(result, word_timestamps)
+    def write_result(self, result: dict, file: TextIO):
+        formatted_result = format_json(result)
         json.dump(formatted_result, file, indent=2)
 
 
-def format_json(json_file, word_timestamps):
+def format_json(json_file):
     text = json_file['text']
-    if word_timestamps:
-        segments = [{
-            'id': 0,
-            'seek': 0,
-            'start': segment[2],
-            'end': segment[3],
-            'text': segment[4],
-            'tokens': segment[5],
-            'temperature': segment[6],
-            'avg_logprob': segment[7],
-            'compression_ratio': segment[8],
-            'no_speech_prob': segment[9],
-            'words': [{
-                'word': word[2],
-                'start': word[0],
-                'end': word[1],
-                'probability': word[3]
-            } for word in segment[10]]
-        } for segment in json_file['segments']]
-    else:
-        segments = [{
-            'id': 0,
-            'seek': 0,
-            'start': segment[2],
-            'end': segment[3],
-            'text': segment[4],
-            'tokens': segment[5],
-            'temperature': segment[6],
-            'avg_logprob': segment[7],
-            'compression_ratio': segment[8],
-            'no_speech_prob': segment[9],
-        } for segment in json_file['segments']]
+    segments = [{
+        'id': 0,
+        'seek': 0,
+        'start': segment[2],
+        'end': segment[3],
+        'text': segment[4],
+        'tokens': segment[5],
+        'temperature': segment[6],
+        'avg_logprob': segment[7],
+        'compression_ratio': segment[8],
+        'no_speech_prob': segment[9],
+        'words': [{
+            'word': word[2],
+            'start': word[0],
+            'end': word[1],
+            'probability': word[3]
+        } for word in segment[10]]
+    } for segment in json_file['segments']]
     output = {
         "text": text,
         "segments": segments,
