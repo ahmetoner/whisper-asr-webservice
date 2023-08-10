@@ -69,13 +69,11 @@ def asr(
 ):
 
     start = time.time()
-    print(f"start {start}")
-    end = time.time()
-    print(end - start)
+    # print(f"start {start} seconds")
     result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
     end = time.time()
     end_time = end - start
-    print(f"end transcribe{end_time}")
+    print(f"end transcribe {end_time} seconds")
     return StreamingResponse(
         result, 
         media_type="text/plain", 
