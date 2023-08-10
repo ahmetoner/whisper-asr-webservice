@@ -3,6 +3,7 @@ FROM nvidia/cuda:11.7.1-base-ubuntu22.04
 
 ENV PYTHON_VERSION=3.10
 ENV POETRY_VENV=/app/.venv
+ENV PYTHONUNBUFFERED=1
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
