@@ -10,6 +10,7 @@ from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from whisper import tokenizer
+import time
 
 ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
@@ -66,7 +67,15 @@ def asr(
         include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
     )
 ):
+
+    start = time.time()
+    print(f"start {start}")
+    end = time.time()
+    print(end - start)
     result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
+    end = time.time()
+    end_time = end - start
+    print(f"end transcribe{end_time}")
     return StreamingResponse(
         result, 
         media_type="text/plain", 
