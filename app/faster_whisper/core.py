@@ -25,6 +25,7 @@ if torch.cuda.is_available():
 else:
     model = WhisperModel(model_path, device="cpu", compute_type="int8")
 model_lock = Lock()
+print(f"CUDA available: {torch.cuda.is_available}")
 
 
 def transcribe(
