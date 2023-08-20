@@ -4,7 +4,7 @@
 
 ## Overview
 
-This project is a modification of an open source approach to containerizing the `faster-whisper` and `openai/whisper` ASR services for Splice. The modifications allow us to maintain security and make updates to model versions as well as store the images in our GAR. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
+This project is a modification of an open source approach to containerizing the `faster-whisper` and `openai/whisper` ASR services for Splice. The modifications allow us to maintain security and make updates to model versions as well as store the images in our GAR. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/).
 
 ## Features
 
