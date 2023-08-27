@@ -7,6 +7,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq install --no-install-recommends \
     ffmpeg \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m venv $POETRY_VENV \
@@ -24,4 +25,9 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
 
+RUN git clone https://github.com/m-bain/whisperX.git \
+    && cd whisperX \
+    && $POETRY_VENV/bin/pip install -e .
+
+EXPOSE 9000
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "app.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]
