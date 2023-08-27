@@ -11,6 +11,7 @@ Current release (v1.1.1) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230124](https://github.com/openai/whisper/releases/tag/v20230124)
 - [faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.4.1](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.4.1)
+- [whisperX](https://github.com/m-bain/whisperX)@[v3.1.1](https://github.com/m-bain/whisperX/releases/tag/v3.1.1)
 
 ## Usage
 
@@ -144,6 +145,10 @@ export ASR_ENGINE=openai_whisper
 or
 ```sh
 export ASR_ENGINE=faster_whisper
+```
+or
+```sh
+export ASR_ENGINE=whisperx
 ```
 
 Configuring the Model
