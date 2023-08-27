@@ -25,6 +25,7 @@ def transcribe(
     language: Union[str, None],
     initial_prompt: Union[str, None],
     word_timestamps: Union[bool, None],
+    options: Union[dict, None],
     output,
 ):
     options_dict = {"task" : task}

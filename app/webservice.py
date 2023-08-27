@@ -11,9 +11,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from whisper import tokenizer
 
-ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
+ASR_ENGINE = os.getenv("ASR_ENGINE", "whisperx")
 if ASR_ENGINE == "faster_whisper":
     from .faster_whisper.core import transcribe, language_detection
+elif ASR_ENGINE == "whisperx":
+    from .mbain_whisperx.core import transcribe, language_detection
 else:
     from .openai_whisper.core import transcribe, language_detection
 
@@ -64,9 +66,27 @@ def asr(
         default=False, 
         description="World level timestamps", 
         include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
-    )
+    ),
+    diarize : bool = Query(
+        default=False,
+        description="Diarize the input",
+        include_in_schema=(True if ASR_ENGINE == "whisperx" else False)),
+    min_speakers : Union[int, None] = Query(
+        default=None,
+        description="Min speakers in this file",
+        include_in_schema=(True if ASR_ENGINE == "whisperx" else False)),
+    max_speakers : Union[int, None] = Query(
+        default=None,
+        description="Max speakers in this file",
+        include_in_schema=(True if ASR_ENGINE == "whisperx" else False)),
 ):
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
+    result = transcribe(
+        load_audio(audio_file.file, encode),
+        task, language, initial_prompt,
+        word_timestamps,
+        {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
+        output)
+    
     return StreamingResponse(
         result, 
         media_type="text/plain", 
