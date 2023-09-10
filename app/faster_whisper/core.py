@@ -1,4 +1,4 @@
-
+import logging
 import os
 from typing import BinaryIO, Union
 from io import StringIO
@@ -9,12 +9,26 @@ import whisper
 from .utils import model_converter, ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 from faster_whisper import WhisperModel
 
-model_name= os.getenv("ASR_MODEL", "base")
-model_path = os.path.join("/root/.cache/faster_whisper", model_name)
-model_converter(model_name, model_path)
+MAPPING = {
+    "float16": "float32",
+    "int16": "float16",
+    "int8_float16": "float16",
+    "int8": "float16",
+    "int4": "int8",
+}
+
+model_quantization = os.getenv("ASR_QUANTIZATION", "float16")
+model_name = os.getenv("ASR_MODEL", "base")
+base_path = os.path.expanduser('~') + "/.cache/faster_whisper"
+
+model_path = os.path.join(base_path, model_name)
+if model_quantization != "float16":
+    model_path = os.path.join(base_path, model_name + "_" + model_quantization)
+
+model_converter(model_name, model_path, model_quantization)
 
 if torch.cuda.is_available():
-    model = WhisperModel(model_path, device="cuda", compute_type="float32")
+    model = WhisperModel(model_path, device="cuda", compute_type=MAPPING[model_quantization])
 else:
     model = WhisperModel(model_path, device="cpu", compute_type="int8")
 model_lock = Lock()
