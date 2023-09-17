@@ -1,9 +1,11 @@
-FROM swaggerapi/swagger-ui:v4.18.2 AS swagger-ui
-FROM nvidia/cuda:11.7.0-base-ubuntu22.04
+# Use Ubuntu 22.04 with DeadSnakes PPA for Python
+FROM deadsnakes/ppa:ubuntu-2204-3.10
 
+# Set environment variables
 ENV PYTHON_VERSION=3.10
 ENV POETRY_VENV=/app/.venv
 
+# Install required packages
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq install --no-install-recommends \
@@ -13,28 +15,31 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
+# Create symbolic links for Python and pip
 RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
     ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python && \
     ln -s -f /usr/bin/pip3 /usr/bin/pip
 
+# Create a Python virtual environment
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
     && $POETRY_VENV/bin/pip install poetry==1.4.0
 
+# Add Poetry to the PATH
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
+# Set the working directory
 WORKDIR /app
 
+# Copy the project files
 COPY poetry.lock pyproject.toml ./
-
-RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-root
-
 COPY . .
-COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
-COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
-RUN poetry install
-RUN $POETRY_VENV/bin/pip install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
+# Install project dependencies
+RUN poetry config virtualenvs.in-project true \
+    && poetry install --no-root \
+    && poetry install \
+    && $POETRY_VENV/bin/pip install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
 
-CMD gunicorn --bind 0.0.0.0:${INTERNAL_PORT} --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+# Define the command to run the application
+CMD gunicorn --bind 0.0.0.0:${INTERNAL_PORT:-9000} --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
