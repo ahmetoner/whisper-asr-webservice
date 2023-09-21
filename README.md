@@ -47,8 +47,6 @@ docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerah
 ```
 ![Swagger UI](https://github.com/ahmetoner/whisper-asr-webservice/blob/main/docs/assets/img/swagger-ui.png?raw=true)
 
-Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
-
 For English-only applications, the `.en` models tend to perform better, especially for the `tiny.en` and `base.en` models. We observed that the difference becomes less significant for the `small.en` and `medium.en` models.
 
 ## Run (Development Environment)
@@ -136,7 +134,10 @@ Build .whl package
 poetry build
 ```
 
-Configuring the ASR Engine
+## Configure
+
+### ASR Engine
+Available ASR_ENGINE are `openai_whisper` (default) and `faster_whisper`.
 
 ```sh
 export ASR_ENGINE=openai_whisper
@@ -146,7 +147,8 @@ or
 export ASR_ENGINE=faster_whisper
 ```
 
-Configuring the Model
+### Model
+Available ASR_MODELs are `tiny`, `base` (default), `small`, `medium`, `large`, `large-v1` and `large-v2`. Please note that `large` and `large-v2` are the same model.
 
 ```sh
 export ASR_MODEL=base
