@@ -1,7 +1,7 @@
 import os
 from os import path
 import importlib.metadata
-from typing import BinaryIO, Union
+from typing import Annotated, BinaryIO, Union
 
 import numpy as np
 import ffmpeg
@@ -61,18 +61,41 @@ def asr(
     encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
     output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
     word_timestamps : bool = Query(
-        default=False, 
-        description="World level timestamps", 
+        default=False,
+        description="World level timestamps",
         include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
     )
 ):
     result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
     return StreamingResponse(
-        result, 
-        media_type="text/plain", 
+        result,
+        media_type="text/plain",
         headers={
                 'Asr-Engine': ASR_ENGINE,
                 'Content-Disposition': f'attachment; filename="{audio_file.filename}.{output}"'
+            })
+
+@app.post("/asr_bytes", tags=["Endpoints"])
+def asr_bytes(
+    file_bytes: Annotated[bytes, File(description="A file read as bytes")],
+    task : Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+    initial_prompt: Union[str, None] = Query(default=None),
+    encode : bool = Query(default=True, description="Encode audio first through ffmpeg"),
+    output : Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+    word_timestamps : bool = Query(
+        default=False,
+        description="World level timestamps",
+        include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
+    )
+):
+    result = transcribe(load_audio_bytes(file_bytes, encode), task, language, initial_prompt, word_timestamps, output)
+    return StreamingResponse(
+        result,
+        media_type="text/plain",
+        headers={
+                'Asr-Engine': ASR_ENGINE,
+                'Content-Disposition': f'attachment; filename= bytes".{output}"'
             })
 
 @app.post("/detect-language", tags=["Endpoints"])
@@ -112,5 +135,38 @@ def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
             raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
     else:
         out = file.read()
+
+    return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
+
+
+def load_audio_bytes(file_bytes: bytes, encode=True, sr: int = SAMPLE_RATE):
+    """
+    Open an audio file object and read as mono waveform, resampling as necessary.
+    Modified from https://github.com/openai/whisper/blob/main/whisper/audio.py to accept a file object
+    Parameters
+    ----------
+    file: BinaryIO
+        The audio file like object
+    encode: Boolean
+        If true, encode audio stream to WAV before sending to whisper
+    sr: int
+        The sample rate to resample the audio if necessary
+    Returns
+    -------
+    A NumPy array containing the audio waveform, in float32 dtype.
+    """
+    if encode:
+        try:
+            # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
+            # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
+            out, _ = (
+                ffmpeg.input("pipe:", threads=0)
+                .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file_bytes)
+            )
+        except ffmpeg.Error as e:
+            raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+    else:
+        out = file_bytes
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
