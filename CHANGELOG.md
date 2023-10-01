@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Updated
+
+- Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
+
 [1.1.1] (2023-05-29)
 --------------------
 

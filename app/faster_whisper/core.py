@@ -7,16 +7,15 @@ import torch
 import whisper
 from faster_whisper import WhisperModel
 
-from .utils import model_converter, ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 model_name = os.getenv("ASR_MODEL", "base")
-model_path = os.path.join("/root/.cache/faster_whisper", model_name)
-model_converter(model_name, model_path)
+model_path = os.getenv("ASR_MODEL_PATH", "/root/.cache/whisper")
 
 if torch.cuda.is_available():
-    model = WhisperModel(model_path, device="cuda", compute_type="float32")
+    model = WhisperModel(model_size_or_path=model_name, device="cuda", compute_type="float32", download_root=model_path)
 else:
-    model = WhisperModel(model_path, device="cpu", compute_type="int8")
+    model = WhisperModel(model_size_or_path=model_name, device="cpu", compute_type="int8", download_root=model_path)
 model_lock = Lock()
 
 
