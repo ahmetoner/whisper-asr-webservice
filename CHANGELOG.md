@@ -7,6 +7,12 @@ Unreleased
 ### Updated
 
 - Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
+- Updated default model paths to `~/.cache/whisper`. 
+  - For customization, modify the `ASR_MODEL_PATH` environment variable. 
+  - Ensure Docker volume is set for the corresponding directory to use caching.
+    ```bash
+    docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v ./yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
+    ```
 
 ### Changed
 

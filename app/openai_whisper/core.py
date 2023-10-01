@@ -8,10 +8,12 @@ import whisper
 from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 model_name = os.getenv("ASR_MODEL", "base")
+model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
+
 if torch.cuda.is_available():
-    model = whisper.load_model(model_name).cuda()
+    model = whisper.load_model(model_name, download_root=model_path).cuda()
 else:
-    model = whisper.load_model(model_name)
+    model = whisper.load_model(model_name, download_root=model_path)
 model_lock = Lock()
 
 

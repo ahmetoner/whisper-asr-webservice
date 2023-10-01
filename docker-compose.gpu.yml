@@ -15,13 +15,12 @@ services:
     environment:
       - ASR_MODEL=base
     ports:
-      - 9000:9000
+      - "9000:9000"
     volumes:
       - ./app:/app/app
       - cache-pip:/root/.cache/pip
       - cache-poetry:/root/.cache/poetry
-      - cache-whisper:/root/.cache/whisper
-      - cache-faster-whisper:/root/.cache/faster_whisper
+      - cache-whisper:~/.cache/whisper
 
 volumes:
   cache-pip:
