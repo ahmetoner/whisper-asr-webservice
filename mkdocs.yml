@@ -1,0 +1,87 @@
+site_name: Whisper ASR Webservice
+site_url: https://ahmetoner.github.io/whisper-asr-webservice
+site_dir: public
+
+site_description: "OpenAI Whisper ASR Webservice API"
+repo_url: "https://github.com/ahmetoner/whisper-asr-webservice"
+repo_name: "ahmetoner/whisper-asr-webservice"
+copyright: Copyright &copy; 2023
+edit_uri: edit/main/docs/
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+nav:
+  - Home:
+      - Whisper ASR Webservice: index.md
+      - Run: run.md
+      - Endpoints: endpoints.md
+      - Environmental Variables: environmental-variables.md
+      - Build: build.md
+      - Changelog: changelog.md
+      - Licence: licence.md
+  - Releases: https://github.com/ahmetoner/whisper-asr-webservice/releases
+  - Docker Hub: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
+
+theme:
+  name: material
+  custom_dir: docs/.overrides
+  icon:
+    logo: material/subtitles
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - toc.follow
+
+extra_css:
+  - assets/css/extra.css
+markdown_extensions:
+  - attr_list
+  - admonition
+  - footnotes
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.magiclink
+  - pymdownx.snippets:
+      check_paths: true
+      dedent_subsections: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: "¶"
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ahmetoner
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/onerahmet
