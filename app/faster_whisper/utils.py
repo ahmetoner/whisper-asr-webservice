@@ -4,12 +4,14 @@ from typing import TextIO
 
 from ctranslate2.converters.transformers import TransformersConverter
 
+
 def model_converter(model, model_output):
     converter = TransformersConverter("openai/whisper-" + model)
     try:
         converter.convert(model_output, None, "float16", False)
     except Exception as e:
         print(e)
+
 
 def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.'):
     assert seconds >= 0, "non-negative timestamp expected"
@@ -107,4 +109,3 @@ class WriteJSON(ResultWriter):
 
     def write_result(self, result: dict, file: TextIO):
         json.dump(result, file)
-
