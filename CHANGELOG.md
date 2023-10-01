@@ -8,6 +8,11 @@ Unreleased
 
 - Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
 
+### Changed
+
+- Upgraded
+  - OpenAI Whisper to v20230918
+
 [1.1.1] (2023-05-29)
 --------------------
 
