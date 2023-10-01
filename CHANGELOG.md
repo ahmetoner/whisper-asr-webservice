@@ -4,21 +4,25 @@ Changelog
 Unreleased
 ----------
 
-### Updated
-
-- Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
-- Updated default model paths to `~/.cache/whisper`. 
-  - For customization, modify the `ASR_MODEL_PATH` environment variable. 
-  - Ensure Docker volume is set for the corresponding directory to use caching.
-    ```bash
-    docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v ./yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
-    ```
+[1.2.0] (2023-10-01)
+--------------------
 
 ### Changed
 
 - Upgraded
-  - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
-  - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper) to [v0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
+    - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
+    - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper) to [v0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
+
+### Updated
+
+- Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
+- Updated default model paths to `~/.cache/whisper`.
+    - For customization, modify the `ASR_MODEL_PATH` environment variable.
+    - Ensure Docker volume is set for the corresponding directory to use caching.
+      ```bash
+      docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v ./yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
+      ```
+- Removed the `triton` dependency from `poetry.lock` to ensure the stability of the pipeline for `ARM-based` Docker images
 
 [1.1.1] (2023-05-29)
 --------------------
@@ -108,6 +112,8 @@ Unreleased
 - Translate init in #5
 - mp3 support by using ffmpeg instead of librosa in #8
 - add language detection endpoint in #9
+
+[1.2.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.0
 
 [1.1.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.1.1
 
