@@ -22,6 +22,7 @@ Unreleased
       ```bash
       docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v ./yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
       ```
+- Removed the `triton` dependency from `poetry.lock` to ensure the stability of the pipeline for `ARM-based` Docker images
 
 [1.1.1] (2023-05-29)
 --------------------
