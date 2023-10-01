@@ -28,6 +28,8 @@ def transcribe(
         options_dict["language"] = language
     if initial_prompt:
         options_dict["initial_prompt"] = initial_prompt
+    if word_timestamps:
+        options_dict["word_timestamps"] = word_timestamps
     with model_lock:
         result = model.transcribe(audio, **options_dict)
 

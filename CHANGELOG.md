@@ -11,7 +11,7 @@ Unreleased
 ### Changed
 
 - Upgraded
-  - OpenAI Whisper to v20230918
+  - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
 
 [1.1.1] (2023-05-29)
 --------------------
