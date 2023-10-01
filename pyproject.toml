@@ -14,7 +14,7 @@ packages = [{ include = "app" }]
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
-secondary = true
+priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "^3.10"
