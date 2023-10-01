@@ -4,10 +4,10 @@
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 # Whisper ASR Webservice
 
-Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multi-task model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
+Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
 
 ## Features
-Current release (v1.1.1) supports following whisper models:
+Current release (v1.2.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
 - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
@@ -32,7 +32,7 @@ docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
 docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
-For MacOS (CPU only):
+For macOS (CPU only):
 
 GPU passthrough does not work on macOS due to fundamental design limitations of Docker. Docker actually runs containers within a LinuxVM on macOS. If you wish to run GPU-accelerated containers, I'm afraid Linux is your only option.
 
