@@ -12,6 +12,7 @@ Unreleased
 
 - Upgraded
   - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
+  - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper) to [v0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
 
 [1.1.1] (2023-05-29)
 --------------------
