@@ -14,7 +14,7 @@ packages = [{ include = "app" }]
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
-secondary = true
+priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -22,14 +22,13 @@ unidecode = "^1.3.4"
 uvicorn = { extras = ["standard"], version = "^0.18.2" }
 gunicorn = "^20.1.0"
 tqdm = "^4.64.1"
-transformers = "^4.22.1"
 python-multipart = "^0.0.5"
 ffmpeg-python = "^0.2.0"
 fastapi = "^0.95.1"
 llvmlite = "^0.39.1"
 numba = "^0.56.4"
-openai-whisper = "20230124"
-faster-whisper = "^0.4.1"
+openai-whisper = "20230918"
+faster-whisper = "^0.9.0"
 torch = [
   {markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_11_0_arm64.whl"},
   {markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.0-cp310-none-macosx_11_0_arm64.whl"},
