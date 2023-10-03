@@ -20,11 +20,11 @@ Unreleased
 ### Updated
 
 - Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
-- Updated default model paths to `~/.cache/whisper`.
+- Updated default model paths to `~/.cache/whisper` or `/root/.cache/whisper`.
     - For customization, modify the `ASR_MODEL_PATH` environment variable.
     - Ensure Docker volume is set for the corresponding directory to use caching.
       ```bash
-      docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v ./yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
+      docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v $PWD/yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
       ```
 - Removed the `triton` dependency from `poetry.lock` to ensure the stability of the pipeline for `ARM-based` Docker images
 

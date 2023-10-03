@@ -13,7 +13,7 @@ services:
       - ./app:/app/app
       - cache-pip:/root/.cache/pip
       - cache-poetry:/root/.cache/poetry
-      - cache-whisper:~/.cache/whisper
+      - cache-whisper:/root/.cache/whisper
 
 volumes:
   cache-pip:

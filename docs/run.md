@@ -35,7 +35,7 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
 
 ## Cache
 The ASR model is downloaded each time you start the container, using the large model this can take some time. 
-If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (`~/.cache/whisper`) to a persistent storage. 
+If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (`~/.cache/whisper` or `/root/.cache/whisper`) to a persistent storage. 
 Next time you start your container the ASR Model will be taken from the cache instead of being downloaded again.
 
 **Important this will prevent you from receiving any updates to the models.**
@@ -43,7 +43,7 @@ Next time you start your container the ASR Model will be taken from the cache in
 === ":octicons-file-code-16: `Default cache dir`"
 
     ```sh
-    docker run -d -p 9000:9000 -v ./yourlocaldir:~/.cache/whisper onerahmet/openai-whisper-asr-webservice:latest
+    docker run -d -p 9000:9000 -v $PWD/yourlocaldir:/root/.cache/whisper onerahmet/openai-whisper-asr-webservice:latest
     ```
 
 === ":octicons-file-code-16: `With ASR_MODEL_PATH`"
