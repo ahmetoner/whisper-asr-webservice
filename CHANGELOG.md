@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Changed misspelling in "Word level timestamps"
+
 [1.2.0] (2023-10-01)
 --------------------
 
