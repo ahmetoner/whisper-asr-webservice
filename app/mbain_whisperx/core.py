@@ -86,14 +86,14 @@ def write_result(
     result: dict, file: BinaryIO, output: Union[str, None]
 ):
     if(output == "srt"):
-        WriteSRT(ResultWriter).write_result(result, file = file)
+        WriteSRT(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "vtt"):
-        WriteVTT(ResultWriter).write_result(result, file = file)
+        WriteVTT(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "tsv"):
-        WriteTSV(ResultWriter).write_result(result, file = file)
+        WriteTSV(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "json"):
-        WriteJSON(ResultWriter).write_result(result, file = file)
+        WriteJSON(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "txt"):
-        WriteTXT(ResultWriter).write_result(result, file = file)
+        WriteTXT(ResultWriter).write_result(result, file = file, options = {})
     else:
         return 'Please select an output method!'

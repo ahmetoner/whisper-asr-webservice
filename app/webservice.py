@@ -1,17 +1,17 @@
+import importlib.metadata
 import os
 from os import path
-import importlib.metadata
 from typing import BinaryIO, Union
 
-import numpy as np
 import ffmpeg
+import numpy as np
 from fastapi import FastAPI, File, UploadFile, Query, applications
+from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.openapi.docs import get_swagger_ui_html
 from whisper import tokenizer
 
-ASR_ENGINE = os.getenv("ASR_ENGINE", "whisperx")
+ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
     from .faster_whisper.core import transcribe, language_detection
 elif ASR_ENGINE == "whisperx":
@@ -19,8 +19,8 @@ elif ASR_ENGINE == "whisperx":
 else:
     from .openai_whisper.core import transcribe, language_detection
 
-SAMPLE_RATE=16000
-LANGUAGE_CODES=sorted(list(tokenizer.LANGUAGES.keys()))
+SAMPLE_RATE = 16000
+LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
 
 projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
@@ -40,6 +40,8 @@ app = FastAPI(
 assets_path = os.getcwd() + "/swagger-ui-assets"
 if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
+
+
     def swagger_monkey_patch(*args, **kwargs):
         return get_swagger_ui_html(
             *args,
@@ -48,11 +50,15 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
             swagger_css_url="/assets/swagger-ui.css",
             swagger_js_url="/assets/swagger-ui-bundle.js",
         )
+
+
     applications.get_swagger_ui_html = swagger_monkey_patch
+
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
     return "/docs"
+
 
 @app.post("/asr", tags=["Endpoints"])
 def asr(
@@ -82,26 +88,34 @@ def asr(
 ):
     result = transcribe(
         load_audio(audio_file.file, encode),
-        task, language, initial_prompt,
+        task, 
+        language,
+        initial_prompt,
         word_timestamps,
-        {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
+        {
+            "diarize": diarize,
+            "min_speakers": min_speakers,
+            "max_speakers": max_speakers
+        },
         output)
     
     return StreamingResponse(
-        result, 
-        media_type="text/plain", 
+        result,
+        media_type="text/plain",
         headers={
-                'Asr-Engine': ASR_ENGINE,
-                'Content-Disposition': f'attachment; filename="{audio_file.filename}.{output}"'
-            })
+            'Asr-Engine': ASR_ENGINE,
+            'Content-Disposition': f'attachment; filename="{audio_file.filename}.{output}"'
+        })
+
 
 @app.post("/detect-language", tags=["Endpoints"])
-def detect_language(
-    audio_file: UploadFile = File(...),
-    encode : bool = Query(default=True, description="Encode audio first through ffmpeg")
+async def detect_language(
+        audio_file: UploadFile = File(...),
+        encode: bool = Query(default=True, description="Encode audio first through ffmpeg")
 ):
     detected_lang_code = language_detection(load_audio(audio_file.file, encode))
-    return { "detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code" : detected_lang_code }
+    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
+
 
 def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
     """

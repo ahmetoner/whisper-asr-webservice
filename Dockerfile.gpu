@@ -1,5 +1,5 @@
 FROM swaggerapi/swagger-ui:v4.18.2 AS swagger-ui
-FROM nvidia/cuda:11.7.1-base-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 
 ENV PYTHON_VERSION=3.10
 ENV POETRY_VENV=/app/.venv
@@ -20,7 +20,7 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==1.4.0
+    && $POETRY_VENV/bin/pip install poetry==1.6.1
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
@@ -36,13 +36,13 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/sw
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry install
-RUN $POETRY_VENV/bin/pip install torch torchaudio \
-    --index-url https://download.pytorch.org/whl/cu117 \
+RUN $POETRY_VENV/bin/pip install torch torchaudio pandas transformers nltk pyannote.audio \
+    --index-url https://download.pytorch.org/whl/cu118 \
     --index-url https://pypi.org/simple/
 
-RUN git clone https://github.com/m-bain/whisperX.git \
+RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
     && cd whisperX \
-    && $POETRY_VENV/bin/pip install -e .
+    && $POETRY_VENV/bin/pip install --no-dependencies -e .
 
 EXPOSE 9000
 CMD gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker

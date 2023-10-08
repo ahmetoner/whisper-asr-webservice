@@ -12,7 +12,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==1.4.0
+    && $POETRY_VENV/bin/pip install poetry==1.6.1
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
@@ -25,7 +25,8 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
 
-RUN git clone https://github.com/m-bain/whisperX.git \
+RUN $POETRY_VENV/bin/pip install pandas transformers nltk pyannote.audio
+RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
     && cd whisperX \
     && $POETRY_VENV/bin/pip install -e .
 
