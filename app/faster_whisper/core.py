@@ -9,7 +9,6 @@ from faster_whisper import WhisperModel
 
 from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
-
 cache_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
 model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.path.join(cache_path, model_name)
@@ -17,10 +16,10 @@ model_path = os.path.join(cache_path, model_name)
 # More about available quantization levels is here:
 #   https://opennmt.net/CTranslate2/quantization.html
 if torch.cuda.is_available():
-    device="cuda"
+    device = "cuda"
     model_quantization = os.getenv("ASR_QUANTIZATION", "float32")
 else:
-    device="cpu"
+    device = "cpu"
     model_quantization = os.getenv("ASR_QUANTIZATION", "int8")
 
 model = WhisperModel(
@@ -31,6 +30,7 @@ model = WhisperModel(
 )
 
 model_lock = Lock()
+
 
 def transcribe(
         audio,
