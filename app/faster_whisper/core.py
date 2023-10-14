@@ -16,10 +16,10 @@ model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), "
 # More about available quantization levels is here:
 #   https://opennmt.net/CTranslate2/quantization.html
 if torch.cuda.is_available():
-    device="cuda"
+    device = "cuda"
     model_quantization = os.getenv("ASR_QUANTIZATION", "float32")
 else:
-    device="cpu"
+    device = "cpu"
     model_quantization = os.getenv("ASR_QUANTIZATION", "int8")
 
 model = WhisperModel(
