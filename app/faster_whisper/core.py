@@ -10,9 +10,8 @@ from faster_whisper import WhisperModel
 from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 
-cache_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
 model_name = os.getenv("ASR_MODEL", "base")
-model_path = os.path.join(cache_path, model_name)
+model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
 
 # More about available quantization levels is here:
 #   https://opennmt.net/CTranslate2/quantization.html
