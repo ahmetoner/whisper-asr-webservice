@@ -5,6 +5,7 @@ Current release (v1.2.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
 - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper)@[0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
+- [whisperX](https://github.com/m-bain/whisperX)@[v3.1.1](https://github.com/m-bain/whisperX/releases/tag/v3.1.1)
 
 ## Quick Usage
 

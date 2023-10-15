@@ -12,6 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
 
 ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
+HF_TOKEN = os.getenv("HF_TOKEN", "")
+
 if ASR_ENGINE == "faster_whisper":
     from .faster_whisper.core import transcribe, language_detection
 elif ASR_ENGINE == "whisperx":
@@ -76,7 +78,7 @@ def asr(
     diarize : bool = Query(
         default=False,
         description="Diarize the input",
-        include_in_schema=(True if ASR_ENGINE == "whisperx" else False)),
+        include_in_schema=(True if ASR_ENGINE == "whisperx" and HF_TOKEN != "" else False)),
     min_speakers : Union[int, None] = Query(
         default=None,
         description="Min speakers in this file",
