@@ -3,9 +3,9 @@ from typing import BinaryIO, Union
 from io import StringIO
 from threading import Lock
 import torch
-import whisper
 import whisperx
-from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+import whisper
+from whisperx.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 model_name= os.getenv("ASR_MODEL", "base")
 hf_token= os.getenv("HF_TOKEN", "")
@@ -13,12 +13,12 @@ x_models = dict()
 
 if torch.cuda.is_available():
     device = "cuda"
-    model = whisper.load_model(model_name).cuda()
+    model = whisperx.load_model(model_name, device=device)
     if hf_token != "":
         diarize_model = whisperx.DiarizationPipeline(use_auth_token=hf_token, device=device)
 else:
     device = "cpu"
-    model = whisper.load_model(model_name)
+    model = whisperx.load_model(model_name, device=device)
     if hf_token != "":
         diarize_model = whisperx.DiarizationPipeline(use_auth_token=hf_token, device=device)
 model_lock = Lock()
