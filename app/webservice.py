@@ -1,7 +1,7 @@
 import importlib.metadata
 import os
 from os import path
-from typing import BinaryIO, Union
+from typing import BinaryIO, Union, Annotated
 
 import ffmpeg
 import numpy as np
@@ -60,15 +60,19 @@ async def index():
 
 @app.post("/asr", tags=["Endpoints"])
 async def asr(
+        audio_file: UploadFile = File(...),
+        encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
         task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
         language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
         initial_prompt: Union[str, None] = Query(default=None),
-        audio_file: UploadFile = File(...),
-        encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
-        output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
-        word_timestamps: bool = Query(default=False, description="Word level timestamps")
+        vad_filter: Annotated[bool | None, Query(
+                description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
+                include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
+            )] = False,
+        word_timestamps: bool = Query(default=False, description="Word level timestamps"),
+        output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
 ):
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, word_timestamps, output)
+    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output)
     return StreamingResponse(
         result,
         media_type="text/plain",

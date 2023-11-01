@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Enabled
+
+- Enabled `vad_filter` for `faster-whisper` engine
+
 ### Changed
 
 - Changed misspelling in "Word level timestamps"

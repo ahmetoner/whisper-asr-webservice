@@ -19,7 +19,9 @@ You can provide the language or it will be automatically recognized.
 
 If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
 
-You can enable word level timestamps output by `word_timestamps` parameter (only with `Faster Whisper` for now).
+You can enable word level timestamps output by `word_timestamps` parameter
+
+You can Enable the voice activity detection (VAD) to filter out parts of the audio without speech  by `vad_filter` parameter (only with `Faster Whisper` for now).
 
 Returns a json with following fields:
 
