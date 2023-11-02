@@ -22,6 +22,7 @@ def transcribe(
         task: Union[str, None],
         language: Union[str, None],
         initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
         word_timestamps: Union[bool, None],
         output
 ):

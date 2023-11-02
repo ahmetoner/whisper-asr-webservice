@@ -4,9 +4,22 @@ Changelog
 Unreleased
 ----------
 
+### Enabled
+
+- Enabled `vad_filter` for `faster-whisper` engine
+
 ### Changed
 
 - Changed misspelling in "Word level timestamps"
+- Removed unused unidecode dependency
+- Upgraded
+    - uvicorn to v0.23.2
+    - gunicorn to v21.0.1
+    - tqdm to v4.66.1
+    - python-multipart to v0.0.6
+    - fastapi to v0.104.1
+    - llvmlite to v0.41.1
+    - numba to v0.58.0
 
 [1.2.0] (2023-10-01)
 --------------------

@@ -18,15 +18,14 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-unidecode = "^1.3.4"
-uvicorn = { extras = ["standard"], version = "^0.18.2" }
-gunicorn = "^20.1.0"
-tqdm = "^4.64.1"
-python-multipart = "^0.0.5"
+uvicorn = { extras = ["standard"], version = "^0.23.2" }
+gunicorn = "^21.0.1"
+tqdm = "^4.66.1"
+python-multipart = "^0.0.6"
 ffmpeg-python = "^0.2.0"
-fastapi = "^0.95.1"
-llvmlite = "^0.39.1"
-numba = "^0.56.4"
+fastapi = "^0.104.1"
+llvmlite = "^0.41.1"
+numba = "^0.58.0"
 openai-whisper = "20230918"
 faster-whisper = "^0.9.0"
 torch = [
