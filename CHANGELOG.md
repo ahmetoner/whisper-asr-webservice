@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+[1.2.1] (2023-11-03)
+--------------------
 
 ### Enabled
 
@@ -130,22 +130,14 @@ Unreleased
 - mp3 support by using ffmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.2.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.1
 [1.2.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.0
-
 [1.1.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.1.1
-
 [1.1.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.1.0
-
 [1.0.6]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.6
-
 [1.0.5]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.5
-
 [1.0.4]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.4
-
 [1.0.3-beta]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.3-beta
-
 [1.0.2-beta]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.2-beta
-
 [1.0.1-beta]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.0.1-beta
-
 [1.0.0-beta]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/1.0.0-beta
