@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- Fixed `swagger-ui` rendering issues by upgrading to `v5.9.1`, fixes #153 and #154
+
 [1.2.1] (2023-11-03)
 --------------------
 
