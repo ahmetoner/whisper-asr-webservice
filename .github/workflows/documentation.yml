@@ -1,8 +1,9 @@
-name: CI
+name: Documentation
 on:
   push:
+    tags:        
+      - '*'
     branches:
-      - main
       - docs
 permissions:
   contents: write
