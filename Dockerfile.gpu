@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui:v4.18.2 AS swagger-ui
+FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 
 ENV PYTHON_VERSION=3.10

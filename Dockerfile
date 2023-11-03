@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui:v4.18.2 AS swagger-ui
+FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 FROM python:3.10-slim
 
 ENV POETRY_VENV=/app/.venv
