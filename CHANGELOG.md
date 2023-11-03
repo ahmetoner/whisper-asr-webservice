@@ -4,6 +4,9 @@ Changelog
 Unreleased
 ----------
 
+[1.2.2] (2023-11-03)
+--------------------
+
 ### Fixed
 
 - Fixed `swagger-ui` rendering issues by upgrading to `v5.9.1`, fixes #153 and #154
@@ -137,6 +140,7 @@ Unreleased
 - mp3 support by using ffmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.2.2]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.2
 [1.2.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.1
 [1.2.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.0
 [1.1.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.1.1
