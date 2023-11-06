@@ -4,6 +4,12 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+    - [openai/whisper](https://github.com/openai/whisper) to [v20231106](https://github.com/openai/whisper/releases/tag/v20231106)
+    
+
 [1.2.2] (2023-11-03)
 --------------------
 
