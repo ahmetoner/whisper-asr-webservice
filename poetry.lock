@@ -757,19 +757,19 @@ sympy = "*"
 
 [[package]]
 name = "openai-whisper"
-version = "20230918"
+version = "20231106"
 description = "Robust Speech Recognition via Large-Scale Weak Supervision"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "openai-whisper-20230918.tar.gz", hash = "sha256:32a1ee39c3faaf6c719e3a83f1aacc8e164aad87976350371e26845271287c30"},
+    {file = "openai-whisper-20231106.tar.gz", hash = "sha256:9d1de7fa1e766b9adf8be4bfa7fb11e2bdf8d2b0bf77b90478cf4d75e0e58d19"},
 ]
 
 [package.dependencies]
 more-itertools = "*"
 numba = "*"
 numpy = "*"
-tiktoken = "0.3.3"
+tiktoken = "*"
 torch = "*"
 tqdm = "*"
 
@@ -1574,4 +1574,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "7ba666ad744fc80fff978862f014431c8a03565c7d1b6a459bc759ace4f73078"
+content-hash = "d4773fb3718894fe55d566f19e641fd7bd9be1516788eca099c32cd10c4bd0df"
