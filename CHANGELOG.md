@@ -4,6 +4,12 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+    - [openai/whisper](https://github.com/openai/whisper) to [v20231117](https://github.com/openai/whisper/releases/tag/v20231117)
+    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/0.10.0)
+
 [1.2.3] (2023-11-07)
 --------------------
 
@@ -11,7 +17,6 @@ Unreleased
 
 - Upgraded
     - [openai/whisper](https://github.com/openai/whisper) to [v20231106](https://github.com/openai/whisper/releases/tag/v20231106)
-    
 
 [1.2.2] (2023-11-03)
 --------------------

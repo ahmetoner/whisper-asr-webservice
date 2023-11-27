@@ -270,41 +270,42 @@ cron = ["capturer (>=2.4)"]
 
 [[package]]
 name = "ctranslate2"
-version = "3.20.0"
+version = "3.22.0"
 description = "Fast inference engine for Transformer models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "ctranslate2-3.20.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:01754fdb1a5f0d9bcb194cdb4c6e91e3ea23c5be4a1bbd0fca448a1b41e222d0"},
-    {file = "ctranslate2-3.20.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:825774f301f47dd26d51f98cda2b546fee1ad619f0c901446e6bd177ac5f6976"},
-    {file = "ctranslate2-3.20.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:47c051208cb9337030ca571f1561dc59e6d9ec7b6061d6ed8e6081214031edac"},
-    {file = "ctranslate2-3.20.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2d914f707263da9c2c0ef6b8242b9cb58bdb0d0ccc23eba175f8e7719b510c22"},
-    {file = "ctranslate2-3.20.0-cp310-cp310-win_amd64.whl", hash = "sha256:1a71a4faf437c0d832d23be704b4d2dc0406be16c0f35f46ad461902c5fae259"},
-    {file = "ctranslate2-3.20.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:9d94c70905cd8a5d665e8cbd78a5eaa23c53db5b5feea2a3b54b79332f6475c6"},
-    {file = "ctranslate2-3.20.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:fc05762f07c1a2aad578e1608addf987992e41b8b912dff9e73dc97c9611c630"},
-    {file = "ctranslate2-3.20.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9144a15566b24ffd7310f9b3b116e4b70b7fab52c96bd18bbc63142172446ea0"},
-    {file = "ctranslate2-3.20.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:80b173316e567d4117a53793235064ee00972b08a9e30065028d3373e1db8ccf"},
-    {file = "ctranslate2-3.20.0-cp311-cp311-win_amd64.whl", hash = "sha256:dea6434e53948a550b538fd22b6b9118f8f4fb84cc2baa52d3849369fdaba07f"},
-    {file = "ctranslate2-3.20.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:bab22a01a4a3419a9eb520f0e8e0a822947f0b948d8df77c6388151cb4eaafc0"},
-    {file = "ctranslate2-3.20.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:112265df36fc83904bba52ba5ec9353f402bb7f96df66382f5faacc7c565867f"},
-    {file = "ctranslate2-3.20.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3129c3065dbf554143527c5f48284624cd119ad7f071d5e09624ebab51aef6b7"},
-    {file = "ctranslate2-3.20.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:660f01d99462fb5c448ca801f77c5d5e52e7ebdca41075cdedb0a8134284c918"},
-    {file = "ctranslate2-3.20.0-cp312-cp312-win_amd64.whl", hash = "sha256:5fd6ff0afb1fc1ca68d3b2bd3513942634ed2773fdcd6083ce8d1c9be3290bbf"},
-    {file = "ctranslate2-3.20.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:8f5d79d52ad1b2c7eb8aad2a14fa13afaca71a5865a2a59f46cf6b9280a25c2b"},
-    {file = "ctranslate2-3.20.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:a0be5d8dd42f8916d2363a174723e9ef3ca98038e7f26f786425db7f316f1955"},
-    {file = "ctranslate2-3.20.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4043eeb9bb2275452b40884e04424b66f0eb8a6bfee356a8e9fc9d53eb6d40e3"},
-    {file = "ctranslate2-3.20.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f7b311a47b603e8d22bb1dd2c0f733a3b0b0cb6b7f2eeb8fe67fccc1593415f6"},
-    {file = "ctranslate2-3.20.0-cp38-cp38-win_amd64.whl", hash = "sha256:18c6fbf1e7de576fef2a192884483065eaa761ec714f4d03aef5343f08621991"},
-    {file = "ctranslate2-3.20.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:b9f65982890e70838583d4ffd9766595339e51066c983ecdfada3b02da6957ae"},
-    {file = "ctranslate2-3.20.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:74eacb7a86069df63ce45cef412f36880fe8edf745e565917d347cc84391a814"},
-    {file = "ctranslate2-3.20.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8465c238f8f6ec74401fddf80bf00cdc27d3eec453881ba6566f819cf7939382"},
-    {file = "ctranslate2-3.20.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b7b90e08c8a7a483fb8c074e7d0f78e8a794a2d86d47dafd58985f1fbec702f3"},
-    {file = "ctranslate2-3.20.0-cp39-cp39-win_amd64.whl", hash = "sha256:cd78d95228235413f896ea0912546f9f8fc86ce5f110efa9282c792693a0d8d2"},
+    {file = "ctranslate2-3.22.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:2162d8ac1e93b032a21e78c22e538bc599780b120091113d69aec6e965c2fd29"},
+    {file = "ctranslate2-3.22.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:158a9b35f589e9172de388706f49dd73a9663d78e8803e6f41ac0fc903f787e2"},
+    {file = "ctranslate2-3.22.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:65f7bc22cf3b052ac3be42fd7e982147cf08c96192a95316edc3b5aaec591e0b"},
+    {file = "ctranslate2-3.22.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9a616fc7bb5e8c7ea7843c71165fc6d2e83f3939940d730e963851be8fc78131"},
+    {file = "ctranslate2-3.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:bb1e8ea9f523431747ad8eb28f82822254ca96cf1e55fbc8a2bed12d5ddd4439"},
+    {file = "ctranslate2-3.22.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4b63d95a970f598eaf06913879327672386ff335fc6d546dd0d7281da448c8a4"},
+    {file = "ctranslate2-3.22.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:b592f429b3d5615cb2d1837e065235cc9955f82a732145b3dc16e1a11fb67249"},
+    {file = "ctranslate2-3.22.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c067221ed4e958a68ff482498379896ec60c7b07047e3c20a848008cbc9ba7ee"},
+    {file = "ctranslate2-3.22.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dd2403ec90faf389a54767e2563dcda2713036f32545453aa25a1b0589b62b0f"},
+    {file = "ctranslate2-3.22.0-cp311-cp311-win_amd64.whl", hash = "sha256:ce57bb42cc40dbecf77b4034a796a71be603933f653353b7e9f1ed488fb7a102"},
+    {file = "ctranslate2-3.22.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:1ec50358a0af04fb40454ddb8b60e8c9612cb7bea8de828ee0b5d834c0341ca7"},
+    {file = "ctranslate2-3.22.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0e9bbd74c98ff96318f7275f4f622b7a3e215460e64957a7bac1af6b96c6cdb6"},
+    {file = "ctranslate2-3.22.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f8fcfbce7b8440e8d42297d855c9600e2f6f2be74f046103e1ea1aa6ed1c8a8f"},
+    {file = "ctranslate2-3.22.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ededd8ea8335261cf982517d04129e7be49c0f41e38a0a5f48639bb08bdfd5f1"},
+    {file = "ctranslate2-3.22.0-cp312-cp312-win_amd64.whl", hash = "sha256:b9d48e396451af160412e5bd0de0711337cdb4f3f654542f56943114ac1debc3"},
+    {file = "ctranslate2-3.22.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:82a91d755283999571b3f9eb1a1ab5b7ab0deae795df70f036a09903ead42a85"},
+    {file = "ctranslate2-3.22.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:28b0ca0e00e6c037347d89de9e3a670a4dc2ee0fb6c462b51f84a8256aa92e28"},
+    {file = "ctranslate2-3.22.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:71c1f2b1dc0c6a3910c2c0ff34e2fc1df43f84cbd7922281430ba83e9a0cbad9"},
+    {file = "ctranslate2-3.22.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4cb88611a9588fb778837ca8e67c5ae4a7601a417c53f97a2db5f58270dc49b5"},
+    {file = "ctranslate2-3.22.0-cp38-cp38-win_amd64.whl", hash = "sha256:3cb851070db35c4210df15854d0bd0ef0eb1fd073c566059f4fa756e417cb031"},
+    {file = "ctranslate2-3.22.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:7cdc96b94cc9dee07820306118f1c61c67b2ee0a291456f5bf61696fa2897687"},
+    {file = "ctranslate2-3.22.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:2d3d77092b6e53c7945cb38df8fcc84e6e40d57fd59c060ece56922a036b407b"},
+    {file = "ctranslate2-3.22.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:02e19061181661036e92df409c69989a2668093b04d2274cf5a2ee3d1878d944"},
+    {file = "ctranslate2-3.22.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:794c1fa62d2d3b9ce936250a957a20fe2506f150a073a068fb5e36672e0a71af"},
+    {file = "ctranslate2-3.22.0-cp39-cp39-win_amd64.whl", hash = "sha256:58199cc5d3fd970dcabd08a9173ab0c16229af618511d7013d141377b2742a0e"},
 ]
 
 [package.dependencies]
 numpy = "*"
 pyyaml = ">=5.3,<7"
+setuptools = "*"
 
 [[package]]
 name = "exceptiongroup"
@@ -342,21 +343,20 @@ all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)"
 
 [[package]]
 name = "faster-whisper"
-version = "0.9.0"
+version = "0.10.0"
 description = "Faster Whisper transcription with CTranslate2"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "faster-whisper-0.9.0.tar.gz", hash = "sha256:9727a3151ee601090386a5f1e6d8654ae04f617c5e6d24f28ea1d9232eebf37a"},
-    {file = "faster_whisper-0.9.0-py3-none-any.whl", hash = "sha256:ba7fa0d4166548d611177350fe3d639ded222f8c159a6aebedfb2d4f186da222"},
+    {file = "faster-whisper-0.10.0.tar.gz", hash = "sha256:591809328b93c8e4594d52097ec6352a270a81fbb7b956254967f28700f7e4da"},
 ]
 
 [package.dependencies]
 av = "==10.*"
-ctranslate2 = ">=3.17,<4"
-huggingface-hub = ">=0.13"
+ctranslate2 = ">=3.22,<4"
+huggingface_hub = ">=0.13"
 onnxruntime = ">=1.14,<2"
-tokenizers = ">=0.13,<0.15"
+tokenizers = ">=0.13,<0.16"
 
 [package.extras]
 conversion = ["transformers[torch] (>=4.23)"]
@@ -757,12 +757,12 @@ sympy = "*"
 
 [[package]]
 name = "openai-whisper"
-version = "20231106"
+version = "20231117"
 description = "Robust Speech Recognition via Large-Scale Weak Supervision"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "openai-whisper-20231106.tar.gz", hash = "sha256:9d1de7fa1e766b9adf8be4bfa7fb11e2bdf8d2b0bf77b90478cf4d75e0e58d19"},
+    {file = "openai-whisper-20231117.tar.gz", hash = "sha256:7af424181436f1800cc0b7d75cf40ede34e9ddf1ba4983a910832fcf4aade4a4"},
 ]
 
 [package.dependencies]
@@ -1088,6 +1088,22 @@ urllib3 = ">=1.21.1,<1.27"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
+
+[[package]]
+name = "setuptools"
+version = "69.0.2"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "setuptools-69.0.2-py3-none-any.whl", hash = "sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2"},
+    {file = "setuptools-69.0.2.tar.gz", hash = "sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pip (>=19.1)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-ruff", "pytest-timeout", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
+testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "packaging (>=23.1)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
 name = "sniffio"
@@ -1574,4 +1590,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "d4773fb3718894fe55d566f19e641fd7bd9be1516788eca099c32cd10c4bd0df"
+content-hash = "6c4ac2c16a11d2c0737875bdb8497354e464e5aa15788af5827ce21214e7c67e"
