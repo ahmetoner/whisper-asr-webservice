@@ -28,8 +28,8 @@ from the build above. Feel free to skip that step.
 The endpoint will take a moment to become available so be patient.
 
 ```sh
-docker pull whisper-asr-webservice-whisper-asr-webservice:latest
-docker run -d -p 9000:9000 -e ASR_MODEL=medium.en -e ASR_ENGINE=faster_whisper whisper-asr-webservice-whisper-asr-webservice:latest
+docker pull whisper-asr-webservice-whisper-asr-webservice:cpu-latest
+docker run -d -p 9000:9000 -e ASR_MODEL=medium.en -e ASR_ENGINE=faster_whisper whisper-asr-webservice-whisper-asr-webservice:cpu-latest
 ```
 
 For GPU:
@@ -46,7 +46,7 @@ GPU passthrough does not work on macOS due to fundamental design limitations of 
 The `:latest` image tag provides both amd64 and arm64 architectures:
 
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper whisper-asr-webservice-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper whisper-asr-webservice-whisper-asr-webservice:cpu-latest
 ```
 
 ```sh
@@ -199,3 +199,7 @@ The ASR model is downloaded each time you start the container, using the large m
 ```sh
 docker run -d -p 9000:9000 -e ASR_MODEL=large -v //c/tmp/whisper:/root/.cache/whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
+
+## Updates to the models
+
+Going forward the poetry updates to whisper and faster-whisper will be run on a remote machine. The updated models will be stored in the GAR per the usual process. The docker images will be updated with the new models and pushed to the GAR. The images will be tagged with the model version. The latest tag will be updated to point to the latest model version. The cpu-latest is built and pushed as an AMD64 image and tagged as `cpu-latest` in the dev GAR only. You may not be able to build locally unless we add more logic for 
