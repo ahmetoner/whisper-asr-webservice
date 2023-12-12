@@ -3,7 +3,7 @@ from typing import BinaryIO, Union
 from io import StringIO
 from threading import Lock
 import torch
-
+import logging
 import whisper
 from .utils import (
     model_converter,
