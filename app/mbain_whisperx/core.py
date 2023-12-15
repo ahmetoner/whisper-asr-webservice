@@ -5,7 +5,7 @@ from threading import Lock
 import torch
 import whisperx
 import whisper
-from whisperx.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+from whisperx.utils import SubtitlesWriter, ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 model_name= os.getenv("ASR_MODEL", "base")
 hf_token= os.getenv("HF_TOKEN", "")
@@ -86,9 +86,15 @@ def write_result(
     result: dict, file: BinaryIO, output: Union[str, None]
 ):
     if(output == "srt"):
-        WriteSRT(ResultWriter).write_result(result, file = file, options = {})
+        if hf_token != "":
+            WriteSRT(SubtitlesWriter).write_result(result, file = file, options = {})
+        else:
+            WriteSRT(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "vtt"):
-        WriteVTT(ResultWriter).write_result(result, file = file, options = {})
+        if hf_token != "":
+            WriteVTT(SubtitlesWriter).write_result(result, file = file, options = {})
+        else:
+            WriteVTT(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "tsv"):
         WriteTSV(ResultWriter).write_result(result, file = file, options = {})
     elif(output == "json"):
