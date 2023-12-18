@@ -7,7 +7,7 @@ import torch
 import whisper
 from faster_whisper import WhisperModel
 
-from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 
 model_name = os.getenv("ASR_MODEL", "base")
@@ -30,6 +30,11 @@ model = WhisperModel(
 )
 
 model_lock = Lock()
+
+def to_whisper_word(word):
+    word_dict = word._asdict()
+    word_dict["confidence"] = word_dict.pop("probability")
+    return word_dict
 
 def transcribe(
         audio,
@@ -54,27 +59,8 @@ def transcribe(
         text = ""
         segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict)
         for segment in segment_generator:
-            seg = segment
-            seg_dict = {
-                "id": seg[0]-1,
-                "seek": 0,
-                "start": seg[2],
-                "end": seg[3],
-                "text": seg[4],
-                "tokens": seg[5],
-                "temperature": seg[6],
-                "avg_logprob": seg[7],
-                "compression_ratio": seg[8],
-                "no_speech_prob": seg[9],
-                "words": [
-                    {
-                        "start": word[0],
-                        "end": word[1],
-                        "word": word[2],
-                        "probability": word[3]
-                    } for word in seg[10]
-                ]
-            }
+            seg_dict = segment._asdict()
+            seg_dict["words"] = [to_whisper_word(word) for word in seg_dict["words"]]
             segments.append(seg_dict)
             text = text + segment.text
         result = {
@@ -105,15 +91,20 @@ def language_detection(audio):
 def write_result(
         result: dict, file: BinaryIO, output: Union[str, None]
 ):
+    options = {
+        'max_line_width': 1000,
+        'max_line_count': 10,
+        'highlight_words': False
+    }
     if output == "srt":
-        WriteSRT(ResultWriter).write_result(result, file=file)
+        WriteSRT(ResultWriter).write_result(result, file=file, options=options)
     elif output == "vtt":
-        WriteVTT(ResultWriter).write_result(result, file=file)
+        WriteVTT(ResultWriter).write_result(result, file=file, options=options)
     elif output == "tsv":
-        WriteTSV(ResultWriter).write_result(result, file=file)
+        WriteTSV(ResultWriter).write_result(result, file=file, options=options)
     elif output == "json":
-        WriteJSON(ResultWriter).write_result(result, file=file)
+        WriteJSON(ResultWriter).write_result(result, file=file, options=options)
     elif output == "txt":
-        WriteTXT(ResultWriter).write_result(result, file=file)
+        WriteTXT(ResultWriter).write_result(result, file=file, options=options)
     else:
         return 'Please select an output method!'
