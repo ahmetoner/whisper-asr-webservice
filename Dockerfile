@@ -1,6 +1,8 @@
 FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 FROM python:3.10-slim
 
+RUN useradd -m service
+
 ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -8,6 +10,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq install --no-install-recommends \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app && chown -R service:service /app
+
+USER service
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
@@ -23,5 +29,7 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
+
+USER service
 
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9000", "--workers", "1", "--timeout", "0", "app.webservice:app", "-k", "uvicorn.workers.UvicornWorker"]
