@@ -10,6 +10,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
+from urllib.parse import quote
 
 ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
@@ -74,12 +75,13 @@ async def asr(
 ):
     result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output)
     return StreamingResponse(
-        result,
-        media_type="text/plain",
-        headers={
-            'Asr-Engine': ASR_ENGINE,
-            'Content-Disposition': f'attachment; filename="{audio_file.filename}.{output}"'
-        })
+    result,
+    media_type="text/plain",
+    headers={
+        'Asr-Engine': ASR_ENGINE,
+        'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
+    }
+)
 
 
 @app.post("/detect-language", tags=["Endpoints"])
