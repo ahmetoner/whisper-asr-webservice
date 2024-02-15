@@ -32,5 +32,9 @@ for more information:
 - [Documentation/Run](https://ahmetoner.github.io/whisper-asr-webservice/run)
 - [Docker Hub](https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice)
 
-# Documentation
+## Documentation
 Explore the documentation by clicking [here](https://ahmetoner.github.io/whisper-asr-webservice).
+
+## Credits
+
+- This software uses libraries from the [FFmpeg](http://ffmpeg.org) project under the [LGPLv2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
