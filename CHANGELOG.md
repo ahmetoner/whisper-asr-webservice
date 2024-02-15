@@ -154,7 +154,7 @@ Unreleased
 - Fastapi init in #3
 - Avoid temp file in #4
 - Translate init in #5
-- mp3 support by using ffmpeg instead of librosa in #8
+- mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
 [1.2.4]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.2.4

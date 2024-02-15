@@ -87,7 +87,7 @@ async def asr(
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(
         audio_file: UploadFile = File(...),
-        encode: bool = Query(default=True, description="Encode audio first through ffmpeg")
+        encode: bool = Query(default=True, description="Encode audio first through FFmpeg")
 ):
     detected_lang_code = language_detection(load_audio(audio_file.file, encode))
     return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
