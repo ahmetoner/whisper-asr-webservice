@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "whisper-asr-webservice"
-version = "1.2.5-dev"
+version = "1.3.0"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
 homepage  = "https://github.com/ahmetoner/whisper-asr-webservice/"
 license = "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"
