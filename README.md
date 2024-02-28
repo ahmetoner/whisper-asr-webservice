@@ -10,7 +10,7 @@ Whisper is a general-purpose speech recognition model. It is trained on a large 
 Current release (v1.3.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20231117](https://github.com/openai/whisper/releases/tag/v20231117)
-- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/0.10.0)
+- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.0.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/1.0.0)
 
 
 ## Quick Usage
@@ -18,13 +18,13 @@ Current release (v1.3.0) supports following whisper models:
 ### CPU
 
 ```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper jessomadic/openai-whisper-asr-webservice:latest
 ```
 
 ### GPU
 
 ```sh
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper jessomadic/openai-whisper-asr-webservice:latest-gpu
 ```
 
 for more information:
