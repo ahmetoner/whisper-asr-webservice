@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded torch to v1.13.1
+
 [1.4.0] (2024-04-17)
 --------------------
 
