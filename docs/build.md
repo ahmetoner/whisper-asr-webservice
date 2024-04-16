@@ -10,7 +10,7 @@ Install torch with following command:
 
 ```sh
 # just for GPU:
-pip3 install torch==1.13.0+cu117 -f https://download.pytorch.org/whl/torch
+pip3 install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch
 ```
 
 ### Run
