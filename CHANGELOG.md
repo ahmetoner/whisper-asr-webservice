@@ -4,6 +4,18 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.1)
+    - fastapi to v0.110.1
+    - uvicorn to v0.29.0
+    - gunicorn to v21.2.0
+    - tqdm to v4.66.2
+    - python-multipart to v0.0.9
+    - llvmlite to v0.42.0
+    - numba to v0.59.1
+
 [1.3.0] (2024-02-15)
 --------------------
 
@@ -18,7 +30,7 @@ Unreleased
 
 - Upgraded
     - [openai/whisper](https://github.com/openai/whisper) to [v20231117](https://github.com/openai/whisper/releases/tag/v20231117)
-    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/0.10.0)
+    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v0.10.0)
 
 [1.2.3] (2023-11-07)
 --------------------
