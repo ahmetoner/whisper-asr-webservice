@@ -4,26 +4,36 @@ After running the docker image interactive Swagger API documentation is availabl
 
 There are 2 endpoints available:
 
-- /asr (TXT, VTT, SRT, TSV, JSON)
-- /detect-language
+- [/asr](##Automatic-Speech-recognition-service-/asr) (Automatic Speech Recognition)
+- [/detect-language](##Language-detection-service-/detect-language)
 
-## Automatic Speech recognition service /asr
+## Automatic speech recognition service /asr
 
-If you choose the **transcribe** task, transcribes the uploaded file. Both audio and video files are supported (as long as ffmpeg supports it).
+- 2 task choices:
+  - **transcribe**: (default) task, transcribes the uploaded file.
+  - **translate**: will provide an English transcript no matter which language was spoken.
+- Files are automatically converted with FFmpeg.
+  - Full list of supported [audio](https://ffmpeg.org/general.html#Audio-Codecs) and [video](https://ffmpeg.org/general.html#Video-Codecs) formats.
+- You can enable word level timestamps output by `word_timestamps` parameter
+- You can Enable the voice activity detection (VAD) to filter out parts of the audio without speech  by `vad_filter` parameter (only with `Faster Whisper` for now).
 
-Note that you can also upload video formats directly as long as they are supported by ffmpeg.
+### Request URL Query Params
 
-You can get TXT, VTT, SRT, TSV and JSON output as a file from /asr endpoint.
+| Name            | Values                                         |
+|-----------------|------------------------------------------------|
+| audio_file      | File                                           |
+| output          | `text` (default), `json`, `vtt`, `strt`, `tsv` |
+| task            | `transcribe`, `translate`                      |
+| language        | `en` (default is auto recognition)             |
+| word_timestamps | false (default)                                |
+| encode          | true (default)                                 |
 
-You can provide the language or it will be automatically recognized.
+Example request with cURL
+```
+curl -X POST -H "content-type: multipart/form-data" -F "audio_file=@/path/to/file" 0.0.0.0:9000/asr?output=json
+```
 
-If you choose the **translate** task it will provide an English transcript no matter which language was spoken.
-
-You can enable word level timestamps output by `word_timestamps` parameter
-
-You can Enable the voice activity detection (VAD) to filter out parts of the audio without speech  by `vad_filter` parameter (only with `Faster Whisper` for now).
-
-Returns a json with following fields:
+### Response (JSON)
 
 - **text**: Contains the full transcript
 - **segments**: Contains an entry per segment. Each entry provides `timestamps`, `transcript`, `token ids`, `word level timestamps` and other metadata
@@ -31,9 +41,9 @@ Returns a json with following fields:
 
 ## Language detection service /detect-language
 
-Detects the language spoken in the uploaded file. For longer files it only processes first 30 seconds.
+Detects the language spoken in the uploaded file. Only processes first 30 seconds.
 
 Returns a json with following fields:
 
-- **detected_language**
-- **language_code**
+- **detected_language**: "english"
+- **language_code**: "en"
