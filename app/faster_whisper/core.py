@@ -10,7 +10,7 @@ from faster_whisper import WhisperModel
 from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 
-model_name = os.getenv("ASR_MODEL", "base")
+model_name = os.getenv("ASR_MODEL", "large")
 model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
 
 # More about available quantization levels is here:

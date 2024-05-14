@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - ASR_MODEL=base
+      - ASR_MODEL=large-v3
     ports:
       - "8000:8000"
     volumes:

@@ -71,17 +71,21 @@ async def asr(
                 include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
             )] = False,
         word_timestamps: bool = Query(default=False, description="Word level timestamps"),
+        temperature: Union[float,None]=Query(None, description="List of temperatures to try sequentially"),
+        best_of: Union[int, None]=Query(None,description="Number of random samples to generate"),
+        beam_size: Union[int, None]=Query(None,description="Number of beams in beam search"),
         output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
 ):
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output)
+
+    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps,temperature,best_of,beam_size, output)
     return StreamingResponse(
-    result,
-    media_type="text/plain",
-    headers={
-        'Asr-Engine': ASR_ENGINE,
-        'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
-    }
-)
+        result,
+        media_type="text/plain",
+        headers={
+            'Asr-Engine': ASR_ENGINE,
+            'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
+        }
+    )
 
 
 @app.post("/detect-language", tags=["Endpoints"])
