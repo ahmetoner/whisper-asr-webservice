@@ -25,3 +25,31 @@ For English-only applications, the `.en` models tend to perform better, especial
 ```sh
 export ASR_MODEL_PATH=/data/whisper
 ```
+
+### Configuring the `ALLOW_ORIGINS`
+
+```sh
+export ALLOW_ORIGINS
+```
+**Default: `*`**
+
+List the origins that are allowed to access the model. Wild cards are supported.
+
+**Docker-compose example**
+```
+services:
+  openai-whisper-asr:
+    image: onerahmet/openai-whisper-asr-webservice:latest
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+      - ALLOW_ORIGINS=https://example.com
+```
+**Adding multiple**
+```
+- ALLOW_ORIGINS=https://example.com, https://second_example.com, https://third_example.com
+```
+**Wildcards**
+```
+- ALLOW_ORIGINS=https://*.exmaple.com
+```
