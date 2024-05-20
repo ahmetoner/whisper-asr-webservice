@@ -22,7 +22,7 @@ else:
 
 SAMPLE_RATE = 16000
 LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
-ORIGINS = os.getenv("ORIGINS", "*").split(",")
+ORIGINS = os.getenv("ALLOW_ORIGINS", "*").split(",")
 
 projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
@@ -63,7 +63,6 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
 
 
     applications.get_swagger_ui_html = swagger_monkey_patch
-
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
