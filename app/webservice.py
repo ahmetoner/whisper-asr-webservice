@@ -10,7 +10,6 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-
 from whisper import tokenizer
 from urllib.parse import quote
 
