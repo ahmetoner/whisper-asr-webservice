@@ -87,7 +87,7 @@ def write_result(
     else:
         return 'Please select an output method!'
 
-gpt2_model_name = "gpt2"
+gpt2_model_name="gpt2"
 gpt2_pipeline = pipeline('text-generation', model=gpt2_model_name, tokenizer=gpt2_model_name, max_length=204, max_new_tokens=100)
 
 def improve_transcription(transcription: str) -> str:

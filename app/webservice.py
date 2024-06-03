@@ -74,7 +74,7 @@ async def asr(
 ):
     audio_data = load_audio(audio_file.file, encode)
     transcription = transcribe(audio_data, task, language, initial_prompt, vad_filter, word_timestamps, temperature, best_of, beam_size, output)
-    improved_transcription = improve_transcription(transcription)
+    improved_transcription=improve_transcription(transcription)
     return improved_transcription
 
 @app.post("/detect-language", tags=["Endpoints"])
