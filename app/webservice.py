@@ -16,7 +16,7 @@ ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
     from .faster_whisper.core import transcribe, language_detection
 else:
-    from .openai_whisper.core import transcribe, language_detection
+    from .openai_whisper.core import transcribe, language_detection, improve_transcription
 
 SAMPLE_RATE = 16000
 LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
@@ -40,24 +40,20 @@ assets_path = os.getcwd() + "/swagger-ui-assets"
 if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
 
+def swagger_monkey_patch(*args, **kwargs):
+    return get_swagger_ui_html(
+        *args,
+        **kwargs,
+        swagger_favicon_url="",
+        swagger_css_url="/assets/swagger-ui.css",
+        swagger_js_url="/assets/swagger-ui-bundle.js",
+    )
 
-    def swagger_monkey_patch(*args, **kwargs):
-        return get_swagger_ui_html(
-            *args,
-            **kwargs,
-            swagger_favicon_url="",
-            swagger_css_url="/assets/swagger-ui.css",
-            swagger_js_url="/assets/swagger-ui-bundle.js",
-        )
-
-
-    applications.get_swagger_ui_html = swagger_monkey_patch
-
+applications.get_swagger_ui_html = swagger_monkey_patch
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
     return "/docs"
-
 
 @app.post("/asr", tags=["Endpoints"])
 async def asr(
@@ -71,22 +67,15 @@ async def asr(
                 include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
             )] = False,
         word_timestamps: bool = Query(default=False, description="Word level timestamps"),
-        temperature: Union[float,None]=Query(None, description="List of temperatures to try sequentially"),
-        best_of: Union[int, None]=Query(None,description="Number of random samples to generate"),
-        beam_size: Union[int, None]=Query(None,description="Number of beams in beam search"),
+        temperature: Union[float, None] = Query(None, description="List of temperatures to try sequentially"),
+        best_of: Union[int, None] = Query(None, description="Number of random samples to generate"),
+        beam_size: Union[int, None] = Query(None, description="Number of beams in beam search"),
         output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
 ):
-
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps,temperature,best_of,beam_size, output)
-    return StreamingResponse(
-        result,
-        media_type="text/plain",
-        headers={
-            'Asr-Engine': ASR_ENGINE,
-            'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
-        }
-    )
-
+    audio_data = load_audio(audio_file.file, encode)
+    transcription = transcribe(audio_data, task, language, initial_prompt, vad_filter, word_timestamps, temperature, best_of, beam_size, output)
+    improved_transcription = improve_transcription(transcription)
+    return improved_transcription
 
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(
@@ -95,7 +84,6 @@ async def detect_language(
 ):
     detected_lang_code = language_detection(load_audio(audio_file.file, encode))
     return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
-
 
 def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
     """
