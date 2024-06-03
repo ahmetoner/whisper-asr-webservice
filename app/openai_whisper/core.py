@@ -5,6 +5,7 @@ from typing import BinaryIO, Union, Tuple
 
 import torch
 import whisper
+from transformers import pipeline
 from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 model_name = os.getenv("ASR_MODEL", "large-v3")
@@ -85,8 +86,6 @@ def write_result(
         WriteTXT(ResultWriter).write_result(result, file=file, options=options)
     else:
         return 'Please select an output method!'
-
-from transformers import pipeline
 
 gpt2_model_name = "gpt2"
 gpt2_pipeline = pipeline('text-generation', model=gpt2_model_name, tokenizer=gpt2_model_name, max_length=204, max_new_tokens=100)
