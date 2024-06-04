@@ -87,15 +87,19 @@ def write_result(
     else:
         return 'Please select an output method!'
 
-gpt2_model_name="gpt2"
-gpt2_pipeline = pipeline('text-generation', model=gpt2_model_name, tokenizer=gpt2_model_name, max_length=204, max_new_tokens=100)
+gpt2_model_name = "gpt2"
+gpt2_pipeline = pipeline('text-generation', model=gpt2_model_name, tokenizer=gpt2_model_name, max_new_tokens=50)
 
 def improve_transcription(transcription: str) -> str:
-    prompt = f"Improve the quality of the resulting transcription: {transcription}"
-
-    generated_response = gpt2_pipeline(prompt, max_length=204, num_return_sequences=1)[0]['generated_text']
-    start_index = generated_response.find(":") + 1
-    end_index = generated_response.find('"', start_index)
-    improved_transcription = generated_response[start_index:end_index].strip()
+    prompt = f"Popraw transkrypcję: \"{transcription}\". Upewnij się, że tekst jest poprawny gramatycznie i logicznie."
+    
+    # Generowanie odpowiedzi przez model
+    result = gpt2_pipeline(prompt, max_new_tokens=50, num_return_sequences=1)
+    
+    # Wydobywanie tekstu z wyniku
+    improved_transcription = result[0]['generated_text']
+    
+    # Usunięcie promptu z wygenerowanego tekstu
+    improved_transcription = improved_transcription.replace(prompt, "").strip()
 
     return improved_transcription
