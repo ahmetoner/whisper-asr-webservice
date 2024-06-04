@@ -72,7 +72,7 @@ async def asr(
         beam_size: Union[int, None] = Query(None, description="Number of beams in beam search"),
         output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
 ):
-    audio_data = load_audio(audio_file.file, encode)
+    audio_data=load_audio(audio_file.file, encode)
     transcription = transcribe(audio_data, task, language, initial_prompt, vad_filter, word_timestamps, temperature, best_of, beam_size, output)
     improved_transcription=improve_transcription(transcription)
     return improved_transcription
