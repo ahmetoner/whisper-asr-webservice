@@ -9,6 +9,7 @@ from fastapi import FastAPI, File, UploadFile, Query, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from whisper import tokenizer
 from urllib.parse import quote
 
@@ -20,6 +21,7 @@ else:
 
 SAMPLE_RATE = 16000
 LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
+ORIGINS = os.getenv("ALLOW_ORIGINS", "*").split(",")
 
 projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
 app = FastAPI(
@@ -34,6 +36,14 @@ app = FastAPI(
         "name": "MIT License",
         "url": projectMetadata['License']
     }
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
@@ -52,7 +62,6 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
 
 
     applications.get_swagger_ui_html = swagger_monkey_patch
-
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def index():
