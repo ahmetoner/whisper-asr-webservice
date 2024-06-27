@@ -7,7 +7,7 @@ import torch
 import whisper
 from faster_whisper import WhisperModel
 
-from .utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 
 
 model_name = os.getenv("ASR_MODEL", "base")
@@ -30,6 +30,11 @@ model = WhisperModel(
 )
 
 model_lock = Lock()
+
+def to_whisper_word(word):
+    word_dict = word._asdict()
+    word_dict["confidence"] = word_dict.pop("probability")
+    return word_dict
 
 def transcribe(
         audio,
@@ -54,7 +59,10 @@ def transcribe(
         text = ""
         segment_generator, info = model.transcribe(audio, beam_size=5, **options_dict)
         for segment in segment_generator:
-            segments.append(segment)
+            seg_dict = segment._asdict()
+            if "words" in seg_dict:
+                seg_dict["words"] = [to_whisper_word(word) for word in seg_dict["words"]]
+            segments.append(seg_dict)
             text = text + segment.text
         result = {
             "language": options_dict.get("language", info.language),
@@ -84,15 +92,20 @@ def language_detection(audio):
 def write_result(
         result: dict, file: BinaryIO, output: Union[str, None]
 ):
+    options = {
+        'max_line_width': 1000,
+        'max_line_count': 10,
+        'highlight_words': False
+    }
     if output == "srt":
-        WriteSRT(ResultWriter).write_result(result, file=file)
+        WriteSRT(ResultWriter).write_result(result, file=file, options=options)
     elif output == "vtt":
-        WriteVTT(ResultWriter).write_result(result, file=file)
+        WriteVTT(ResultWriter).write_result(result, file=file, options=options)
     elif output == "tsv":
-        WriteTSV(ResultWriter).write_result(result, file=file)
+        WriteTSV(ResultWriter).write_result(result, file=file, options=options)
     elif output == "json":
-        WriteJSON(ResultWriter).write_result(result, file=file)
+        WriteJSON(ResultWriter).write_result(result, file=file, options=options)
     elif output == "txt":
-        WriteTXT(ResultWriter).write_result(result, file=file)
+        WriteTXT(ResultWriter).write_result(result, file=file, options=options)
     else:
         return 'Please select an output method!'
