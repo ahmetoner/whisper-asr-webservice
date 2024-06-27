@@ -69,6 +69,7 @@ class WriteTSV(ResultWriter):
     an environment setting a language encoding that causes the decimal in a floating point number
     to appear as a comma; also is faster and more efficient to parse & store, e.g., in C++.
     """
+
     extension: str = "tsv"
 
     def write_result(self, result: dict, file: TextIO):

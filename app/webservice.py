@@ -1,45 +1,39 @@
 import importlib.metadata
 import os
 from os import path
-from typing import BinaryIO, Union, Annotated
+from typing import Annotated, BinaryIO, Union
+from urllib.parse import quote
 
 import ffmpeg
 import numpy as np
-from fastapi import FastAPI, File, UploadFile, Query, applications
+from fastapi import FastAPI, File, Query, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import StreamingResponse, RedirectResponse
+from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
-from urllib.parse import quote
 
 ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
-    from .faster_whisper.core import transcribe, language_detection
+    from .faster_whisper.core import language_detection, transcribe
 else:
-    from .openai_whisper.core import transcribe, language_detection
+    from .openai_whisper.core import language_detection, transcribe
 
 SAMPLE_RATE = 16000
-LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
+LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 
-projectMetadata = importlib.metadata.metadata('whisper-asr-webservice')
+projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
-    title=projectMetadata['Name'].title().replace('-', ' '),
-    description=projectMetadata['Summary'],
-    version=projectMetadata['Version'],
-    contact={
-        "url": projectMetadata['Home-page']
-    },
+    title=projectMetadata["Name"].title().replace("-", " "),
+    description=projectMetadata["Summary"],
+    version=projectMetadata["Version"],
+    contact={"url": projectMetadata["Home-page"]},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
-    license_info={
-        "name": "MIT License",
-        "url": projectMetadata['License']
-    }
+    license_info={"name": "MIT License", "url": projectMetadata["License"]},
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
 if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
-
 
     def swagger_monkey_patch(*args, **kwargs):
         return get_swagger_ui_html(
@@ -49,7 +43,6 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
             swagger_css_url="/assets/swagger-ui.css",
             swagger_js_url="/assets/swagger-ui-bundle.js",
         )
-
 
     applications.get_swagger_ui_html = swagger_monkey_patch
 
@@ -61,33 +54,38 @@ async def index():
 
 @app.post("/asr", tags=["Endpoints"])
 async def asr(
-        audio_file: UploadFile = File(...),
-        encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
-        task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-        language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-        initial_prompt: Union[str, None] = Query(default=None),
-        vad_filter: Annotated[bool | None, Query(
-                description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
-                include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
-            )] = False,
-        word_timestamps: bool = Query(default=False, description="Word level timestamps"),
-        output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
+    audio_file: UploadFile = File(...),  # noqa: B008
+    encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
+    task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+    initial_prompt: Union[str, None] = Query(default=None),
+    vad_filter: Annotated[
+        bool | None,
+        Query(
+            description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
+            include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False),
+        ),
+    ] = False,
+    word_timestamps: bool = Query(default=False, description="Word level timestamps"),
+    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
-    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output)
+    result = transcribe(
+        load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output
+    )
     return StreamingResponse(
-    result,
-    media_type="text/plain",
-    headers={
-        'Asr-Engine': ASR_ENGINE,
-        'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
-    }
-)
+        result,
+        media_type="text/plain",
+        headers={
+            "Asr-Engine": ASR_ENGINE,
+            "Content-Disposition": f'attachment; filename="{quote(audio_file.filename)}.{output}"',
+        },
+    )
 
 
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(
-        audio_file: UploadFile = File(...),
-        encode: bool = Query(default=True, description="Encode audio first through FFmpeg")
+    audio_file: UploadFile = File(...),  # noqa: B008
+    encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
     detected_lang_code = language_detection(load_audio(audio_file.file, encode))
     return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
