@@ -4,6 +4,17 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.2](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.2)
+    - fastapi to v0.111.0
+    - uvicorn to v0.30.1
+    - gunicorn to v22.0.0
+    - tqdm to v4.66.4
+    - llvmlite to v0.43.0
+    - numba to v0.60.0
+
 [1.4.1] (2024-04-17)
 --------------------
 
