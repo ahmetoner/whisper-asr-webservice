@@ -29,13 +29,14 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
     docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
     ```
 
-> Interactive Swagger API documentation is available at http://localhost:9000/docs
+> Interactive Swagger API documentation is available at <http://localhost:9000/docs>
 
 ![Swagger UI](assets/images/swagger-ui.png)
 
 ## Cache
-The ASR model is downloaded each time you start the container, using the large model this can take some time. 
-If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (`~/.cache/whisper` or `/root/.cache/whisper`) to a persistent storage. 
+
+The ASR model is downloaded each time you start the container, using the large model this can take some time.
+If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (`~/.cache/whisper` or `/root/.cache/whisper`) to a persistent storage.
 Next time you start your container the ASR Model will be taken from the cache instead of being downloaded again.
 
 **Important this will prevent you from receiving any updates to the models.**

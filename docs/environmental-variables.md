@@ -19,7 +19,6 @@ Available ASR_MODELs are `tiny`, `base`, `small`, `medium`, `large` (only OpenAI
 
 For English-only applications, the `.en` models tend to perform better, especially for the `tiny.en` and `base.en` models. We observed that the difference becomes less significant for the `small.en` and `medium.en` models.
 
-
 ### Configuring the `Model Path`
 
 ```sh

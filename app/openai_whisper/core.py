@@ -5,7 +5,7 @@ from typing import BinaryIO, Union
 
 import torch
 import whisper
-from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
@@ -18,13 +18,13 @@ model_lock = Lock()
 
 
 def transcribe(
-        audio,
-        task: Union[str, None],
-        language: Union[str, None],
-        initial_prompt: Union[str, None],
-        vad_filter: Union[bool, None],
-        word_timestamps: Union[bool, None],
-        output
+    audio,
+    task: Union[str, None],
+    language: Union[str, None],
+    initial_prompt: Union[str, None],
+    vad_filter: Union[bool, None],
+    word_timestamps: Union[bool, None],
+    output,
 ):
     options_dict = {"task": task}
     if language:
@@ -58,14 +58,8 @@ def language_detection(audio):
     return detected_lang_code
 
 
-def write_result(
-        result: dict, file: BinaryIO, output: Union[str, None]
-):
-    options = {
-        'max_line_width': 1000,
-        'max_line_count': 10,
-        'highlight_words': False
-    }
+def write_result(result: dict, file: BinaryIO, output: Union[str, None]):
+    options = {"max_line_width": 1000, "max_line_count": 10, "highlight_words": False}
     if output == "srt":
         WriteSRT(ResultWriter).write_result(result, file=file, options=options)
     elif output == "vtt":
@@ -77,4 +71,4 @@ def write_result(
     elif output == "txt":
         WriteTXT(ResultWriter).write_result(result, file=file, options=options)
     else:
-        return 'Please select an output method!'
+        return "Please select an output method!"

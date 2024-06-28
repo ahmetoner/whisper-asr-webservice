@@ -29,7 +29,8 @@ There are 2 endpoints available:
 | encode          | true (default)                                 |
 
 Example request with cURL
-```
+
+```bash
 curl -X POST -H "content-type: multipart/form-data" -F "audio_file=@/path/to/file" 0.0.0.0:9000/asr?output=json
 ```
 

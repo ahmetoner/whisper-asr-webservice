@@ -2,12 +2,9 @@
 name = "whisper-asr-webservice"
 version = "1.5.0-dev"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
-homepage  = "https://github.com/ahmetoner/whisper-asr-webservice/"
+homepage = "https://github.com/ahmetoner/whisper-asr-webservice/"
 license = "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"
-authors = [
-    "Ahmet Öner",
-    "Besim Alibegovic",
-]
+authors = ["Ahmet Öner", "Besim Alibegovic"]
 readme = "README.md"
 packages = [{ include = "app" }]
 
@@ -29,17 +26,57 @@ numba = "^0.60.0"
 openai-whisper = "^20231117"
 faster-whisper = "^1.0.2"
 torch = [
-  {markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl"},
-  {markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl"},
-  {markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_10_9_x86_64.whl"},
-  {markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url="https://download.pytorch.org/whl/torch-1.13.1-cp310-cp310-manylinux2014_aarch64.whl"},
-  {markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-linux_x86_64.whl"},
-  {markers = "sys_platform == 'win' and platform_machine == 'amd64'", url="https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-win_amd64.whl"},
+  { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl" },
+  { markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_10_9_x86_64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url = "https://download.pytorch.org/whl/torch-1.13.1-cp310-cp310-manylinux2014_aarch64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-linux_x86_64.whl" },
+  { markers = "sys_platform == 'win' and platform_machine == 'amd64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-win_amd64.whl" },
 ]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+ruff = "^0.5.0"
+black = "^24.4.2"
+mkdocs = "^1.6.0"
+mkdocs-material = "^9.5.27"
+pymdown-extensions = "^10.8.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+skip-string-normalization = true
+line-length = 120
+
+[tool.ruff]
+# Same as Black.
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+  "E", # pycodestyle errors (settings from FastAPI, thanks, @tiangolo!)
+  "W", # pycodestyle warnings
+  "F", # pyflakes
+  "I", # isort
+  "C", # flake8-comprehensions
+  "B", # flake8-bugbear
+]
+ignore = [
+  "E501", # line too long, handled by black
+  "C901", # too complex
+]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+extra-standard-library = ["typing"]
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+known-first-party = []

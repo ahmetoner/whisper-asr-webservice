@@ -7,13 +7,13 @@ Unreleased
 ### Changed
 
 - Upgraded
-    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.2](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.2)
-    - fastapi to v0.111.0
-    - uvicorn to v0.30.1
-    - gunicorn to v22.0.0
-    - tqdm to v4.66.4
-    - llvmlite to v0.43.0
-    - numba to v0.60.0
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.2](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.2)
+  - fastapi to v0.111.0
+  - uvicorn to v0.30.1
+  - gunicorn to v22.0.0
+  - tqdm to v4.66.4
+  - llvmlite to v0.43.0
+  - numba to v0.60.0
 
 [1.4.1] (2024-04-17)
 --------------------
@@ -28,14 +28,14 @@ Unreleased
 ### Changed
 
 - Upgraded
-    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.1)
-    - fastapi to v0.110.1
-    - uvicorn to v0.29.0
-    - gunicorn to v21.2.0
-    - tqdm to v4.66.2
-    - python-multipart to v0.0.9
-    - llvmlite to v0.42.0
-    - numba to v0.59.1
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.1)
+  - fastapi to v0.110.1
+  - uvicorn to v0.29.0
+  - gunicorn to v21.2.0
+  - tqdm to v4.66.2
+  - python-multipart to v0.0.9
+  - llvmlite to v0.42.0
+  - numba to v0.59.1
 
 [1.3.0] (2024-02-15)
 --------------------
@@ -50,8 +50,8 @@ Unreleased
 ### Changed
 
 - Upgraded
-    - [openai/whisper](https://github.com/openai/whisper) to [v20231117](https://github.com/openai/whisper/releases/tag/v20231117)
-    - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v0.10.0)
+  - [openai/whisper](https://github.com/openai/whisper) to [v20231117](https://github.com/openai/whisper/releases/tag/v20231117)
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v0.10.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v0.10.0)
 
 [1.2.3] (2023-11-07)
 --------------------
@@ -59,7 +59,7 @@ Unreleased
 ### Changed
 
 - Upgraded
-    - [openai/whisper](https://github.com/openai/whisper) to [v20231106](https://github.com/openai/whisper/releases/tag/v20231106)
+  - [openai/whisper](https://github.com/openai/whisper) to [v20231106](https://github.com/openai/whisper/releases/tag/v20231106)
 
 [1.2.2] (2023-11-03)
 --------------------
@@ -80,13 +80,13 @@ Unreleased
 - Changed misspelling in "Word level timestamps"
 - Removed unused unidecode dependency
 - Upgraded
-    - uvicorn to v0.23.2
-    - gunicorn to v21.0.1
-    - tqdm to v4.66.1
-    - python-multipart to v0.0.6
-    - fastapi to v0.104.1
-    - llvmlite to v0.41.1
-    - numba to v0.58.0
+  - uvicorn to v0.23.2
+  - gunicorn to v21.0.1
+  - tqdm to v4.66.1
+  - python-multipart to v0.0.6
+  - fastapi to v0.104.1
+  - llvmlite to v0.41.1
+  - numba to v0.58.0
 
 [1.2.0] (2023-10-01)
 --------------------
@@ -94,18 +94,20 @@ Unreleased
 ### Changed
 
 - Upgraded
-    - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
-    - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper) to [v0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
+  - [openai/whisper](https://github.com/openai/whisper) to [v20230918](https://github.com/openai/whisper/releases/tag/v20230918)
+  - [guillaumekln/faster-whisper](https://github.com/guillaumekln/faster-whisper) to [v0.9.0](https://github.com/guillaumekln/faster-whisper/releases/tag/v0.9.0)
 
 ### Updated
 
 - Updated model conversion method (for Faster Whisper) to use Hugging Face downloader
 - Updated default model paths to `~/.cache/whisper` or `/root/.cache/whisper`.
-    - For customization, modify the `ASR_MODEL_PATH` environment variable.
-    - Ensure Docker volume is set for the corresponding directory to use caching.
+  - For customization, modify the `ASR_MODEL_PATH` environment variable.
+  - Ensure Docker volume is set for the corresponding directory to use caching.
+
       ```bash
       docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v $PWD/yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
       ```
+
 - Removed the `triton` dependency from `poetry.lock` to ensure the stability of the pipeline for `ARM-based` Docker images
 
 [1.1.1] (2023-05-29)
