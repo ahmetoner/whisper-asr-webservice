@@ -434,13 +434,13 @@ standard = ["fastapi", "uvicorn[standard] (>=0.15.0)"]
 
 [[package]]
 name = "faster-whisper"
-version = "1.0.2"
+version = "1.0.3"
 description = "Faster Whisper transcription with CTranslate2"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "faster-whisper-1.0.2.tar.gz", hash = "sha256:54d9fc698f7c665e00a0d5ed65d6e975b72a8862b8214f20a22e79b115c41511"},
-    {file = "faster_whisper-1.0.2-py3-none-any.whl", hash = "sha256:d968c289222e766a49ed97eecec24e934bdef405183f57d6d434a364bb3569c1"},
+    {file = "faster-whisper-1.0.3.tar.gz", hash = "sha256:1a145db86450b56aaa623c8df7d4ef86e8a1159900f60533e2890e98e8453a17"},
+    {file = "faster_whisper-1.0.3-py3-none-any.whl", hash = "sha256:364d0e378ab232ed26f39656e5c98548b38045224e206b20f7d8c90e2745b9d3"},
 ]
 
 [package.dependencies]
@@ -2355,4 +2355,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "5b597d7795f7bacd9555645100e7705c1410e9e241b9335d7b0c2fb67c4e26eb"
+content-hash = "ca216a47240b1276ab93a3e5e9ec4105cc071e9515ec570b14dcb0ccf3ede419"

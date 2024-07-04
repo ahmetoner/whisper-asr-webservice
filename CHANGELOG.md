@@ -7,7 +7,7 @@ Unreleased
 ### Changed
 
 - Upgraded
-  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.2](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.2)
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.0.3](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.0.3)
   - fastapi to v0.111.0
   - uvicorn to v0.30.1
   - gunicorn to v22.0.0
