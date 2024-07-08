@@ -16,7 +16,7 @@ ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
     from .faster_whisper.core import transcribe, language_detection
 else:
-    from .openai_whisper.core import transcribe, language_detection, improve_transcription
+    from .openai_whisper.core import transcribe, language_detection
 
 SAMPLE_RATE = 16000
 LANGUAGE_CODES = sorted(list(tokenizer.LANGUAGES.keys()))
@@ -65,17 +65,22 @@ async def asr(
         vad_filter: Annotated[bool | None, Query(
                 description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
                 include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False)
-            )] = False,
+                )] = False,
+        best_of: Union[int, None] = Query(None, description="Number of random samples to be generated"), 
+        beam_size: Union[int, None] = Query(None, description="Number of bundles in a bundle search"),
+        top_k: Union[int, None]=Query(None,description="Selecting the most appropriate words"),
         word_timestamps: bool = Query(default=False, description="Word level timestamps"),
-        temperature: Union[float, None] = Query(None, description="List of temperatures to try sequentially"),
-        best_of: Union[int, None] = Query(None, description="Number of random samples to generate"),
-        beam_size: Union[int, None] = Query(None, description="Number of beams in beam search"),
         output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"])
-):
-    audio_data=load_audio(audio_file.file, encode)
-    transcription = transcribe(audio_data, task, language, initial_prompt, vad_filter, word_timestamps, temperature, best_of, beam_size, output)
-    improved_transcription=improve_transcription(transcription)
-    return improved_transcription
+    ):
+    result = transcribe(load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, best_of, beam_size, top_k, output)
+    return StreamingResponse(
+    result,
+    media_type="text/plain",
+    headers={
+        'Asr-Engine': ASR_ENGINE,
+        'Content-Disposition': f'attachment; filename="{quote(audio_file.filename)}.{output}"'
+    }
+)
 
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(

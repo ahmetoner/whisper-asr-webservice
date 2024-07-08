@@ -29,7 +29,6 @@ RUN PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./
       --disable-network \
       --disable-autodetect \
       --disable-hwaccels \
-      --disable-ffprobe \
       --disable-ffplay \
       --enable-filter=copy \
       --enable-protocol=file \
@@ -55,6 +54,7 @@ WORKDIR /app
 COPY . /app
 COPY --from=ffmpeg /FFmpeg-6.1.1 /FFmpeg-6.1.1
 COPY --from=ffmpeg /root/bin/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=ffmpeg /root/bin/ffprobe /usr/local/bin/ffprobe
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 

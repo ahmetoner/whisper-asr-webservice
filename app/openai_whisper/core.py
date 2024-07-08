@@ -1,12 +1,12 @@
 import os
-from io import StringIO
+from io import StringIO, BytesIO
 from threading import Lock
 from typing import BinaryIO, Union, Tuple
-
 import torch
 import whisper
-from transformers import pipeline
 from whisper.utils import ResultWriter, WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
+import numpy as np
+import ffmpeg
 
 model_name = os.getenv("ASR_MODEL", "large-v3")
 model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
@@ -24,10 +24,10 @@ def transcribe(
         initial_prompt: Union[str, None],
         vad_filter: Union[bool, None],
         word_timestamps: Union[bool, None],
-        temperature: Union[float, Tuple[float, ...], None],
         best_of: Union[int, None],
         beam_size: Union[int, None],
-        output
+        top_k: Union[int, None],
+        output: Union[str, None]
 ):
     options_dict = {"task": task}
     if language:
@@ -36,13 +36,10 @@ def transcribe(
         options_dict["initial_prompt"] = initial_prompt
     if word_timestamps:
         options_dict["word_timestamps"] = word_timestamps
-    if temperature:
-        options_dict["temperature"] = temperature
     if best_of:
         options_dict["best_of"] = best_of
     if beam_size:
         options_dict["beam_size"] = beam_size
-
     with model_lock:
         result = model.transcribe(audio, **options_dict)
 
@@ -50,20 +47,46 @@ def transcribe(
     write_result(result, output_file, output)
     output_file.seek(0)
 
-    return result["text"]
+    return output_file
+    #     base_result = base_model.transcribe(audio, **options_dict)
+    
+    # segments = base_result['segments']
+    
+    # # Improve transcription for each segment with large-v3 model
+    # improved_segments = []
+    # for segment in segments:
+    #     segment_audio = extract_segment_audio(audio, segment['start'], segment['end'])
+    #     with model_lock:
+    #         segment_result = model.transcribe(segment_audio, **options_dict)
+    #         for seg in segment_result['segments']:
+    #             improved_segments.append(seg)
+    
+    # # Combine and sort segments by start time
+    # result = {
+    #     'text': ' '.join([seg['text'] for seg in improved_segments]),
+    #     'segments': sorted(improved_segments, key=lambda x: x['start'])
+    # }
+
+    # output_file = StringIO()
+    # write_result(result, output_file, output)
+    # output_file.seek(0)
+
+    # return output_file
+
+# def extract_segment_audio(audio, start, end, sample_rate=16000):
+#     """
+#     Extracts a segment of the audio between start and end times.
+#     """
+#     start_sample = int(start * sample_rate)
+#     end_sample = int(end * sample_rate)
+#     return audio[start_sample:end_sample]
 
 def language_detection(audio):
-    # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)
-
-    # make log-Mel spectrogram and move to the same device as the model
     mel = whisper.log_mel_spectrogram(audio).to(model.device)
-
-    # detect the spoken language
     with model_lock:
         _, probs = model.detect_language(mel)
     detected_lang_code = max(probs, key=probs.get)
-
     return detected_lang_code
 
 def write_result(
@@ -86,17 +109,3 @@ def write_result(
         WriteTXT(ResultWriter).write_result(result, file=file, options=options)
     else:
         return 'Please select an output method!'
-
-gpt2_model_name = "gpt2"
-gpt2_pipeline = pipeline('text-generation', model=gpt2_model_name, tokenizer=gpt2_model_name, max_new_tokens=50)
-
-def improve_transcription(transcription: str) -> str:
-    prompt = f"Correct the transcription: \"{transcription}\". Make sure the text is grammatically and logically correct."
-    
-    result = gpt2_pipeline(prompt, max_new_tokens=50, num_return_sequences=1)
-    
-    improved_transcription = result[0]['generated_text']
-    
-    improved_transcription = improved_transcription.replace(prompt, "").strip()
-
-    return improved_transcription
