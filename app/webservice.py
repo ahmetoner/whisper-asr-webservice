@@ -1,12 +1,12 @@
 import importlib.metadata
 import os
 from os import path
-from typing import Annotated, BinaryIO, Union
+from typing import Annotated, BinaryIO, Union, List
 from urllib.parse import quote
 
 import ffmpeg
 import numpy as np
-from fastapi import FastAPI, File, Query, UploadFile, applications
+from fastapi import FastAPI, File, Query, UploadFile, applications, Form, Request
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -52,43 +52,47 @@ async def index():
     return "/docs"
 
 
-@app.post("/asr", tags=["Endpoints"])
-async def asr(
-    audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
-    task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-    initial_prompt: Union[str, None] = Query(default=None),
-    vad_filter: Annotated[
-        bool | None,
-        Query(
-            description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
-            include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False),
-        ),
-    ] = False,
-    word_timestamps: bool = Query(default=False, description="Word level timestamps"),
-    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+@app.post("/v1/audio/transcriptions", tags=["Endpoints"])
+@app.post("/v1/audio/translations", tags=["Endpoints"])
+async def asr_openai(
+    request: Request,
+    file: UploadFile = File(...),
+    # Required by OpenAI API but unused for now
+    model: str = Form(enum=["whisper-1"]),
+    language: Union[str, None] = Form(default="", enum=LANGUAGE_CODES),
+    prompt: Union[str, None] = Form(default=""),
+    response_format: Union[str, None] = Form(default="json", enum=["json", "text", "srt", "verbose_json", "vtt"]),
+    temperature: Union[float, None] = Form(default=0),
+    timestamp_granularities: List[str] = Form(default=["segment"], alias="timestamp_granularities[]", description="Word-level timestamps on translations may not be reliable.")
 ):
+
     result = transcribe(
-        load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output
+        load_audio(file.file, True),
+        "transcribe" if request.url.path == "/v1/audio/transcriptions" else "translate",
+        language,
+        prompt,
+        True if ASR_ENGINE == "faster_whisper" else False,
+        "word" in timestamp_granularities,
+        timestamp_granularities,
+        temperature,
+        response_format
     )
+
+    c_type = {
+        "json": "application/json",
+        "verbose_json": "application/json",
+        "text": "text/plain",
+        "srt": "text/plain",
+        "vtt": "text/plain"
+    }
+
     return StreamingResponse(
         result,
-        media_type="text/plain",
+        media_type=c_type[response_format],
         headers={
-            "Asr-Engine": ASR_ENGINE,
-            "Content-Disposition": f'attachment; filename="{quote(audio_file.filename)}.{output}"',
+            "Asr-Engine": ASR_ENGINE
         },
     )
-
-
-@app.post("/detect-language", tags=["Endpoints"])
-async def detect_language(
-    audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
-):
-    detected_lang_code = language_detection(load_audio(audio_file.file, encode))
-    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
 
 
 def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
