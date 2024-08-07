@@ -24,9 +24,11 @@ def transcribe(
     initial_prompt: Union[str, None],
     vad_filter: Union[bool, None],
     word_timestamps: Union[bool, None],
+    timestamp_granularities: Union[list, None],
+    temperature,
     output,
 ):
-    options_dict = {"task": task}
+    options_dict = {"task": task, "temperature": temperature}
     if language:
         options_dict["language"] = language
     if initial_prompt:
@@ -35,6 +37,25 @@ def transcribe(
         options_dict["word_timestamps"] = word_timestamps
     with model_lock:
         result = model.transcribe(audio, **options_dict)
+
+    if output == "json":
+        del result["segments"]
+        del result["language"]
+    elif output == "verbose_json":
+        output = "json"
+
+        if "word" in timestamp_granularities:
+            word_array = []
+            for n, segment in enumerate(result["segments"][:]):
+                word_array.extend(segment["words"])
+                del result["segments"][n]["words"]
+
+            result["words"] = word_array
+
+        if "segment" not in timestamp_granularities:
+            del result["segments"]
+    elif output == "text":
+        output = "txt"
 
     output_file = StringIO()
     write_result(result, output_file, output)
