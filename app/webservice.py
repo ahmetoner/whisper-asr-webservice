@@ -1,11 +1,13 @@
 import importlib.metadata
 import os
 from os import path
-from typing import Annotated, BinaryIO, Union
+from typing import Annotated, BinaryIO, Optional, Union
 from urllib.parse import quote
 
+import click
 import ffmpeg
 import numpy as np
+import uvicorn
 from fastapi import FastAPI, File, Query, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse, StreamingResponse
@@ -14,9 +16,9 @@ from whisper import tokenizer
 
 ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 if ASR_ENGINE == "faster_whisper":
-    from .faster_whisper.core import language_detection, transcribe
+    from app.faster_whisper.core import language_detection, transcribe
 else:
-    from .openai_whisper.core import language_detection, transcribe
+    from app.openai_whisper.core import language_detection, transcribe
 
 SAMPLE_RATE = 16000
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
@@ -122,3 +124,28 @@ def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
         out = file.read()
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
+
+@click.command()
+@click.option(
+    "-h",
+    "--host",
+    metavar="HOST",
+    default="0.0.0.0",
+    help="Host for the webservice (default: 0.0.0.0)",
+)
+@click.option(
+    "-p",
+    "--port",
+    metavar="PORT",
+    default=9000,
+    help="Port for the webservice (default: 9000)",
+)
+@click.version_option(version=projectMetadata["Version"])
+def start(
+    host: str,
+    port: Optional[int] = None
+):
+    uvicorn.run(app, host=host, port=port)
+
+if __name__ == "__main__":
+    start()

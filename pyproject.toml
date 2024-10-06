@@ -8,6 +8,9 @@ authors = ["Ahmet Öner", "Besim Alibegovic"]
 readme = "README.md"
 packages = [{ include = "app" }]
 
+[tool.poetry.scripts]
+whisper-asr-webservice = "app.webservice:start"
+
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
@@ -15,15 +18,14 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-uvicorn = { extras = ["standard"], version = "^0.30.1" }
-gunicorn = "^22.0.0"
-tqdm = "^4.66.4"
-python-multipart = "^0.0.9"
+uvicorn = { extras = ["standard"], version = "^0.31.0" }
+tqdm = "^4.66.5"
+python-multipart = "^0.0.12"
 ffmpeg-python = "^0.2.0"
-fastapi = "^0.111.0"
+fastapi = "^0.115.0"
 llvmlite = "^0.43.0"
 numba = "^0.60.0"
-openai-whisper = "^20231117"
+openai-whisper = "^20240930"
 faster-whisper = "^1.0.3"
 torch = [
   { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl" },

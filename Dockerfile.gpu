@@ -81,4 +81,4 @@ RUN $POETRY_VENV/bin/pip install torch==1.13.1+cu117 -f https://download.pytorch
 
 EXPOSE 9000
 
-CMD gunicorn --bind 0.0.0.0:9000 --workers 1 --timeout 0 app.webservice:app -k uvicorn.workers.UvicornWorker
+CMD whisper-asr-webservice
