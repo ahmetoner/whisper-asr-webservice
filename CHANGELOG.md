@@ -4,6 +4,15 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+  - [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
+  - fastapi to v0.115.0
+  - uvicorn to v0.31.0
+  - tqdm to v4.66.5
+  - python-multipart to v0.0.12
+
 [1.5.0] (2024-07-04)
 --------------------
 
