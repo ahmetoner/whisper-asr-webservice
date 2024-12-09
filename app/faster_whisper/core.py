@@ -1,7 +1,9 @@
 import os
 from io import StringIO
-from threading import Lock
+from threading import Lock, Thread
 from typing import BinaryIO, Union
+import time
+import gc
 
 import torch
 import whisper
@@ -26,7 +28,25 @@ model = WhisperModel(
 )
 
 model_lock = Lock()
+last_activity_time = time.time()
+idle_timeout = int(os.getenv("IDLE_TIMEOUT", 300))  # default to 5 minutes
 
+def monitor_idleness():
+    global model
+    while True:
+        time.sleep(60)  # check every minute
+        if time.time() - last_activity_time > idle_timeout:
+            with model_lock:
+                release_model()
+                break
+
+Thread(target=monitor_idleness, daemon=True).start()
+
+def release_model():
+    global model
+    del model
+    torch.cuda.empty_cache()
+    gc.collect()
 
 def transcribe(
     audio,
@@ -37,6 +57,9 @@ def transcribe(
     word_timestamps: Union[bool, None],
     output,
 ):
+    global last_activity_time
+    last_activity_time = time.time()
+
     options_dict = {"task": task}
     if language:
         options_dict["language"] = language
@@ -63,6 +86,9 @@ def transcribe(
 
 
 def language_detection(audio):
+    global last_activity_time
+    last_activity_time = time.time()
+
     # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)
 
