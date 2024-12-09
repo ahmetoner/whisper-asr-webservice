@@ -31,4 +31,4 @@ export ASR_MODEL_PATH=/data/whisper
 export IDLE_TIMEOUT=300
 ```
 
-After no activity for this period (in seconds), unload the model until it is requested again. When set to 0, there will be no timeout.
+Defaults to 0. After no activity for this period (in seconds), unload the model until it is requested again. Setting `0` disables the timeout, keeping the model loaded indefinitely.
