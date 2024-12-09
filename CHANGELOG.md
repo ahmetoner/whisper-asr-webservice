@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+  - Timeout configured to allow model to be unloaded when idle
+
 [1.6.0] (2024-10-06)
 --------------------
 
