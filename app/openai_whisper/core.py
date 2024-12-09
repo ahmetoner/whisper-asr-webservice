@@ -11,12 +11,9 @@ from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT,
 
 model_name = os.getenv("ASR_MODEL", "base")
 model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
-
-if torch.cuda.is_available():
-    model = whisper.load_model(model_name, download_root=model_path).cuda()
-else:
-    model = whisper.load_model(model_name, download_root=model_path)
+model = None
 model_lock = Lock()
+
 last_activity_time = time.time()
 idle_timeout = int(os.getenv("IDLE_TIMEOUT", 300))  # default to 5 minutes
 
@@ -29,13 +26,25 @@ def monitor_idleness():
                 release_model()
                 break
 
-Thread(target=monitor_idleness, daemon=True).start()
+def load_model():
+    global model
+
+    if torch.cuda.is_available():
+        model = whisper.load_model(model_name, download_root=model_path).cuda()
+    else:
+        model = whisper.load_model(model_name, download_root=model_path)
+
+    Thread(target=monitor_idleness, daemon=True).start()
+
+load_model()
 
 def release_model():
     global model
     del model
     torch.cuda.empty_cache()
     gc.collect()
+    model = None
+    print("Model unloaded due to timeout")
 
 def transcribe(
     audio,
@@ -48,6 +57,9 @@ def transcribe(
 ):
     global last_activity_time
     last_activity_time = time.time()
+
+    with model_lock:
+        if(model is None): load_model()
 
     options_dict = {"task": task}
     if language:
@@ -69,6 +81,9 @@ def transcribe(
 def language_detection(audio):
     global last_activity_time
     last_activity_time = time.time()
+
+    with model_lock:
+        if(model is None): load_model()
 
     # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)
