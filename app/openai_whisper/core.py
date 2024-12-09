@@ -15,12 +15,13 @@ model = None
 model_lock = Lock()
 
 last_activity_time = time.time()
-idle_timeout = int(os.getenv("IDLE_TIMEOUT", 300))  # default to 5 minutes
+idle_timeout = int(os.getenv("IDLE_TIMEOUT", 0))  # default to being disabled
 
 def monitor_idleness():
     global model
+    if(idle_timeout <= 0): return
     while True:
-        time.sleep(60)  # check every minute
+        time.sleep(15)  # check every minute
         if time.time() - last_activity_time > idle_timeout:
             with model_lock:
                 release_model()
