@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+  - Set mel generation to adjust n_dims automatically to match the loaded model
+
 [1.6.0] (2024-10-06)
 --------------------
 
