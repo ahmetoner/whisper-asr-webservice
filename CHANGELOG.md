@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+  - Added detection confidence to langauge detection endpoint
+
 [1.6.0] (2024-10-06)
 --------------------
 

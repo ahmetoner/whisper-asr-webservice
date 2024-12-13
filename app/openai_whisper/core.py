@@ -55,7 +55,7 @@ def language_detection(audio):
         _, probs = model.detect_language(mel)
     detected_lang_code = max(probs, key=probs.get)
 
-    return detected_lang_code
+    return detected_lang_code, probs[max(probs)]
 
 
 def write_result(result: dict, file: BinaryIO, output: Union[str, None]):
