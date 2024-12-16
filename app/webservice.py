@@ -89,8 +89,8 @@ async def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
-    detected_lang_code = language_detection(load_audio(audio_file.file, encode))
-    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code}
+    detected_lang_code, confidence = language_detection(load_audio(audio_file.file, encode))
+    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code, "confidence": confidence}
 
 
 def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
