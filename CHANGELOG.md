@@ -6,6 +6,7 @@ Unreleased
 
 ### Added
 
+  - Timeout configured to allow model to be unloaded when idle
   - Added detection confidence to langauge detection endpoint
   - Set mel generation to adjust n_dims automatically to match the loaded model
 

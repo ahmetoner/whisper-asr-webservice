@@ -24,3 +24,11 @@ For English-only applications, the `.en` models tend to perform better, especial
 ```sh
 export ASR_MODEL_PATH=/data/whisper
 ```
+
+### Configuring the `Model Unloading Timeout`
+
+```sh
+export IDLE_TIMEOUT=300
+```
+
+Defaults to 0. After no activity for this period (in seconds), unload the model until it is requested again. Setting `0` disables the timeout, keeping the model loaded indefinitely.
