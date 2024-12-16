@@ -1,9 +1,9 @@
+import gc
 import os
+import time
 from io import StringIO
 from threading import Lock, Thread
 from typing import BinaryIO, Union
-import time
-import gc
 
 import torch
 import whisper
@@ -17,15 +17,17 @@ model_lock = Lock()
 last_activity_time = time.time()
 idle_timeout = int(os.getenv("IDLE_TIMEOUT", 0))  # default to being disabled
 
+
 def monitor_idleness():
     global model
-    if(idle_timeout <= 0): return
+    if idle_timeout <= 0: return
     while True:
-        time.sleep(15)  # check every minute
+        time.sleep(15)
         if time.time() - last_activity_time > idle_timeout:
             with model_lock:
                 release_model()
                 break
+
 
 def load_model():
     global model
@@ -37,7 +39,9 @@ def load_model():
 
     Thread(target=monitor_idleness, daemon=True).start()
 
+
 load_model()
+
 
 def release_model():
     global model
@@ -47,20 +51,21 @@ def release_model():
     model = None
     print("Model unloaded due to timeout")
 
+
 def transcribe(
-    audio,
-    task: Union[str, None],
-    language: Union[str, None],
-    initial_prompt: Union[str, None],
-    vad_filter: Union[bool, None],
-    word_timestamps: Union[bool, None],
-    output,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        output,
 ):
     global last_activity_time
     last_activity_time = time.time()
 
     with model_lock:
-        if(model is None): load_model()
+        if model is None: load_model()
 
     options_dict = {"task": task}
     if language:
@@ -84,7 +89,7 @@ def language_detection(audio):
     last_activity_time = time.time()
 
     with model_lock:
-        if(model is None): load_model()
+        if model is None: load_model()
 
     # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)

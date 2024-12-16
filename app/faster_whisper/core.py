@@ -1,9 +1,9 @@
+import gc
 import os
+import time
 from io import StringIO
 from threading import Lock, Thread
 from typing import BinaryIO, Union
-import time
-import gc
 
 import torch
 import whisper
@@ -16,15 +16,13 @@ model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), "
 model = None
 model_lock = Lock()
 
-# More about available quantization levels is here:
-#   https://opennmt.net/CTranslate2/quantization.html
-
 last_activity_time = time.time()
 idle_timeout = int(os.getenv("IDLE_TIMEOUT", 0))  # default to being disabled
 
+
 def monitor_idleness():
     global model
-    if(idle_timeout <= 0): return
+    if idle_timeout <= 0: return
     while True:
         time.sleep(15)
         if time.time() - last_activity_time > idle_timeout:
@@ -32,23 +30,28 @@ def monitor_idleness():
                 release_model()
                 break
 
+
 def load_model():
     global model, device, model_quantization
 
+    # More about available quantization levels is here:
+    #   https://opennmt.net/CTranslate2/quantization.html
     if torch.cuda.is_available():
         device = "cuda"
         model_quantization = os.getenv("ASR_QUANTIZATION", "float32")
     else:
         device = "cpu"
         model_quantization = os.getenv("ASR_QUANTIZATION", "int8")
-    
+
     model = WhisperModel(
         model_size_or_path=model_name, device=device, compute_type=model_quantization, download_root=model_path
     )
 
     Thread(target=monitor_idleness, daemon=True).start()
 
+
 load_model()
+
 
 def release_model():
     global model
@@ -58,20 +61,21 @@ def release_model():
     model = None
     print("Model unloaded due to timeout")
 
+
 def transcribe(
-    audio,
-    task: Union[str, None],
-    language: Union[str, None],
-    initial_prompt: Union[str, None],
-    vad_filter: Union[bool, None],
-    word_timestamps: Union[bool, None],
-    output,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        output,
 ):
     global last_activity_time
     last_activity_time = time.time()
 
     with model_lock:
-        if(model is None): load_model()
+        if model is None: load_model()
 
     options_dict = {"task": task}
     if language:
@@ -103,7 +107,7 @@ def language_detection(audio):
     last_activity_time = time.time()
 
     with model_lock:
-        if(model is None): load_model()
+        if model is None: load_model()
 
     # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)

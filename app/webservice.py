@@ -37,6 +37,7 @@ assets_path = os.getcwd() + "/swagger-ui-assets"
 if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
 
+
     def swagger_monkey_patch(*args, **kwargs):
         return get_swagger_ui_html(
             *args,
@@ -45,6 +46,7 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
             swagger_css_url="/assets/swagger-ui.css",
             swagger_js_url="/assets/swagger-ui-bundle.js",
         )
+
 
     applications.get_swagger_ui_html = swagger_monkey_patch
 
@@ -56,20 +58,20 @@ async def index():
 
 @app.post("/asr", tags=["Endpoints"])
 async def asr(
-    audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
-    task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
-    initial_prompt: Union[str, None] = Query(default=None),
-    vad_filter: Annotated[
-        bool | None,
-        Query(
-            description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
-            include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False),
-        ),
-    ] = False,
-    word_timestamps: bool = Query(default=False, description="Word level timestamps"),
-    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+        audio_file: UploadFile = File(...),  # noqa: B008
+        encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
+        task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
+        language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+        initial_prompt: Union[str, None] = Query(default=None),
+        vad_filter: Annotated[
+            bool | None,
+            Query(
+                description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
+                include_in_schema=(True if ASR_ENGINE == "faster_whisper" else False),
+            ),
+        ] = False,
+        word_timestamps: bool = Query(default=False, description="Word level timestamps"),
+        output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
     result = transcribe(
         load_audio(audio_file.file, encode), task, language, initial_prompt, vad_filter, word_timestamps, output
@@ -86,11 +88,12 @@ async def asr(
 
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(
-    audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
+        audio_file: UploadFile = File(...),  # noqa: B008
+        encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
     detected_lang_code, confidence = language_detection(load_audio(audio_file.file, encode))
-    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code, "confidence": confidence}
+    return {"detected_language": tokenizer.LANGUAGES[detected_lang_code], "language_code": detected_lang_code,
+            "confidence": confidence}
 
 
 def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
@@ -125,6 +128,7 @@ def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
 
+
 @click.command()
 @click.option(
     "-h",
@@ -142,10 +146,11 @@ def load_audio(file: BinaryIO, encode=True, sr: int = SAMPLE_RATE):
 )
 @click.version_option(version=projectMetadata["Version"])
 def start(
-    host: str,
-    port: Optional[int] = None
+        host: str,
+        port: Optional[int] = None
 ):
     uvicorn.run(app, host=host, port=port)
+
 
 if __name__ == "__main__":
     start()
