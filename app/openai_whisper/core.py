@@ -90,7 +90,7 @@ def language_detection(audio):
     audio = whisper.pad_or_trim(audio)
 
     # make log-Mel spectrogram and move to the same device as the model
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+    mel = whisper.log_mel_spectrogram(audio, model.dims.n_mels).to(model.device)
 
     # detect the spoken language
     with model_lock:
