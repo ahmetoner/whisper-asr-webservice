@@ -1,5 +1,4 @@
 import gc
-import os
 import time
 from io import StringIO
 from threading import Lock, Thread
@@ -9,21 +8,19 @@ import torch
 import whisper
 from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
-model_name = os.getenv("ASR_MODEL", "base")
-model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
+from app.config import CONFIG
+
 model = None
 model_lock = Lock()
-
 last_activity_time = time.time()
-idle_timeout = int(os.getenv("IDLE_TIMEOUT", 0))  # default to being disabled
 
 
 def monitor_idleness():
     global model
-    if idle_timeout <= 0: return
+    if CONFIG.MODEL_IDLE_TIMEOUT <= 0: return
     while True:
         time.sleep(15)
-        if time.time() - last_activity_time > idle_timeout:
+        if time.time() - last_activity_time > CONFIG.MODEL_IDLE_TIMEOUT:
             with model_lock:
                 release_model()
                 break
@@ -33,9 +30,15 @@ def load_model():
     global model
 
     if torch.cuda.is_available():
-        model = whisper.load_model(model_name, download_root=model_path).cuda()
+        model = whisper.load_model(
+            name=CONFIG.MODEL_NAME,
+            download_root=CONFIG.MODEL_PATH
+        ).cuda()
     else:
-        model = whisper.load_model(model_name, download_root=model_path)
+        model = whisper.load_model(
+            name=CONFIG.MODEL_NAME,
+            download_root=CONFIG.MODEL_PATH
+        )
 
     Thread(target=monitor_idleness, daemon=True).start()
 

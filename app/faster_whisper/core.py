@@ -1,5 +1,4 @@
 import gc
-import os
 import time
 from io import StringIO
 from threading import Lock, Thread
@@ -9,23 +8,20 @@ import torch
 import whisper
 from faster_whisper import WhisperModel
 
-from .utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
+from app.config import CONFIG
+from app.faster_whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
-model_name = os.getenv("ASR_MODEL", "base")
-model_path = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
 model = None
 model_lock = Lock()
-
 last_activity_time = time.time()
-idle_timeout = int(os.getenv("IDLE_TIMEOUT", 0))  # default to being disabled
 
 
 def monitor_idleness():
     global model
-    if idle_timeout <= 0: return
+    if CONFIG.MODEL_IDLE_TIMEOUT <= 0: return
     while True:
         time.sleep(15)
-        if time.time() - last_activity_time > idle_timeout:
+        if time.time() - last_activity_time > CONFIG.MODEL_IDLE_TIMEOUT:
             with model_lock:
                 release_model()
                 break
@@ -34,17 +30,11 @@ def monitor_idleness():
 def load_model():
     global model, device, model_quantization
 
-    # More about available quantization levels is here:
-    #   https://opennmt.net/CTranslate2/quantization.html
-    if torch.cuda.is_available():
-        device = "cuda"
-        model_quantization = os.getenv("ASR_QUANTIZATION", "float32")
-    else:
-        device = "cpu"
-        model_quantization = os.getenv("ASR_QUANTIZATION", "int8")
-
     model = WhisperModel(
-        model_size_or_path=model_name, device=device, compute_type=model_quantization, download_root=model_path
+        model_size_or_path=CONFIG.MODEL_NAME,
+        device=CONFIG.DEVICE,
+        compute_type=CONFIG.MODEL_QUANTIZATION,
+        download_root=CONFIG.MODEL_PATH
     )
 
     Thread(target=monitor_idleness, daemon=True).start()
