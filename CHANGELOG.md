@@ -4,6 +4,23 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+  - Added detection confidence to langauge detection endpoint
+  - Set mel generation to adjust n_dims automatically to match the loaded model
+
+[1.6.0] (2024-10-06)
+--------------------
+
+### Changed
+
+- Upgraded
+  - [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
+  - fastapi to v0.115.0
+  - uvicorn to v0.31.0
+  - tqdm to v4.66.5
+  - python-multipart to v0.0.12
+
 [1.5.0] (2024-07-04)
 --------------------
 
@@ -202,6 +219,7 @@ Unreleased
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.6.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.6.0
 [1.5.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.5.0
 [1.4.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.4.1
 [1.4.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.4.0

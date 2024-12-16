@@ -22,7 +22,7 @@ There are 2 endpoints available:
 | Name            | Values                                         |
 |-----------------|------------------------------------------------|
 | audio_file      | File                                           |
-| output          | `txt` (default), `json`, `vtt`, `strt`, `tsv` |
+| output          | `text` (default), `json`, `vtt`, `srt`, `tsv` |
 | task            | `transcribe`, `translate`                      |
 | language        | `en` (default is auto recognition)             |
 | word_timestamps | false (default)                                |

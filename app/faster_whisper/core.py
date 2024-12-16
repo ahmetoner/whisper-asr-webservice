@@ -70,8 +70,9 @@ def language_detection(audio):
     with model_lock:
         segments, info = model.transcribe(audio, beam_size=5)
         detected_lang_code = info.language
+        detected_language_confidence = info.language_probability
 
-    return detected_lang_code
+    return detected_lang_code, detected_language_confidence
 
 
 def write_result(result: dict, file: BinaryIO, output: Union[str, None]):
