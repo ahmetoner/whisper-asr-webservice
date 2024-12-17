@@ -10,6 +10,10 @@ Unreleased
   - Added detection confidence to langauge detection endpoint
   - Set mel generation to adjust n_dims automatically to match the loaded model
 
+### Added
+
+  - Refactor classes, Add comments, implement abstract methods, and add factory method for engine selection
+
 [1.6.0] (2024-10-06)
 --------------------
 
