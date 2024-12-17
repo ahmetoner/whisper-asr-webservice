@@ -38,7 +38,6 @@ class OpenAIWhisperASR(ASRModel):
             word_timestamps: Union[bool, None],
             output,
     ):
-        print("whisper")
         self.last_activity_time = time.time()
 
         with self.model_lock:

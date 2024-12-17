@@ -18,6 +18,16 @@ Unreleased
 
 - Upgraded
   - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.1.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.0)
+  - uvicorn to v0.34.0
+  - tqdm to v4.67.1
+  - python-multipart to v0.0.20
+  - fastapi to v0.115.6
+  - pytest to v8.3.4
+  - ruff to v0.8.3
+  - black to v24.10.0
+  - mkdocs to v1.6.1
+  - mkdocs-material to v9.5.49
+  - pymdown-extensions to v10.12
 
 [1.6.0] (2024-10-06)
 --------------------
