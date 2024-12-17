@@ -14,6 +14,11 @@ Unreleased
 
   - Refactor classes, Add comments, implement abstract methods, and add factory method for engine selection
 
+### Changed
+
+- Upgraded
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.1.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.0)
+
 [1.6.0] (2024-10-06)
 --------------------
 
