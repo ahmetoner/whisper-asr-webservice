@@ -4,14 +4,14 @@ Changelog
 Unreleased
 ----------
 
+[1.7.0] (2024-12-17)
+--------------------
+
 ### Added
 
   - Timeout configured to allow model to be unloaded when idle
   - Added detection confidence to langauge detection endpoint
   - Set mel generation to adjust n_dims automatically to match the loaded model
-
-### Added
-
   - Refactor classes, Add comments, implement abstract methods, and add factory method for engine selection
 
 ### Changed
@@ -239,6 +239,7 @@ Unreleased
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.7.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.7.0
 [1.6.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.6.0
 [1.5.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.5.0
 [1.4.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.4.1
