@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- Fix JSON serialization of segments due to Faster Whisper v1.1.0 changes
+
 [1.7.0] (2024-12-17)
 --------------------
 

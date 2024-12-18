@@ -1,5 +1,6 @@
 import json
 import os
+from dataclasses import asdict
 from typing import TextIO, BinaryIO
 
 import ffmpeg
@@ -88,6 +89,8 @@ class WriteJSON(ResultWriter):
     extension: str = "json"
 
     def write_result(self, result: dict, file: TextIO):
+        if "segments" in result:
+            result["segments"] = [asdict(segment) for segment in result["segments"]]
         json.dump(result, file)
 
 
