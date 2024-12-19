@@ -1,0 +1,33 @@
+Source: whisper-asr-webservice
+Maintainer: None <None>
+Section: python
+Priority: optional
+Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+Standards-Version: 3.9.1
+Homepage: https://github.com/ahmetoner/whisper-asr-webservice/
+
+Package: python3-whisper-asr-webservice
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Whisper ASR Webservice is a general-purpose speech recogniti
+ ![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
+ ![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
+ ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
+ ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
+ .
+ # Whisper ASR Webservice
+ .
+ Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
+ .
+ ## Features
+ .
+ Current release (v1.6.0) supports following whisper models:
+ .
+ - [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
+ - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.0.3](https://github.com/SYSTRAN/faster-whisper/releases/tag/1.0.3)
+ .
+ ## Quick Usage
+ .
+ ### CPU
+ .
+
