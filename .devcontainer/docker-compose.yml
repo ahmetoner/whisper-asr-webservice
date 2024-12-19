@@ -10,6 +10,10 @@ services:
     # build:
     #   context: .
     #   dockerfile: .devcontainer/Dockerfile
+    env_file: .devcontainer/dev.env
+    environment:
+      ASR_ENGINE: ${ASR_ENGINE}
+      HF_TOKEN: ${HF_TOKEN}
 
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project

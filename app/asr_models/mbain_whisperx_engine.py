@@ -12,15 +12,16 @@ from app.utils import WriteTXT, WriteSRT, WriteVTT, WriteTSV, WriteJSON
 class WhisperXASR(ASRModel):
     def __init__(self):
         self.x_models = dict()
-    
 
     def load_model(self):
 
+        asr_options = {"without_timestamps": False}
         self.model = whisperx.load_model(
-            CONFIG.MODEL_NAME, 
-            device=CONFIG.DEVICE)
+            CONFIG.MODEL_NAME, device=CONFIG.DEVICE, compute_type="float32", asr_options=asr_options
+        )
+
         if CONFIG.HF_TOKEN != "":
-            self.diarize_model = whisperx.DiarizationPipeline(use_auth_token=CONFIG.HF_TOKEN, device=self.device)
+            self.diarize_model = whisperx.DiarizationPipeline(use_auth_token=CONFIG.HF_TOKEN, device=CONFIG.DEVICE)
 
     def transcribe(
         self,
@@ -28,6 +29,7 @@ class WhisperXASR(ASRModel):
         task: Union[str, None],
         language: Union[str, None],
         initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
         word_timestamps: Union[bool, None],
         options: Union[dict, None],
         output,
@@ -43,17 +45,19 @@ class WhisperXASR(ASRModel):
             result = self.model.transcribe(audio, **options_dict)
 
         # Load the required model and cache it
-        # If we transcribe models in many differen languages, this may lead to OOM propblems
+        # If we transcribe models in many different languages, this may lead to OOM propblems
         if result["language"] in self.x_models:
             model_x, metadata = self.x_models[result["language"]]
         else:
             self.x_models[result["language"]] = whisperx.load_align_model(
-                language_code=result["language"], device=self.device
+                language_code=result["language"], device=CONFIG.DEVICE
             )
             model_x, metadata = self.x_models[result["language"]]
 
         # Align whisper output
-        result = whisperx.align(result["segments"], model_x, metadata, audio, self.device, return_char_alignments=False)
+        result = whisperx.align(
+            result["segments"], model_x, metadata, audio, CONFIG.DEVICE, return_char_alignments=False
+        )
 
         if options.get("diarize", False):
             if CONFIG.HF_TOKEN == "":

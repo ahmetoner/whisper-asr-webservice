@@ -42,3 +42,5 @@ pip-wheel-metadata
 poetry/core/*
 
 public
+
+.devcontainer/dev.env

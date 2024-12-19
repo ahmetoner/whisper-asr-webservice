@@ -1,7 +1,7 @@
 import json
 import os
-from dataclasses import asdict
-from typing import TextIO, BinaryIO
+from dataclasses import asdict, is_dataclass
+from typing import TextIO, BinaryIO, Union
 
 import ffmpeg
 import numpy as np
@@ -23,14 +23,42 @@ class ResultWriter:
         with open(output_path, "w", encoding="utf-8") as f:
             self.write_result(result, file=f)
 
-    def write_result(self, result: dict, file: TextIO):
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
         raise NotImplementedError
+    
+    def format_segments_in_result(self, result: dict):
+        if "segments" in result:
+            # Check if result["segments"] is a list
+            if isinstance(result["segments"], list):
+                # Check if the list is empty
+                if not result["segments"]:
+                    # Handle the empty list case, you can choose to leave it as is or set it to an empty list
+                    pass
+                else:
+                    # Check if the first item in the list is a dataclass instance
+                    if is_dataclass(result["segments"][0]):
+                        result["segments"] = [asdict(segment) for segment in result["segments"]]
+                    # If it's already a list of dicts, leave it as is
+                    elif isinstance(result["segments"][0], dict):
+                        pass
+                    else:
+                        # Handle the case where the list contains neither dataclass instances nor dicts
+                        # You can choose to leave it as is or raise an error
+                        pass
+            elif isinstance(result["segments"], dict):
+                # If it's already a dict, leave it as is
+                pass
+            else:
+                # Handle the case where result["segments"] is neither a list nor a dict
+                # You can choose to leave it as is or raise an error
+                pass
+        return result
 
 
 class WriteTXT(ResultWriter):
     extension: str = "txt"
 
-    def write_result(self, result: dict, file: TextIO):
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
         for segment in result["segments"]:
             print(segment.text.strip(), file=file, flush=True)
 
@@ -38,12 +66,13 @@ class WriteTXT(ResultWriter):
 class WriteVTT(ResultWriter):
     extension: str = "vtt"
 
-    def write_result(self, result: dict, file: TextIO):
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
         print("WEBVTT\n", file=file)
+        result = self.format_segments_in_result(result)
         for segment in result["segments"]:
             print(
-                f"{format_timestamp(segment.start)} --> {format_timestamp(segment.end)}\n"
-                f"{segment.text.strip().replace('-->', '->')}\n",
+                f"{format_timestamp(segment['start'])} --> {format_timestamp(segment['end'])}\n"
+                f"{segment['text'].strip().replace('-->', '->')}\n",
                 file=file,
                 flush=True,
             )
@@ -52,14 +81,15 @@ class WriteVTT(ResultWriter):
 class WriteSRT(ResultWriter):
     extension: str = "srt"
 
-    def write_result(self, result: dict, file: TextIO):
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
+        result = self.format_segments_in_result(result)
         for i, segment in enumerate(result["segments"], start=1):
             # write srt lines
             print(
                 f"{i}\n"
-                f"{format_timestamp(segment.start, always_include_hours=True, decimal_marker=',')} --> "
-                f"{format_timestamp(segment.end, always_include_hours=True, decimal_marker=',')}\n"
-                f"{segment.text.strip().replace('-->', '->')}\n",
+                f"{format_timestamp(segment['start'], always_include_hours=True, decimal_marker=',')} --> "
+                f"{format_timestamp(segment['end'], always_include_hours=True, decimal_marker=',')}\n"
+                f"{segment['text'].strip().replace('-->', '->')}\n",
                 file=file,
                 flush=True,
             )
@@ -77,20 +107,20 @@ class WriteTSV(ResultWriter):
 
     extension: str = "tsv"
 
-    def write_result(self, result: dict, file: TextIO):
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
+        result = self.format_segments_in_result(result)
         print("start", "end", "text", sep="\t", file=file)
         for segment in result["segments"]:
-            print(round(1000 * segment.start), file=file, end="\t")
-            print(round(1000 * segment.end), file=file, end="\t")
-            print(segment.text.strip().replace("\t", " "), file=file, flush=True)
+            print(round(1000 * segment["start"]), file=file, end="\t")
+            print(round(1000 * segment["end"]), file=file, end="\t")
+            print(segment["text"].strip().replace("\t", " "), file=file, flush=True)
 
 
 class WriteJSON(ResultWriter):
     extension: str = "json"
 
-    def write_result(self, result: dict, file: TextIO):
-        if "segments" in result:
-            result["segments"] = [asdict(segment) for segment in result["segments"]]
+    def write_result(self, result: dict, file: TextIO, options: Union[dict, None]):
+        result = self.format_segments_in_result(result) 
         json.dump(result, file)
 
 

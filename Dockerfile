@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     ca-certificates \
     gcc \
     python3-dev \
+    libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/FFmpeg/FFmpeg.git --depth 1 --branch n6.1.1 --single-branch /FFmpeg-6.1.1
@@ -43,6 +44,12 @@ RUN PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./
 FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 
 FROM python:3.10-bookworm
+
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -qq update \
+    && apt-get -qq install --no-install-recommends \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV POETRY_VENV=/app/.venv
 
