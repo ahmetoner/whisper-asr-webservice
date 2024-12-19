@@ -11,6 +11,9 @@ class CONFIG:
     # Determine the ASR engine ('faster_whisper' or 'openai_whisper')
     ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 
+    # Retrieve Huggingface Token
+    HF_TOKEN = os.getenv("HF_TOKEN", "")
+
     # Determine the computation device (GPU or CPU)
     DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
 

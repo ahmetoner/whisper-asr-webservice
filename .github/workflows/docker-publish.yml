@@ -12,7 +12,7 @@ env:
   REPO_NAME: ${{secrets.REPO_NAME}}
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-latest]
     strategy:
       matrix:
         include:
@@ -22,6 +22,10 @@ jobs:
             tag_extension: -gpu
             platforms: linux/amd64
     steps:
+    - name: Remove unnecessary files
+      run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: Checkout
       uses: actions/checkout@v3
     - name: Set up QEMU

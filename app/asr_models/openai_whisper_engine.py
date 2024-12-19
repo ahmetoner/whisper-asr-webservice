@@ -16,32 +16,28 @@ class OpenAIWhisperASR(ASRModel):
     def load_model(self):
 
         if torch.cuda.is_available():
-            self.model = whisper.load_model(
-                name=CONFIG.MODEL_NAME,
-                download_root=CONFIG.MODEL_PATH
-            ).cuda()
+            self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH).cuda()
         else:
-            self.model = whisper.load_model(
-                name=CONFIG.MODEL_NAME,
-                download_root=CONFIG.MODEL_PATH
-            )
+            self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
 
         Thread(target=self.monitor_idleness, daemon=True).start()
 
     def transcribe(
-            self,
-            audio,
-            task: Union[str, None],
-            language: Union[str, None],
-            initial_prompt: Union[str, None],
-            vad_filter: Union[bool, None],
-            word_timestamps: Union[bool, None],
-            output,
+        self,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        options: Union[dict, None],
+        output,
     ):
         self.last_activity_time = time.time()
 
         with self.model_lock:
-            if self.model is None: self.load_model()
+            if self.model is None:
+                self.load_model()
 
         options_dict = {"task": task}
         if language:
@@ -64,7 +60,8 @@ class OpenAIWhisperASR(ASRModel):
         self.last_activity_time = time.time()
 
         with self.model_lock:
-            if self.model is None: self.load_model()
+            if self.model is None:
+                self.load_model()
 
         # load audio and pad/trim it to fit 30 seconds
         audio = whisper.pad_or_trim(audio)
