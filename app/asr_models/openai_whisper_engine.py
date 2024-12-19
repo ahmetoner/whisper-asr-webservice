@@ -36,6 +36,7 @@ class OpenAIWhisperASR(ASRModel):
             initial_prompt: Union[str, None],
             vad_filter: Union[bool, None],
             word_timestamps: Union[bool, None],
+            options: Union[dict, None],
             output,
     ):
         self.last_activity_time = time.time()

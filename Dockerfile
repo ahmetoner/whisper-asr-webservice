@@ -8,6 +8,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     pkg-config \
     yasm \
     ca-certificates \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/FFmpeg/FFmpeg.git --depth 1 --branch n6.1.1 --single-branch /FFmpeg-6.1.1
@@ -60,6 +62,11 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
+
+RUN $POETRY_VENV/bin/pip install pandas transformers nltk pyannote.audio
+RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
+    && cd whisperX \
+    && $POETRY_VENV/bin/pip install -e .
 
 EXPOSE 9000
 
