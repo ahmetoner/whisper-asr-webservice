@@ -10,7 +10,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     ca-certificates \
     gcc \
     python3-dev \
-    libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/FFmpeg/FFmpeg.git --depth 1 --branch n6.1.1 --single-branch /FFmpeg-6.1.1
