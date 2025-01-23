@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- Fix VAD Filtering enable logic to match documentation
+
 [1.7.1] (2024-12-18)
 --------------------
 
