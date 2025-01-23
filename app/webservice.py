@@ -67,7 +67,7 @@ async def asr(
                 description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
                 include_in_schema=(True if CONFIG.ASR_ENGINE == "faster_whisper" else False),
             ),
-        ] = False,
+        ] = (CONFIG.ASR_ENGINE == "faster_whisper"),
         word_timestamps: bool = Query(default=False, description="Word level timestamps"),
         output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
