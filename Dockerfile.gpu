@@ -28,7 +28,7 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==1.6.1
+    && $POETRY_VENV/bin/pip install poetry==2.1.1
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
@@ -45,7 +45,7 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/sw
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry install
-RUN $POETRY_VENV/bin/pip install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch
+RUN $POETRY_VENV/bin/pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
 
 RUN $POETRY_VENV/bin/pip install pandas transformers nltk pyannote.audio
 RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
