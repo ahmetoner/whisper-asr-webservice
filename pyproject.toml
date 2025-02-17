@@ -12,7 +12,7 @@ packages = [{ include = "app" }]
 whisper-asr-webservice = "app.webservice:start"
 
 [[tool.poetry.source]]
-name = "pytorch"
+name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
@@ -29,14 +29,8 @@ whisperx = "^3.3.1"
 tqdm = "^4.67.1"
 llvmlite = "^0.44.0"
 numba = "^0.61.0"
-torch = [
-  { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
-  { markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-manylinux_2_28_aarch64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-linux_x86_64.whl" },
-  { markers = "sys_platform == 'win' and platform_machine == 'amd64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-win_amd64.whl" },
-]
+torch = { version = "2.6.0", source = "pytorch-cpu" }
+torchaudio = { version = "2.6.0", source = "pytorch-cpu" }
 
 [poetry.group.dev.dependencies]
 pytest = "^8.3.4"

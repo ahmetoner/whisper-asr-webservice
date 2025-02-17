@@ -14,6 +14,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-venv \
     python3-pip \
+    libcudnn8 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
@@ -39,7 +41,7 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/sw
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry install
-RUN $POETRY_VENV/bin/pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
+RUN $POETRY_VENV/bin/pip install torch==2.6.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
 
 EXPOSE 9000
 

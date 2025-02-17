@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- Fixed issues with Torch CUDA and cuDNN
+
 [1.8.0] (2025-02-17)
 --------------------
 
