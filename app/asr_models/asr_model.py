@@ -13,6 +13,7 @@ class ASRModel(ABC):
     """
     Abstract base class for ASR (Automatic Speech Recognition) models.
     """
+
     model = None
     model_lock = Lock()
     last_activity_time = time.time()
@@ -28,14 +29,17 @@ class ASRModel(ABC):
         pass
 
     @abstractmethod
-    def transcribe(self,
-                   audio,
-                   task: Union[str, None],
-                   language: Union[str, None],
-                   initial_prompt: Union[str, None],
-                   vad_filter: Union[bool, None],
-                   word_timestamps: Union[bool, None]
-                   ):
+    def transcribe(
+        self,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        options: Union[dict, None],
+        output,
+    ):
         """
         Perform transcription on the given audio file.
         """
@@ -52,7 +56,8 @@ class ASRModel(ABC):
         """
         Monitors the idleness of the ASR model and releases the model if it has been idle for too long.
         """
-        if CONFIG.MODEL_IDLE_TIMEOUT <= 0: return
+        if CONFIG.MODEL_IDLE_TIMEOUT <= 0:
+            return
         while True:
             time.sleep(15)
             if time.time() - self.last_activity_time > CONFIG.MODEL_IDLE_TIMEOUT:

@@ -1,7 +1,7 @@
 import json
 import os
 from dataclasses import asdict
-from typing import TextIO, BinaryIO
+from typing import BinaryIO, TextIO
 
 import ffmpeg
 import numpy as np

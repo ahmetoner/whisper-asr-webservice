@@ -17,32 +17,33 @@ url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "<3.13,>=3.10"
+fastapi = "^0.115.8"
 uvicorn = { extras = ["standard"], version = "^0.34.0" }
-tqdm = "^4.67.1"
 python-multipart = "^0.0.20"
 ffmpeg-python = "^0.2.0"
-fastapi = "^0.115.6"
-llvmlite = "^0.43.0"
-numba = "^0.60.0"
+numpy = "<2.0.0"
 openai-whisper = "^20240930"
 faster-whisper = "^1.1.0"
+whisperx = "^3.3.1"
+tqdm = "^4.67.1"
+llvmlite = "^0.44.0"
+numba = "^0.61.0"
 torch = [
-  { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_11_0_arm64.whl" },
-  { markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1-cp310-none-macosx_10_9_x86_64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url = "https://download.pytorch.org/whl/torch-1.13.1-cp310-cp310-manylinux2014_aarch64.whl" },
-  { markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-linux_x86_64.whl" },
-  { markers = "sys_platform == 'win' and platform_machine == 'amd64'", url = "https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp310-cp310-win_amd64.whl" },
+  { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
+  { markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'aarch64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-manylinux_2_28_aarch64.whl" },
+  { markers = "sys_platform == 'linux' and platform_machine == 'x86_64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-linux_x86_64.whl" },
+  { markers = "sys_platform == 'win' and platform_machine == 'amd64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-win_amd64.whl" },
 ]
 
-[tool.poetry.dev-dependencies]
+[poetry.group.dev.dependencies]
 pytest = "^8.3.4"
-ruff = "^0.8.3"
-black = "^24.10.0"
-mkdocs = "^1.6.1"
-mkdocs-material = "^9.5.49"
-pymdown-extensions = "^10.12"
+ruff = "^0.9.6"
+black = "^25.1.0"
+mkdocs-material = "^9.6.4"
+pymdown-extensions = "^10.14.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -53,21 +54,20 @@ skip-string-normalization = true
 line-length = 120
 
 [tool.ruff]
-# Same as Black.
 line-length = 120
 
 [tool.ruff.lint]
 select = [
-  "E", # pycodestyle errors (settings from FastAPI, thanks, @tiangolo!)
-  "W", # pycodestyle warnings
-  "F", # pyflakes
-  "I", # isort
-  "C", # flake8-comprehensions
-  "B", # flake8-bugbear
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
 ]
 ignore = [
-  "E501", # line too long, handled by black
-  "C901", # too complex
+    "E501",  # line too long, handled by black
+    "C901",  # too complex
 ]
 
 [tool.ruff.lint.isort]
@@ -75,10 +75,10 @@ order-by-type = true
 relative-imports-order = "closest-to-furthest"
 extra-standard-library = ["typing"]
 section-order = [
-  "future",
-  "standard-library",
-  "third-party",
-  "first-party",
-  "local-folder",
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
 ]
 known-first-party = []

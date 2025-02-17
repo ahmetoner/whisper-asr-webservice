@@ -5,7 +5,7 @@ site_dir: public
 site_description: "OpenAI Whisper ASR Webservice API"
 repo_url: "https://github.com/ahmetoner/whisper-asr-webservice"
 repo_name: "ahmetoner/whisper-asr-webservice"
-copyright: Copyright &copy; 2023
+copyright: Copyright &copy; 2025
 edit_uri: edit/main/docs/
 
 validation:
@@ -14,14 +14,13 @@ validation:
   unrecognized_links: warn
 
 nav:
-  - Home:
-      - Whisper ASR Webservice: index.md
-      - Run: run.md
-      - Endpoints: endpoints.md
-      - Environmental Variables: environmental-variables.md
-      - Build: build.md
-      - Changelog: changelog.md
-      - Licence: licence.md
+  - Overview: index.md
+  - Installation & Usage: run.md
+  - API Endpoints: endpoints.md
+  - Configuration: environmental-variables.md
+  - Development: build.md
+  - Changelog: changelog.md
+  - License: licence.md
   - Releases: https://github.com/ahmetoner/whisper-asr-webservice/releases
   - Docker Hub: https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice
 
@@ -39,13 +38,38 @@ theme:
     - content.tooltips
     - navigation.footer
     - navigation.indexes
-    - navigation.sections
-    - navigation.tabs
-    - navigation.tabs.sticky
+    # - navigation.sections # important
     - navigation.top
+    # - navigation.tabs
+    # - navigation.tabs.sticky
     - search.highlight
     - search.suggest
     - toc.follow
+    - toc.integrate
+  palette:
+    # System preference
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: lime
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+
 
 extra_css:
   - assets/css/extra.css
@@ -80,6 +104,7 @@ plugins:
   - search
 
 extra:
+  generator: false 
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ahmetoner

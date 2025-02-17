@@ -3,9 +3,9 @@
 ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
-# Whisper ASR Webservice
+# Whisper ASR Box
 
-Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification. For more details: [github.com/openai/whisper](https://github.com/openai/whisper/)
+Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
 
 ## Features
 
@@ -13,29 +13,79 @@ Current release (v1.7.1) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
 - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.1.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.0)
+- [whisperX](https://github.com/m-bain/whisperX)@[v3.1.1](https://github.com/m-bain/whisperX/releases/tag/v3.1.1)
 
 ## Quick Usage
 
 ### CPU
 
-```sh
-docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+```shell
+docker run -d -p 9000:9000 \
+  -e ASR_MODEL=base \
+  -e ASR_ENGINE=openai_whisper \
+  onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 ### GPU
 
-```sh
-docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+```shell
+docker run -d --gpus all -p 9000:9000 \
+  -e ASR_MODEL=base \
+  -e ASR_ENGINE=openai_whisper \
+  onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
-for more information:
+#### Cache
 
-- [Documentation/Run](https://ahmetoner.github.io/whisper-asr-webservice/run)
-- [Docker Hub](https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice)
+To reduce container startup time by avoiding repeated downloads, you can persist the cache directory:
+
+```shell
+docker run -d -p 9000:9000 \
+  -v $PWD/cache:/root/.cache/ \
+  onerahmet/openai-whisper-asr-webservice:latest
+```
+
+## Key Features
+
+- Multiple ASR engines support (OpenAI Whisper, Faster Whisper, WhisperX)
+- Multiple output formats (text, JSON, VTT, SRT, TSV)
+- Word-level timestamps support
+- Voice activity detection (VAD) filtering
+- Speaker diarization (with WhisperX)
+- FFmpeg integration for broad audio/video format support
+- GPU acceleration support
+- Configurable model loading/unloading
+- REST API with Swagger documentation
+
+## Environment Variables
+
+Key configuration options:
+
+- `ASR_ENGINE`: Engine selection (openai_whisper, faster_whisper, whisperx)
+- `ASR_MODEL`: Model selection (tiny, base, small, medium, large-v3, etc.)
+- `ASR_MODEL_PATH`: Custom path to store/load models
+- `ASR_DEVICE`: Device selection (cuda, cpu)
+- `MODEL_IDLE_TIMEOUT`: Timeout for model unloading
 
 ## Documentation
 
-Explore the documentation by clicking [here](https://ahmetoner.github.io/whisper-asr-webservice).
+For complete documentation, visit:
+[https://ahmetoner.github.io/whisper-asr-webservice](https://ahmetoner.github.io/whisper-asr-webservice)
+
+## Development
+
+```shell
+# Install poetry
+pip3 install poetry
+
+# Install dependencies
+poetry install
+
+# Run service
+poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
+```
+
+After starting the service, visit `http://localhost:9000` or `http://0.0.0.0:9000` in your browser to access the Swagger UI documentation and try out the API endpoints.
 
 ## Credits
 
