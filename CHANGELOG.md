@@ -1,8 +1,25 @@
 Changelog
 =========
 
-Unreleased
-----------
+[1.8.0] (2025-02-17)
+--------------------
+
+### Added
+
+- Added support for [whisperX](https://github.com/m-bain/whisperX)@[v3.1.1](https://github.com/m-bain/whisperX/releases/tag/v3.1.1)
+
+### Changed
+
+- Upgraded Cuda GPU image to v12.6.3
+- Upgraded dependencies
+  - torch to v2.6.0
+  - fastapi to v0.115.8
+  - llvmlite to v0.44.0
+  - numba to v0.61.0
+  - ruff to v0.9.6
+  - black to v25.1.0
+  - mkdocs-material to v9.6.4
+  - pymdown-extensions to v10.14.3
 
 [1.7.1] (2024-12-18)
 --------------------
@@ -246,6 +263,7 @@ Unreleased
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.8.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.8.0
 [1.7.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.7.1
 [1.7.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.7.0
 [1.6.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.6.0
