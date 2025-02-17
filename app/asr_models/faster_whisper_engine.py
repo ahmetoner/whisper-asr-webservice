@@ -38,7 +38,8 @@ class FasterWhisperASR(ASRModel):
         self.last_activity_time = time.time()
 
         with self.model_lock:
-            if self.model is None: self.load_model()
+            if self.model is None:
+                self.load_model()
 
         options_dict = {"task": task}
         if language:
@@ -91,7 +92,5 @@ class FasterWhisperASR(ASRModel):
             WriteTSV(ResultWriter).write_result(result, file=file)
         elif output == "json":
             WriteJSON(ResultWriter).write_result(result, file=file)
-        elif output == "txt":
-            WriteTXT(ResultWriter).write_result(result, file=file)
         else:
-            return "Please select an output method!"
+            WriteTXT(ResultWriter).write_result(result, file=file)

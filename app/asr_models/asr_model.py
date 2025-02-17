@@ -15,8 +15,6 @@ class ASRModel(ABC):
     """
 
     model = None
-    diarize_model = None  # used for WhisperX
-    x_models = dict()  # used for WhisperX
     model_lock = Lock()
     last_activity_time = time.time()
 
@@ -75,6 +73,4 @@ class ASRModel(ABC):
         torch.cuda.empty_cache()
         gc.collect()
         self.model = None
-        self.diarize_model = None
-        self.x_models = dict()
         print("Model unloaded due to timeout")

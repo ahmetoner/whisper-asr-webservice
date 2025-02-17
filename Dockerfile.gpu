@@ -6,12 +6,6 @@ FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04
 
 ENV PYTHON_VERSION=3.10
 
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -qq update \
-    && apt-get -qq install --no-install-recommends \
-    libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
-
 ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -46,11 +40,6 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 
 RUN poetry install
 RUN $POETRY_VENV/bin/pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
-
-RUN $POETRY_VENV/bin/pip install pandas transformers nltk pyannote.audio
-RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
-    && cd whisperX \
-    && $POETRY_VENV/bin/pip install -e .
 
 EXPOSE 9000
 

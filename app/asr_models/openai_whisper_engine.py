@@ -86,7 +86,5 @@ class OpenAIWhisperASR(ASRModel):
             WriteTSV(ResultWriter).write_result(result, file=file, options=options)
         elif output == "json":
             WriteJSON(ResultWriter).write_result(result, file=file, options=options)
-        elif output == "txt":
-            WriteTXT(ResultWriter).write_result(result, file=file, options=options)
         else:
-            return "Please select an output method!"
+            WriteTXT(ResultWriter).write_result(result, file=file, options=options)

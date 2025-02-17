@@ -11,28 +11,24 @@ packages = [{ include = "app" }]
 [tool.poetry.scripts]
 whisper-asr-webservice = "app.webservice:start"
 
-# Package Sources
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
-# Core Dependencies
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "<3.13,>=3.10"
 fastapi = "^0.115.8"
 uvicorn = { extras = ["standard"], version = "^0.34.0" }
 python-multipart = "^0.0.20"
 ffmpeg-python = "^0.2.0"
-
-# ML Dependencies
+numpy = "<2.0.0"
 openai-whisper = "^20240930"
-faster-whisper = "^1.1.1"
+faster-whisper = "^1.1.0"
+whisperx = "^3.3.1"
 tqdm = "^4.67.1"
 llvmlite = "^0.44.0"
 numba = "^0.61.0"
-
-# PyTorch Dependencies (Platform Specific)
 torch = [
   { markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
   { markers = "sys_platform == 'linux' and platform_machine == 'arm64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0-cp310-none-macosx_11_0_arm64.whl" },
@@ -42,27 +38,21 @@ torch = [
   { markers = "sys_platform == 'win' and platform_machine == 'amd64'", url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-win_amd64.whl" },
 ]
 
-
-# Development Dependencies
 [poetry.group.dev.dependencies]
 pytest = "^8.3.4"
 ruff = "^0.9.6"
 black = "^25.1.0"
-mkdocs = "^1.6.1"
 mkdocs-material = "^9.6.4"
 pymdown-extensions = "^10.14.3"
 
-# Build System Configuration
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-# Code Formatting Configuration
 [tool.black]
 skip-string-normalization = true
 line-length = 120
 
-# Linting Configuration
 [tool.ruff]
 line-length = 120
 

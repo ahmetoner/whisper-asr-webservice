@@ -6,9 +6,12 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
 
 === ":octicons-file-code-16: `CPU`"
 
-    ```sh
+    ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest
-    docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+    docker run -d -p 9000:9000 \
+      -e ASR_MODEL=base \
+      -e ASR_ENGINE=openai_whisper \
+      onerahmet/openai-whisper-asr-webservice:latest
     ```
 
 === ":octicons-file-code-16: `CPU (macOS)`"
@@ -17,17 +20,31 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
     > 
     > The `:latest` image tag provides both amd64 and arm64 architectures:
     
-    ```sh
+    ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest
-    docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+    docker run -d -p 9000:9000 \
+      -e ASR_MODEL=base \
+      -e ASR_ENGINE=openai_whisper \
+      onerahmet/openai-whisper-asr-webservice:latest
     ```
 
 === ":octicons-file-code-16: `GPU`"
 
-    ```sh
+    ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
-    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+    docker run -d --gpus all -p 9000:9000 \
+      -e ASR_MODEL=base \
+      -e ASR_ENGINE=openai_whisper \
+      onerahmet/openai-whisper-asr-webservice:latest-gpu
     ```
+
+### Environment Variables
+
+The following environment variables can be used to configure the service:
+
+- `ASR_MODEL`: Whisper model to use (tiny, base, small, medium, large) [default: base]
+- `ASR_ENGINE`: ASR engine to use (openai_whisper, faster_whisper) [default: openai_whisper]
+- `ASR_MODEL_PATH`: Custom path to store/load model files [optional]
 
 > Interactive Swagger API documentation is available at <http://localhost:9000/docs>
 
@@ -35,20 +52,25 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
 
 ## Cache
 
-The ASR model is downloaded each time you start the container, using the large model this can take some time.
-If you want to decrease the time it takes to start your container by skipping the download, you can store the cache directory (`~/.cache/whisper` or `/root/.cache/whisper`) to a persistent storage.
-Next time you start your container the ASR Model will be taken from the cache instead of being downloaded again.
+The ASR model is downloaded each time you start the container. Using the large model can take significant time to download.
+To reduce container startup time by avoiding repeated downloads, you can persist the cache directory to local storage.
+The model will then be loaded from the cache instead of being downloaded again on subsequent container starts.
 
-**Important this will prevent you from receiving any updates to the models.**
+**Important: Using a persistent cache will prevent you from receiving model updates.**
 
 === ":octicons-file-code-16: `Default cache dir`"
 
-    ```sh
-    docker run -d -p 9000:9000 -v $PWD/yourlocaldir:/root/.cache/whisper onerahmet/openai-whisper-asr-webservice:latest
+    ```shell
+    docker run -d -p 9000:9000 \
+      -v $PWD/cache:/root/.cache \
+      onerahmet/openai-whisper-asr-webservice:latest
     ```
 
 === ":octicons-file-code-16: `With ASR_MODEL_PATH`"
 
-    ```sh
-    docker run -d -p 9000:9000 -e ASR_MODEL_PATH=/data/whisper -v $PWD/yourlocaldir:/data/whisper onerahmet/openai-whisper-asr-webservice:latest
+    ```shell
+    docker run -d -p 9000:9000 \
+      -e ASR_MODEL_PATH=/data/whisper \
+      -v $PWD/cache:/data/whisper \
+      onerahmet/openai-whisper-asr-webservice:latest
     ```

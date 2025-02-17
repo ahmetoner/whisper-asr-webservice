@@ -4,12 +4,6 @@ FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 
 FROM python:3.10-bookworm
 
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -qq update \
-    && apt-get -qq install --no-install-recommends \
-    libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
-
 ENV POETRY_VENV=/app/.venv
 
 RUN python3 -m venv $POETRY_VENV \
@@ -27,11 +21,6 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 
 RUN poetry config virtualenvs.in-project true
 RUN poetry install
-
-RUN $POETRY_VENV/bin/pip install pandas transformers nltk pyannote.audio
-RUN git clone --depth 1 https://github.com/m-bain/whisperX.git \
-    && cd whisperX \
-    && $POETRY_VENV/bin/pip install -e .
 
 EXPOSE 9000
 
