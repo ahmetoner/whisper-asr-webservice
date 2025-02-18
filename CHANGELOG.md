@@ -1,12 +1,13 @@
 Changelog
 =========
 
-[1.8.1] (2025-02-17)
+[1.8.1] (2025-02-18)
 --------------------
 
 ### Fixed
 
 - Fixed issues with Torch CUDA and cuDNN
+- Updated Torch and Torchaudio dependencies for multi-architecture support
 
 [1.8.0] (2025-02-17)
 --------------------
