@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Reduced GPU image size by using `nvidia/cuda:12.6.3-base-ubuntu22.04`
+
 [1.8.1] (2025-02-18)
 --------------------
 
