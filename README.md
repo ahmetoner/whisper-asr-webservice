@@ -9,7 +9,7 @@ Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models 
 
 ## Features
 
-Current release (v1.8.1) supports following whisper models:
+Current release (v1.8.2) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
 - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.1.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.0)
