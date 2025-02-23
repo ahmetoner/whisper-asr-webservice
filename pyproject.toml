@@ -22,6 +22,7 @@ fastapi = "^0.115.8"
 uvicorn = { extras = ["standard"], version = "^0.34.0" }
 python-multipart = "^0.0.20"
 ffmpeg-python = "^0.2.0"
+pydub = "^0.25.1"
 numpy = "<2.0.0"
 openai-whisper = "^20240930"
 faster-whisper = "^1.1.0"
