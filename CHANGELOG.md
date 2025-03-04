@@ -4,6 +4,21 @@ Changelog
 Unreleased
 ----------
 
+[1.8.2] (2025-02-18)
+--------------------
+
+### Changed
+
+- Reduced GPU image size by using `nvidia/cuda:12.6.3-base-ubuntu22.04`
+
+[1.8.1] (2025-02-18)
+--------------------
+
+### Fixed
+
+- Fixed issues with Torch CUDA and cuDNN
+- Updated Torch and Torchaudio dependencies for multi-architecture support
+
 [1.8.0] (2025-02-17)
 --------------------
 
@@ -266,6 +281,8 @@ Unreleased
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.8.2]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.8.2
+[1.8.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.8.1
 [1.8.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.8.0
 [1.7.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.7.1
 [1.7.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.7.0
