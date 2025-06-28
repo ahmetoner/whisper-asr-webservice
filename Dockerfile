@@ -8,7 +8,7 @@ ENV POETRY_VENV=/app/.venv
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==2.1.1
+    && $POETRY_VENV/bin/pip install poetry==2.1.3
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 

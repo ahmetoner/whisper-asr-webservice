@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded Poetry to v2.1.3
+
 [1.8.2] (2025-02-18)
 --------------------
 

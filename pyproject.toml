@@ -1,54 +1,60 @@
-[tool.poetry]
+[project]
 name = "whisper-asr-webservice"
 version = "1.9.0-dev"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
-homepage = "https://github.com/ahmetoner/whisper-asr-webservice/"
-license = "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"
-authors = ["Ahmet Öner", "Besim Alibegovic"]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "fastapi (>=0.115.8)",
+    "uvicorn[standard] (>=0.34.0)",
+    "python-multipart (>=0.0.20)",
+    "ffmpeg-python (>=0.2.0)",
+    "numpy (<2.0.0)",
+    "openai-whisper (>=20240930)",
+    "faster-whisper (>=1.1.0)",
+    "whisperx (>=3.3.1)",
+    "tqdm (>=4.67.1)",
+    "llvmlite (>=0.44.0)",
+    "numba (>=0.61.0)",
+    "torch (==2.6.0) ; sys_platform == 'darwin'",
+    "torch (==2.6.0) ; platform_machine == 'aarch64' and sys_platform != 'darwin'",
+    "torch (==2.6.0) ; platform_machine == 'x86_64' and sys_platform != 'darwin'",
+    "torchaudio (==2.6.0) ; sys_platform == 'darwin'",
+    "torchaudio (==2.6.0) ; platform_machine == 'aarch64' and sys_platform != 'darwin'",
+    "torchaudio (==2.6.0) ; platform_machine == 'x86_64' and sys_platform != 'darwin'",
+]
+authors = [
+    { name = "Ahmet Öner" },
+    { name = "Besim Alibegovic" }
+]
+license = { text = "MIT" }
 readme = "README.md"
-packages = [{ include = "app" }]
+keywords = ["speech-recognition", "whisper", "asr", "webservice"]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = "https://github.com/ahmetoner/whisper-asr-webservice/"
+Repository = "https://github.com/ahmetoner/whisper-asr-webservice"
+
+[project.scripts]
 whisper-asr-webservice = "app.webservice:start"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "app" }]
 
 [[tool.poetry.source]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
-[tool.poetry.dependencies]
-python = "<3.13,>=3.10"
-fastapi = "^0.115.8"
-uvicorn = { extras = ["standard"], version = "^0.34.0" }
-python-multipart = "^0.0.20"
-ffmpeg-python = "^0.2.0"
-numpy = "<2.0.0"
-openai-whisper = "^20240930"
-faster-whisper = "^1.1.0"
-whisperx = "^3.3.1"
-tqdm = "^4.67.1"
-llvmlite = "^0.44.0"
-numba = "^0.61.0"
-torch = [
-    { version = "2.6.0", source = "pypi", markers = "sys_platform == 'darwin'"},
-    { version = "2.6.0", source = "pypi", markers = "platform_machine == 'aarch64' and sys_platform != 'darwin'"},
-    { version = "2.6.0", source = "pytorch-cpu", markers = "platform_machine == 'x86_64' and sys_platform != 'darwin'" },
-]
-torchaudio = [
-    { version = "2.6.0", source = "pypi", markers = "sys_platform == 'darwin'"},
-    { version = "2.6.0", source = "pypi", markers = "platform_machine == 'aarch64' and sys_platform != 'darwin'"},
-    { version = "2.6.0", source = "pytorch-cpu", markers = "platform_machine == 'x86_64' and sys_platform != 'darwin'" },
-]
-
-[poetry.group.dev.dependencies]
-pytest = "^8.3.4"
-ruff = "^0.9.6"
-black = "^25.1.0"
-mkdocs-material = "^9.6.4"
-pymdown-extensions = "^10.14.3"
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.3.4,<9.0.0"
+ruff = ">=0.9.6,<1.0.0"
+black = ">=25.1.0,<26.0.0"
+mkdocs-material = ">=9.6.4,<10.0.0"
+pymdown-extensions = ">=10.14.3,<11.0.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
