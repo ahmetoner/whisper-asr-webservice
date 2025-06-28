@@ -6,7 +6,9 @@ Unreleased
 
 ### Changed
 
-- Upgraded Poetry to v2.1.3
+- Upgraded
+  - Poetry to v2.1.3
+  - [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
 
 [1.8.2] (2025-02-18)
 --------------------
