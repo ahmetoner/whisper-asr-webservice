@@ -4,8 +4,8 @@ version = "1.9.0-dev"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "fastapi (>=0.115.8)",
-    "uvicorn[standard] (>=0.34.0)",
+    "fastapi (>=0.115.14)",
+    "uvicorn[standard] (>=0.35.0)",
     "python-multipart (>=0.0.20)",
     "ffmpeg-python (>=0.2.0)",
     "numpy (>=2.2.6)",
@@ -14,7 +14,7 @@ dependencies = [
     "whisperx (>=3.4.2)",
     "tqdm (>=4.67.1)",
     "llvmlite (>=0.44.0)",
-    "numba (>=0.61.0)",
+    "numba (>=0.61.2)",
 ]
 authors = [
     { name = "Ahmet Öner" },

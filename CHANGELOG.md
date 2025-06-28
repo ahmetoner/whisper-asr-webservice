@@ -14,6 +14,9 @@ Unreleased
   - torch to v2.7.1
   - torchaudio to v2.7.1
   - numpy to v2.2.6
+  - fastapi to v0.115.14
+  - uvicorn to v0.35.0
+  - numba to v0.61.2
 
 [1.8.2] (2025-02-18)
 --------------------
