@@ -1,6 +1,6 @@
 ## Development Environment
 
-Install poetry with following command:
+Install poetry v2.X with following command:
 
 ```shell
 pip3 install poetry
@@ -8,10 +8,16 @@ pip3 install poetry
 
 ### Installation
 
-Install packages:
+Install dependencies for cpu
 
 ```shell
-poetry install
+poetry install --extras cpu
+```
+
+Install dependencies for cuda
+
+```shell
+poetry install --extras cuda
 ```
 
 !!! Note

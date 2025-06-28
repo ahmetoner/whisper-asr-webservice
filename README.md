@@ -75,11 +75,14 @@ For complete documentation, visit:
 ## Development
 
 ```shell
-# Install poetry
+# Install poetry v2.X
 pip3 install poetry
 
-# Install dependencies
-poetry install
+# Install dependencies for cpu
+poetry install --extras cpu
+
+# Install dependencies for cuda
+poetry install --extras cuda
 
 # Run service
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
