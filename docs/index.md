@@ -1,5 +1,9 @@
 Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
 
+!!! tip "Join our Discord Community!"
+    🎉 **Connect with other users, get help, and stay updated on the latest features!**  
+    [Join our Discord Server](https://discord.gg/4Q5YVrePzZ){target=_blank}
+
 ## Features
 
 Current release (v1.8.2) supports following whisper models:
