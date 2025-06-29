@@ -1,6 +1,6 @@
 [project]
 name = "whisper-asr-webservice"
-version = "1.9.0-dev"
+version = "1.10.0-dev"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
 requires-python = ">=3.10,<3.13"
 dependencies = [
