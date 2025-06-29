@@ -4,6 +4,20 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+  - Poetry to v2.1.3
+  - [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
+  - [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) to [v1.1.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.1)
+  - [whisperX](https://github.com/m-bain/whisperX)@[v3.4.2](https://github.com/m-bain/whisperX/releases/tag/v3.4.2)
+  - torch to v2.7.1
+  - torchaudio to v2.7.1
+  - numpy to v2.2.6
+  - fastapi to v0.115.14
+  - uvicorn to v0.35.0
+  - numba to v0.61.2
+
 [1.8.2] (2025-02-18)
 --------------------
 

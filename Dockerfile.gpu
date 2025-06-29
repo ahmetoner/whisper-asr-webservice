@@ -24,25 +24,20 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==2.1.1
+    && $POETRY_VENV/bin/pip install poetry==2.1.3
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
-
-COPY poetry.lock pyproject.toml ./
-
-RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-root
 
 COPY . .
 COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
-RUN poetry install
-RUN $POETRY_VENV/bin/pip install torch==2.6.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
+RUN poetry config virtualenvs.in-project true
+RUN poetry install --extras cuda
 
 EXPOSE 9000
 
-CMD whisper-asr-webservice
+ENTRYPOINT ["whisper-asr-webservice"]

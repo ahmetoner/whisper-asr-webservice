@@ -3,6 +3,8 @@
 ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
+> 🎉 **Join our Discord Community!** Connect with other users, get help, and stay updated on the latest features: [https://discord.gg/4Q5YVrePzZ](https://discord.gg/4Q5YVrePzZ)
+
 # Whisper ASR Box
 
 Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
@@ -11,9 +13,9 @@ Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models 
 
 Current release (v1.8.2) supports following whisper models:
 
-- [openai/whisper](https://github.com/openai/whisper)@[v20240930](https://github.com/openai/whisper/releases/tag/v20240930)
-- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.1.0](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.0)
-- [whisperX](https://github.com/m-bain/whisperX)@[v3.1.1](https://github.com/m-bain/whisperX/releases/tag/v3.1.1)
+- [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
+- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.1.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.1)
+- [whisperX](https://github.com/m-bain/whisperX)@[v3.4.2](https://github.com/m-bain/whisperX/releases/tag/v3.4.2)
 
 ## Quick Usage
 
@@ -75,11 +77,14 @@ For complete documentation, visit:
 ## Development
 
 ```shell
-# Install poetry
+# Install poetry v2.X
 pip3 install poetry
 
-# Install dependencies
-poetry install
+# Install dependencies for cpu
+poetry install --extras cpu
+
+# Install dependencies for cuda
+poetry install --extras cuda
 
 # Run service
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000

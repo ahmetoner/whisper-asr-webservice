@@ -28,7 +28,7 @@ app = FastAPI(
     version=projectMetadata["Version"],
     contact={"url": projectMetadata["Home-page"]},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
-    license_info={"name": "MIT License", "url": projectMetadata["License"]},
+    license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
