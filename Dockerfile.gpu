@@ -4,6 +4,8 @@ FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 
 FROM nvidia/cuda:12.6.3-base-ubuntu22.04
 
+LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
+
 ENV PYTHON_VERSION=3.10
 
 ENV POETRY_VENV=/app/.venv
