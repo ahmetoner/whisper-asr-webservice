@@ -7,6 +7,7 @@ Unreleased
 ### Fixed
 
 - Fixed Whisperx diarization pipeline initialization
+- Fixed Whisperx language detection
 
 [1.9.0] (2025-06-29)
 --------------------
