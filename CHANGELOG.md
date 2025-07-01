@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- Fixed Whisperx diarization pipeline initialization
+
 [1.9.0] (2025-06-29)
 --------------------
 

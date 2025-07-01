@@ -5,6 +5,7 @@ from typing import BinaryIO, Union
 
 import whisper
 import whisperx
+from whisperx.diarize import DiarizationPipeline
 from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 from app.asr_models.asr_model import ASRModel
@@ -30,7 +31,7 @@ class WhisperXASR(ASRModel):
         )
 
         if CONFIG.HF_TOKEN != "":
-            self.model['diarize_model'] = whisperx.DiarizationPipeline(
+            self.model['diarize_model'] = DiarizationPipeline(
                 use_auth_token=CONFIG.HF_TOKEN,
                 device=CONFIG.DEVICE
             )
