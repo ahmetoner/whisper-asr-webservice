@@ -3,8 +3,9 @@ from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
 
-import whisper
 import whisperx
+from whisperx.audio import N_SAMPLES
+from whisperx.diarize import DiarizationPipeline
 from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 from app.asr_models.asr_model import ASRModel
@@ -30,7 +31,7 @@ class WhisperXASR(ASRModel):
         )
 
         if CONFIG.HF_TOKEN != "":
-            self.model['diarize_model'] = whisperx.DiarizationPipeline(
+            self.model['diarize_model'] = DiarizationPipeline(
                 use_auth_token=CONFIG.HF_TOKEN,
                 device=CONFIG.DEVICE
             )
@@ -92,20 +93,17 @@ class WhisperXASR(ASRModel):
         return output_file
 
     def language_detection(self, audio):
-        # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.pad_or_trim(audio)
-
-        # make log-Mel spectrogram and move to the same device as the model
-        mel = whisper.log_mel_spectrogram(audio).to(self.model.device)
-
-        # detect the spoken language
         with self.model_lock:
             if self.model is None:
                 self.load_model()
-            _, probs = self.model.detect_language(mel)
-        detected_lang_code = max(probs, key=probs.get)
+            if audio.shape[0] < N_SAMPLES:
+                print("Warning: audio is shorter than 30s, language detection may be inaccurate.")
+            results = self.model['whisperx'].model.detect_language(audio)
+            language = results[0]
+            language_probability = round(float(results[1]), 2)
+            print(f"Detected language: {language} ({language_probability}) in first 30s of audio...")
+        return language, language_probability
 
-        return detected_lang_code
 
     def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
         default_options = {
