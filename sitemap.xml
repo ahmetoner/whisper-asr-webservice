@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/build/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/changelog/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/endpoints/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/environmental-variables/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/licence/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+    <url>
+         <loc>https://ahmetoner.github.io/whisper-asr-webservice/run/</loc>
+         <lastmod>2025-07-01</lastmod>
+    </url>
+</urlset>
