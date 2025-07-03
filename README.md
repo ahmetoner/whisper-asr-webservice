@@ -51,6 +51,7 @@ docker run -d -p 9000:9000 \
 
 - Multiple ASR engines support (OpenAI Whisper, Faster Whisper, WhisperX)
 - Multiple output formats (text, JSON, VTT, SRT, TSV)
+- Support for outputting all formats simultaneously with a single request
 - Word-level timestamps support
 - Voice activity detection (VAD) filtering
 - Speaker diarization (with WhisperX)
@@ -95,3 +96,5 @@ After starting the service, visit `http://localhost:9000` or `http://0.0.0.0:900
 ## Credits
 
 - This software uses libraries from the [FFmpeg](http://ffmpeg.org) project under the [LGPLv2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+
+

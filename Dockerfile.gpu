@@ -17,6 +17,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     python${PYTHON_VERSION}-venv \
     python3-pip \
     libcudnn8 \
+    libcudnn8-dev \
+    # Make sure to install all required libcudnn components
+    libcudnn8-samples \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 

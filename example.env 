@@ -1,0 +1,25 @@
+# Whisper ASR Webservice Environment Configuration
+
+# Model configuration
+ASR_ENGINE=whisperx
+ASR_MODEL=large-v3
+
+# Performance tuning
+COMPUTE_TYPE=float32
+NUM_WORKERS=4
+BATCH_SIZE=16
+BEAM_SIZE=4
+
+# Whisper X Settings
+SUBTITLE_MAX_LINE_WIDTH=1000
+SUBTITLE_MAX_LINE_COUNT=2
+SUBTITLE_HIGHLIGHT_WORDS=true
+
+
+# System settings
+# 16000 the optimal for Whisper to work with Audio files
+# 24000k seens ti be working for now but incase of issues lower it to 16000
+SAMPLE_RATE=24000 
+HF_HOME=/root/.cache/huggingface
+CPU_THREADS=4 
+

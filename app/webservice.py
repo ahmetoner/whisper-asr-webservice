@@ -8,9 +8,10 @@ import click
 import uvicorn
 from fastapi import FastAPI, File, Query, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import RedirectResponse, StreamingResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
+import tempfile
 
 from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModelFactory
@@ -86,8 +87,14 @@ async def asr(
         description="Max speakers in this file",
         include_in_schema=(True if CONFIG.ASR_ENGINE == "whisperx" else False),
     ),
-    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json", "all"]),
 ):
+    # Set environment variables for output directory and audio filename if needed for "all" output
+    if output == "all":
+        os.environ["OUTPUT_DIR"] = CONFIG.TEMP_DIR if hasattr(CONFIG, "TEMP_DIR") else "/tmp"
+        os.environ["AUDIO_FILENAME"] = audio_file.filename
+    
+    # Process the audio file with the ASR model
     result = asr_model.transcribe(
         load_audio(audio_file.file, encode),
         task,
@@ -98,13 +105,40 @@ async def asr(
         {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
         output,
     )
+    
+    # For "all" output format (zip file)
+    if output == "all":
+        # Get the bytes from the generator
+        zip_bytes = next(result)
+        
+        # Create a temporary file to save the zip
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as temp_file:
+            temp_file.write(zip_bytes)
+            temp_path = temp_file.name
+        
+        # Create a nice filename for the download
+        base_filename = os.path.basename(audio_file.filename)
+        download_filename = f"{os.path.splitext(base_filename)[0]}_transcripts.zip"
+        
+        # Use FastAPI's FileResponse to serve the file
+        return FileResponse(
+            path=temp_path,
+            filename=download_filename,
+            media_type="application/zip",
+            headers={"Asr-Engine": CONFIG.ASR_ENGINE}
+        )
+    
+    # For other formats, continue using StreamingResponse
+    # Set the appropriate content type based on output format
+    content_type = "text/plain"
+    if output == "json":
+        content_type = "application/json"
+    
+    # Return the streaming response for text-based formats
     return StreamingResponse(
         result,
-        media_type="text/plain",
-        headers={
-            "Asr-Engine": CONFIG.ASR_ENGINE,
-            "Content-Disposition": f'attachment; filename="{quote(audio_file.filename)}.{output}"',
-        },
+        media_type=content_type,
+        headers={"Asr-Engine": CONFIG.ASR_ENGINE}
     )
 
 
