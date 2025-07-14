@@ -8,6 +8,7 @@ class CONFIG:
     Configuration class for ASR models.
     Reads environment variables for runtime configuration, with sensible defaults.
     """
+
     # Determine the ASR engine ('faster_whisper', 'openai_whisper' or 'whisperx')
     ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
 
@@ -45,3 +46,14 @@ class CONFIG:
     SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH", 1000))
     SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))
     SUBTITLE_HIGHLIGHT_WORDS = os.getenv("SUBTITLE_HIGHLIGHT_WORDS", "false").lower() == "true"
+
+    # Batching
+    # Path to the batch database
+    WORKDIR = os.getenv("WORKDIR", "/tmp/whisper_asr_webservice")
+    if not os.path.exists(WORKDIR):
+        os.makedirs(WORKDIR)
+
+    # How long to keep a batch process after its value been read - Default is 30 minutes
+    JOB_CLEANUP_AFTER_READ = int(os.getenv("JOB_CLEANUP_AFTER_READ", 1800))
+    # How long to keep a batch process after its value been abandoned (not read) - Default is 24 hours
+    JOB_CLEANUP_ABANDONED = int(os.getenv("JOB_CLEANUP_ABANDONED", 86400))
