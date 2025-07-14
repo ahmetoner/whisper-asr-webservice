@@ -26,25 +26,6 @@ LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 async_svc = AsyncProcessing(asr_model)
 
 
-# def cleanup_old_batches():
-#     """Remove batches older than BATCH_TTL seconds"""
-#     while True:
-#         current_time = time.time()
-#         cutoff_time = current_time - BATCH_TTL
-
-#         with db_lock:
-#             with sqlite3.connect(DB_PATH) as conn:
-#                 conn.execute("DELETE FROM batches WHERE created_at < ?", (cutoff_time,))
-#                 conn.commit()
-
-#         time.sleep(BATCH_CLEANUP_INTERVAL)
-
-
-# # Initialize database and start cleanup thread
-# init_database()
-# cleanup_thread = threading.Thread(target=cleanup_old_batches, daemon=True)
-# cleanup_thread.start()
-
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),

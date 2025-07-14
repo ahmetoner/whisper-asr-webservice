@@ -9,23 +9,13 @@ from typing import Dict, List, Literal
 from uuid import uuid4
 
 from fastapi import UploadFile
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModel
 from app.utils import load_audio
 
 JobStatus = Literal["pending", "processing", "completed", "read", "failed", "error"]
-
-
-class Job(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid4()))
-    status: JobStatus
-    created_at: float | None = None
-    completed_at: float | None = None
-    file_location: str
-    results_file: str | None = None
-    error: str | None = None
 
 
 class NewAsyncJobResponse(BaseModel):
