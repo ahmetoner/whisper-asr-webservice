@@ -12,6 +12,7 @@ from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
 
+from app.async_svc import AsyncJobResponse, AsyncProcessing
 from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModelFactory
 from app.utils import load_audio
@@ -21,6 +22,29 @@ asr_model.load_model()
 
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 
+# Initialize async processing service
+async_svc = AsyncProcessing(asr_model)
+
+
+# def cleanup_old_batches():
+#     """Remove batches older than BATCH_TTL seconds"""
+#     while True:
+#         current_time = time.time()
+#         cutoff_time = current_time - BATCH_TTL
+
+#         with db_lock:
+#             with sqlite3.connect(DB_PATH) as conn:
+#                 conn.execute("DELETE FROM batches WHERE created_at < ?", (cutoff_time,))
+#                 conn.commit()
+
+#         time.sleep(BATCH_CLEANUP_INTERVAL)
+
+
+# # Initialize database and start cleanup thread
+# init_database()
+# cleanup_thread = threading.Thread(target=cleanup_old_batches, daemon=True)
+# cleanup_thread.start()
+
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),
@@ -28,7 +52,10 @@ app = FastAPI(
     version=projectMetadata["Version"],
     contact={"url": projectMetadata["Home-page"]},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
-    license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
+    license_info={
+        "name": "MIT License",
+        "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE",
+    },
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
@@ -86,8 +113,31 @@ async def asr(
         description="Max speakers in this file",
         include_in_schema=(True if CONFIG.ASR_ENGINE == "whisperx" else False),
     ),
+    async_job: bool = Query(
+        default=False,
+        description="Create an async job instead of transcribing the file immediately",
+        include_in_schema=True,
+    ),
     output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
+    if async_job:
+        job_data = await async_svc.create_job(
+            [audio_file],
+            {
+                "encode": encode,
+                "task": task,
+                "language": language,
+                "initial_prompt": initial_prompt,
+                "vad_filter": vad_filter,
+                "word_timestamps": word_timestamps,
+                "diarize": diarize,
+                "min_speakers": min_speakers,
+                "max_speakers": max_speakers,
+                "output": output,
+            },
+        )
+        return job_data
+
     result = asr_model.transcribe(
         load_audio(audio_file.file, encode),
         task,
@@ -119,6 +169,11 @@ async def detect_language(
         "language_code": detected_lang_code,
         "confidence": confidence,
     }
+
+
+@app.get("/asr/{job_id}", response_model_exclude_none=True, response_model=AsyncJobResponse, tags=["Endpoints"])
+async def get_job(job_id: str):
+    return await async_svc.get_job(job_id)
 
 
 @click.command()
