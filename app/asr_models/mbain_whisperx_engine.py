@@ -1,4 +1,4 @@
-import time
+qqimport time
 from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
@@ -23,11 +23,13 @@ class WhisperXASR(ASRModel):
 
     def load_model(self):
         asr_options = {"without_timestamps": False}
+        vad_options = {"vad_onset": 0.1, "vad_offset": 0.1}
         self.model['whisperx'] = whisperx.load_model(
             CONFIG.MODEL_NAME,
             device=CONFIG.DEVICE,
             compute_type=CONFIG.MODEL_QUANTIZATION,
-            asr_options=asr_options
+            asr_options=asr_options,
+            vad_options=vad_options
         )
 
         if CONFIG.HF_TOKEN != "":
