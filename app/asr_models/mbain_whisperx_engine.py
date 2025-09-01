@@ -1,4 +1,4 @@
-qqimport time
+import time
 from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
