@@ -17,13 +17,13 @@ Current release (v1.9.1) supports following whisper models:
 === ":octicons-file-code-16: `CPU`"
 
     ```shell
-    docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+    docker run -d -p 9000:9000 --tmpfs /tmp -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
     ```
 
 === ":octicons-file-code-16: `GPU`"
 
     ```shell
-    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+    docker run -d --gpus all -p 9000:9000 --tmpfs /tmp -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
     ```
 
 for more information:
