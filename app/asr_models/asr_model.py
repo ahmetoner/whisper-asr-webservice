@@ -71,6 +71,8 @@ class ASRModel(ABC):
         """
         del self.model
         torch.cuda.empty_cache()
+        torch.xpu.memory.empty_cache()
+        #torch.accelerator.memory.empty_cache() available in torch 2.9.0 replacing the above lines
         gc.collect()
         self.model = None
         print("Model unloaded due to timeout")

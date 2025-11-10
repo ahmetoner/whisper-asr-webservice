@@ -61,11 +61,11 @@ Defaults to `16000`. Default sample rate for audio input. `16 kHz` is commonly u
 ### Configuring Device and Quantization
 
 ```shell
-export ASR_DEVICE=cuda  # or 'cpu'
+export ASR_DEVICE=cuda  # or 'cpu' or 'xpu'
 export ASR_QUANTIZATION=float32  # or 'float16', 'int8'
 ```
 
-The `ASR_DEVICE` defaults to `cuda` if GPU is available, otherwise `cpu`. 
+The `ASR_DEVICE` defaults to `cuda` if A nvidia gpu is available, next in line is `xpu` if available, otherwise `cpu`. 
 
 The `ASR_QUANTIZATION` defines the precision for model weights:
 

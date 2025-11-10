@@ -20,6 +20,12 @@ Install dependencies for cuda
 poetry install --extras cuda
 ```
 
+Install dependencies for intel xpu
+
+```shell
+poetry install --extras xpu
+```
+
 !!! Note
     By default, this will install the CPU version of PyTorch. For GPU support, you'll need to install the appropriate CUDA version of PyTorch separately:
     ```shell
@@ -53,16 +59,28 @@ poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
         docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
         ```
     
-    === ":octicons-file-code-16: `GPU`"
+    === ":octicons-file-code-16: `GPU (cuda)`"
     
         ```shell
         # Build Image
-        docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
+        docker build -f Dockerfile.cuda -t whisper-asr-webservice-cuda .
         
         # Run Container
-        docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
+        docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-cuda
         # or with specific model
-        docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-gpu
+        docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-cuda
+        ```
+
+    === ":octicons-file-code-16: `GPU (intel)`"
+    
+        ```shell
+        # Build Image
+        docker build -f Dockerfile.intel -t whisper-asr-webservice-intel .
+        
+        # Run Container
+        docker run -d --device=/dev/dri all -p 9000:9000 whisper-asr-webservice-intel
+        # or with specific model
+        docker run -d --device=/dev/dri all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-intel
         ```
 
     With `docker-compose`:
@@ -73,10 +91,15 @@ poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
         docker-compose up --build
         ```
     
-    === ":octicons-file-code-16: `GPU`"
+    === ":octicons-file-code-16: `GPU (cuda)`"
     
         ```shell
-        docker-compose -f docker-compose.gpu.yml up --build
+        docker-compose -f docker-compose.cuda.yml up --build
+        ```
+    === ":octicons-file-code-16: `GPU (intel)`"
+    
+        ```shell
+        docker-compose -f docker-compose.intel.yml up --build
         ```
 === ":octicons-file-code-16: `Poetry`"
 

@@ -1,0 +1,16 @@
+services:
+  whisper-asr-webservice-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu.xpu
+    environment:
+      - ASR_MODEL=base
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./app:/app/app
+      - cache-whisper:/root/.cache
+    devices:
+      - /dev/dri:/dev/dri
+volumes:
+  cache-whisper:

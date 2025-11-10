@@ -20,16 +20,24 @@ Current release (v1.9.1) supports following whisper models:
     docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
     ```
 
-=== ":octicons-file-code-16: `GPU`"
+=== ":octicons-file-code-16: `GPU (cuda)`"
 
     ```shell
-    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-cuda
+    ```
+
+=== ":octicons-file-code-16: `GPU (intel)`"
+
+    ```shell
+    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-intel
     ```
 
 for more information:
 
 - [Documentation/Run](https://ahmetoner.github.io/whisper-asr-webservice/run)
 - [Docker Hub](https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice)
+
+Disclaimer: intel gpu only curently supported with openai_whisper
 
 ## Credits
 
