@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile.intel
     environment:
       - ASR_MODEL=base
+      - ASR_DEVICE=xpu
     ports:
       - "9000:9000"
     volumes:
