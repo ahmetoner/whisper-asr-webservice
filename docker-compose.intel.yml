@@ -2,7 +2,7 @@ services:
   whisper-asr-webservice-gpu:
     build:
       context: .
-      dockerfile: Dockerfile.gpu.xpu
+      dockerfile: Dockerfile.intel
     environment:
       - ASR_MODEL=base
     ports:
