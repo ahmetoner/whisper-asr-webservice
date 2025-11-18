@@ -21,20 +21,34 @@ Current release (v1.9.1) supports following whisper models:
 
 ### CPU
 
+build
 ```shell
-docker run -d -p 9000:9000 \
-  -e ASR_MODEL=base \
-  -e ASR_ENGINE=openai_whisper \
-  onerahmet/openai-whisper-asr-webservice:latest
+docker build -t whisper-asr-webservice .
+```
+
+```shell
+docker run -d \
+  --name whisper-asr \
+  -p 9000:9000 \
+  -e ASYNC_ASR_WORKER_COUNT=3 \
+  -e ASYNC_ASR_JOB_TIMEOUT=180 \
+  whisper-asr-webservice
 ```
 
 ### GPU
 
+build
 ```shell
-docker run -d --gpus all -p 9000:9000 \
-  -e ASR_MODEL=base \
-  -e ASR_ENGINE=openai_whisper \
-  onerahmet/openai-whisper-asr-webservice:latest-gpu
+docker build -f Dockerfile.gpu -t whisper-asr-webservice:gpu .
+```
+
+```shell
+docker run -d \
+  --name whisper-asr \
+  -p 9000:9000 \
+  -e ASYNC_ASR_WORKER_COUNT=3 \
+  -e ASYNC_ASR_JOB_TIMEOUT=180 \
+  whisper-asr-webservice:gpu
 ```
 
 #### Cache
@@ -42,9 +56,10 @@ docker run -d --gpus all -p 9000:9000 \
 To reduce container startup time by avoiding repeated downloads, you can persist the cache directory:
 
 ```shell
-docker run -d -p 9000:9000 \
+docker run -d \
+  -p 9000:9000 \
   -v $PWD/cache:/root/.cache/ \
-  onerahmet/openai-whisper-asr-webservice:latest
+  whisper-asr-webservice
 ```
 
 ## Key Features
