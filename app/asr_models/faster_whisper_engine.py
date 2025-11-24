@@ -1,4 +1,5 @@
 import time
+import os
 from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
@@ -8,7 +9,7 @@ from faster_whisper import WhisperModel
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
-from app.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
+from app.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT, WriteAll
 
 
 class FasterWhisperASR(ASRModel):
@@ -59,10 +60,23 @@ class FasterWhisperASR(ASRModel):
                 text = text + segment.text
             result = {"language": options_dict.get("language", info.language), "segments": segments, "text": text}
 
+        # Store the output directory and audio path for the "all" option
+        self.output_dir = os.environ.get("OUTPUT_DIR", "/tmp")
+        self.audio_path = os.environ.get("AUDIO_FILENAME", "audio")
+
+        # For "all" output format, create and return the zip bytes
+        if output == "all":
+            writer = WriteAll(self.output_dir)
+            zip_bytes = writer.create_zip_bytes(result)
+            # Create a generator that yields the bytes
+            def bytes_generator():
+                yield zip_bytes
+            return bytes_generator()
+            
+        # For other formats, write to StringIO and return that
         output_file = StringIO()
         self.write_result(result, output_file, output)
         output_file.seek(0)
-
         return output_file
 
     def language_detection(self, audio):
@@ -84,13 +98,25 @@ class FasterWhisperASR(ASRModel):
         return detected_lang_code, detected_language_confidence
 
     def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
+        """
+        Write the transcription result to the specified output format.
+        
+        For 'all' format, this function is not directly used as the transcribe method
+        handles it with create_zip_bytes.
+        For other formats, writes directly to the provided file object.
+        """
+        # Initialize the appropriate writer class based on the output format
         if output == "srt":
-            WriteSRT(ResultWriter).write_result(result, file=file)
+            writer_class = WriteSRT
         elif output == "vtt":
-            WriteVTT(ResultWriter).write_result(result, file=file)
+            writer_class = WriteVTT
         elif output == "tsv":
-            WriteTSV(ResultWriter).write_result(result, file=file)
+            writer_class = WriteTSV
         elif output == "json":
-            WriteJSON(ResultWriter).write_result(result, file=file)
-        else:
-            WriteTXT(ResultWriter).write_result(result, file=file)
+            writer_class = WriteJSON
+        else:  # Default to txt
+            writer_class = WriteTXT
+        
+        # Create a ResultWriter instance and write to the file
+        writer = writer_class(self.output_dir)
+        writer.write_result(result, file=file)

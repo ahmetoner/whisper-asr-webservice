@@ -1,4 +1,5 @@
 import time
+import os
 from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
@@ -10,6 +11,7 @@ from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, W
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
+from app.utils import WriteAll
 
 
 class WhisperXASR(ASRModel):
@@ -86,10 +88,24 @@ class WhisperXASR(ASRModel):
             result = whisperx.assign_word_speakers(diarize_segments, result)
         result["language"] = language
 
+        # Store the output directory and audio path for the "all" option
+        self.output_dir = os.environ.get("OUTPUT_DIR", "/tmp")
+        self.audio_path = os.environ.get("AUDIO_FILENAME", "audio")
+
+        # For "all" output format, create and return the zip bytes
+        if output == "all":
+            # Import WriteAll from app.utils if needed
+            writer = WriteAll(self.output_dir)
+            zip_bytes = writer.create_zip_bytes(result)
+            # Create a generator that yields the bytes
+            def bytes_generator():
+                yield zip_bytes
+            return bytes_generator()
+
+        # For other formats, write to StringIO and return that
         output_file = StringIO()
         self.write_result(result, output_file, output)
         output_file.seek(0)
-
         return output_file
 
     def language_detection(self, audio):

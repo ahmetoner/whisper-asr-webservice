@@ -1,17 +1,42 @@
-version: "3.4"
-
 services:
   whisper-asr-webservice:
     build:
       context: .
-      dockerfile: Dockerfile
-    environment:
-      - ASR_MODEL=base
+      dockerfile: Dockerfile.gpu
+    restart: unless-stopped
+    env_file: .env
     ports:
       - "9000:9000"
+    dns:
+    - 172.20.0.2  # CoreDNS server IP
     volumes:
       - ./app:/app/app
+      - ./data:/data/whisper
       - cache-whisper:/root/.cache
+      - huggingface-cache:/root/.cache/huggingface
+    networks:
+      - monitoring
+      - xinference-network
+      - core-dns_core-network
+      - whisper-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+networks:
+  whisper-network:
+    driver: bridge
+  monitoring:
+    driver: bridge
+  xinference-network:
+    driver: bridge
+  core-dns_core-network:
+    external: true
 
 volumes:
   cache-whisper:
+  huggingface-cache:
