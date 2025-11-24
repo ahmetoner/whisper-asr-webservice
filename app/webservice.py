@@ -1,6 +1,7 @@
 import asyncio
 import io
 import json
+import importlib
 import os
 import urllib.error
 import urllib.request
@@ -286,25 +287,6 @@ async def _async_job_queue_worker(worker_id: int) -> None:
             async_job_queue.task_done()
 
 
-@app.on_event("startup")
-async def _startup_worker() -> None:
-    global async_job_queue, queue_worker_tasks
-    async_job_queue = asyncio.Queue()
-    queue_worker_tasks = [
-        asyncio.create_task(_async_job_queue_worker(worker_id))
-        for worker_id in range(ASYNC_ASR_WORKER_COUNT)
-    ]
-
-
-@app.on_event("shutdown")
-async def _shutdown_worker() -> None:
-    for task in queue_worker_tasks:
-        task.cancel()
-    for task in queue_worker_tasks:
-        with suppress(asyncio.CancelledError):
-            await task
-
-
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),
@@ -329,6 +311,25 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
         )
 
     applications.get_swagger_ui_html = swagger_monkey_patch
+
+
+@app.on_event("startup")
+async def _startup_worker() -> None:
+    global async_job_queue, queue_worker_tasks
+    async_job_queue = asyncio.Queue()
+    queue_worker_tasks = [
+        asyncio.create_task(_async_job_queue_worker(worker_id))
+        for worker_id in range(ASYNC_ASR_WORKER_COUNT)
+    ]
+
+
+@app.on_event("shutdown")
+async def _shutdown_worker() -> None:
+    for task in queue_worker_tasks:
+        task.cancel()
+    for task in queue_worker_tasks:
+        with suppress(asyncio.CancelledError):
+            await task
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
