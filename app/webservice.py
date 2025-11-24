@@ -3,13 +3,15 @@ import io
 import json
 import importlib
 import os
+import sqlite3
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
-from datetime import datetime
-from os import path
-from threading import Lock
 from contextlib import suppress
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from os import path
+from pathlib import Path
+from threading import Lock
 from typing import Annotated, Dict, List, Literal, Optional, Union
 from urllib.parse import quote
 from uuid import uuid4
@@ -53,6 +55,12 @@ def _parse_non_negative_float_env(key: str, default: float) -> float:
     except ValueError:
         return default
     return max(0.0, parsed)
+
+
+ASYNC_JOBS_DB_PATH = os.getenv("ASYNC_JOBS_DB_PATH", "/app/async_jobs.db")
+ASYNC_JOB_EXPIRY_SECONDS = _parse_positive_int_env("ASYNC_JOB_EXPIRY_SECONDS", 3600)
+ASYNC_JOB_CLEANUP_INTERVAL = _parse_positive_int_env("ASYNC_JOB_CLEANUP_INTERVAL", 300)
+ASYNC_JOB_CLEANUP_STATUSES = ("completed", "failed")
 
 
 ASYNC_ASR_WORKER_COUNT = _parse_positive_int_env("ASYNC_ASR_WORKER_COUNT", 3) # 并发处理任务的线程数
@@ -147,12 +155,134 @@ class AsyncASRJob:
         }
 
 
-async_jobs: Dict[str, AsyncASRJob] = {}
+class AsyncJobStore:
+    def __init__(self, db_path: str) -> None:
+        db_dir = Path(db_path).parent
+        db_dir.mkdir(parents=True, exist_ok=True)
+        self._conn = sqlite3.connect(db_path, check_same_thread=False)
+        self._conn.row_factory = sqlite3.Row
+        self._ensure_table()
+
+    def _ensure_table(self) -> None:
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS async_jobs (
+                job_id TEXT PRIMARY KEY,
+                callback_url TEXT NOT NULL,
+                task TEXT NOT NULL,
+                language TEXT,
+                output_format TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                status TEXT NOT NULL,
+                result TEXT,
+                error TEXT,
+                callback_error TEXT
+            )
+            """
+        )
+        self._conn.commit()
+
+    @staticmethod
+    def _parse_iso(value: str) -> datetime:
+        if value.endswith("Z"):
+            value = value[:-1]
+        return datetime.fromisoformat(value)
+
+    def _row_to_job(self, row: sqlite3.Row | None) -> Optional[AsyncASRJob]:
+        if row is None:
+            return None
+        return AsyncASRJob(
+            job_id=row["job_id"],
+            callback_url=row["callback_url"],
+            task=row["task"],
+            language=row["language"],
+            output_format=row["output_format"],
+            created_at=self._parse_iso(row["created_at"]),
+            updated_at=self._parse_iso(row["updated_at"]),
+            status=row["status"],
+            result=row["result"],
+            error=row["error"],
+            callback_error=row["callback_error"],
+        )
+
+    def get_job(self, job_id: str) -> Optional[AsyncASRJob]:
+        cursor = self._conn.execute(
+            "SELECT * FROM async_jobs WHERE job_id = ?", (job_id,)
+        )
+        return self._row_to_job(cursor.fetchone())
+
+    def upsert_job(self, job: AsyncASRJob) -> None:
+        with self._conn:
+            self._conn.execute(
+                """
+                INSERT INTO async_jobs (
+                    job_id,
+                    callback_url,
+                    task,
+                    language,
+                    output_format,
+                    created_at,
+                    updated_at,
+                    status,
+                    result,
+                    error,
+                    callback_error
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(job_id) DO UPDATE SET
+                    callback_url = excluded.callback_url,
+                    task = excluded.task,
+                    language = excluded.language,
+                    output_format = excluded.output_format,
+                    created_at = excluded.created_at,
+                    updated_at = excluded.updated_at,
+                    status = excluded.status,
+                    result = excluded.result,
+                    error = excluded.error,
+                    callback_error = excluded.callback_error
+                """,
+                (
+                    job.job_id,
+                    job.callback_url,
+                    job.task,
+                    job.language,
+                    job.output_format,
+                    job.created_at.isoformat(),
+                    job.updated_at.isoformat(),
+                    job.status,
+                    job.result,
+                    job.error,
+                    job.callback_error,
+                ),
+            )
+
+    def delete_jobs_before(self, cutoff: datetime, allow_statuses: Optional[List[str]] = None) -> None:
+        cutoff_iso = cutoff.isoformat()
+        with self._conn:
+            if allow_statuses:
+                placeholders = ", ".join("?" for _ in allow_statuses)
+                params = [cutoff_iso, *allow_statuses]
+                self._conn.execute(
+                    f"DELETE FROM async_jobs WHERE updated_at < ? AND status IN ({placeholders})",
+                    params,
+                )
+            else:
+                self._conn.execute(
+                    "DELETE FROM async_jobs WHERE updated_at < ?", (cutoff_iso,)
+                )
+
+
 async_jobs_lock = Lock()
+async_job_store = AsyncJobStore(ASYNC_JOBS_DB_PATH)
+async_job_cleanup_task: Optional[asyncio.Task] = None
 
 async_job_queue: Optional[asyncio.Queue[tuple[str, AsyncASRRequest]]] = None
 queue_worker_tasks: List[asyncio.Task] = []
 
+
+def _get_job(job_id: str) -> Optional[AsyncASRJob]:
+    with async_jobs_lock:
+        return async_job_store.get_job(job_id)
 
 def _update_job_state(
     job: AsyncASRJob,
@@ -172,6 +302,7 @@ def _update_job_state(
         if callback_error is not None:
             job.callback_error = callback_error
         job.updated_at = datetime.utcnow()
+        async_job_store.upsert_job(job)
 
 
 def _download_audio_from_url(file_url: str) -> bytes:
@@ -247,8 +378,7 @@ def _build_callback_payload(job: AsyncASRJob, payload: AsyncASRRequest) -> Dict[
 
 
 async def _process_async_asr_job(job_id: str, payload: AsyncASRRequest) -> None:
-    with async_jobs_lock:
-        job = async_jobs.get(job_id)
+    job = _get_job(job_id)
     if job is None:
         return
     _update_job_state(job, status="running")
@@ -259,12 +389,13 @@ async def _process_async_asr_job(job_id: str, payload: AsyncASRRequest) -> None:
     except Exception as exc:
         _update_job_state(job, status="failed", error=str(exc))
     finally:
-        await _notify_callback(job, _build_callback_payload(job, payload))
+        latest_job = _get_job(job_id)
+        if latest_job is not None:
+            await _notify_callback(latest_job, _build_callback_payload(latest_job, payload))
 
 
 async def _handle_job_timeout(job_id: str, payload: AsyncASRRequest) -> None:
-    with async_jobs_lock:
-        job = async_jobs.get(job_id)
+    job = _get_job(job_id)
     if job is None:
         return
     reason = f"任务超时（限制 {ASYNC_ASR_JOB_TIMEOUT} 秒）"
@@ -285,6 +416,14 @@ async def _async_job_queue_worker(worker_id: int) -> None:
             await _handle_job_timeout(job_id, payload)
         finally:
             async_job_queue.task_done()
+
+
+async def _async_job_cleanup_loop() -> None:
+    while True:
+        await asyncio.sleep(ASYNC_JOB_CLEANUP_INTERVAL)
+        cutoff = datetime.utcnow() - timedelta(seconds=ASYNC_JOB_EXPIRY_SECONDS)
+        with async_jobs_lock:
+            async_job_store.delete_jobs_before(cutoff, allow_statuses=list(ASYNC_JOB_CLEANUP_STATUSES))
 
 
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
@@ -315,21 +454,27 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
 
 @app.on_event("startup")
 async def _startup_worker() -> None:
-    global async_job_queue, queue_worker_tasks
+    global async_job_queue, queue_worker_tasks, async_job_cleanup_task
     async_job_queue = asyncio.Queue()
     queue_worker_tasks = [
         asyncio.create_task(_async_job_queue_worker(worker_id))
         for worker_id in range(ASYNC_ASR_WORKER_COUNT)
     ]
+    async_job_cleanup_task = asyncio.create_task(_async_job_cleanup_loop())
 
 
 @app.on_event("shutdown")
 async def _shutdown_worker() -> None:
+    global async_job_cleanup_task
     for task in queue_worker_tasks:
         task.cancel()
     for task in queue_worker_tasks:
         with suppress(asyncio.CancelledError):
             await task
+    if async_job_cleanup_task is not None:
+        async_job_cleanup_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await async_job_cleanup_task
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
@@ -404,7 +549,7 @@ async def async_asr_job(request: AsyncASRRequest):
         output_format=request.output,
     )
     with async_jobs_lock:
-        async_jobs[job_id] = job
+        async_job_store.upsert_job(job)
     if async_job_queue is None:
         raise HTTPException(status_code=503, detail="任务队列尚未准备好")
     await async_job_queue.put((job_id, request))
@@ -413,8 +558,7 @@ async def async_asr_job(request: AsyncASRRequest):
 
 @app.get("/queryStatus", tags=["Endpoints"])
 async def query_status(job_id: str = Query(..., alias="jobId")):
-    with async_jobs_lock:
-        job = async_jobs.get(job_id)
+    job = _get_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job.to_dict()

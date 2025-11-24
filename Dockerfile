@@ -24,6 +24,7 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-ass
 
 RUN poetry config virtualenvs.in-project true
 RUN poetry install --extras cpu
+RUN rm -rf /root/.cache/whisper
 
 EXPOSE 9000
 
