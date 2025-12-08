@@ -88,6 +88,9 @@ poetry install --extras cpu
 # Install dependencies for cuda
 poetry install --extras cuda
 
+# Install dependencies for rocm
+poetry install --extras rocm
+
 # Run service
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
 ```
