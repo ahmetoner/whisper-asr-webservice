@@ -1,7 +1,8 @@
 import json
 import os
+import tempfile
 from dataclasses import asdict
-from typing import BinaryIO, TextIO
+from typing import BinaryIO, Optional, TextIO
 
 import ffmpeg
 import numpy as np
@@ -94,7 +95,7 @@ class WriteJSON(ResultWriter):
         json.dump(result, file)
 
 
-def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
+def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE, filename: Optional[str] = None):
     """
     Open an audio file object and read as mono waveform, resampling as necessary.
     Modified from https://github.com/openai/whisper/blob/main/whisper/audio.py to accept a file object
@@ -106,19 +107,38 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
         If true, encode audio stream to WAV before sending to whisper
     sr: int
         The sample rate to resample the audio if necessary
+    filename: str, optional
+        Original filename, used to detect formats requiring seekable input (M4A, MP4, MOV)
     Returns
     -------
     A NumPy array containing the audio waveform, in float32 dtype.
     """
     if encode:
         try:
-            # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-            # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-            out, _ = (
-                ffmpeg.input("pipe:", threads=0)
-                .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-                .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
-            )
+            # Check if file format requires seeking (M4A, MP4, MOV have moov atom that may be at end)
+            needs_seekable = filename and filename.lower().endswith(('.m4a', '.mp4', '.mov', '.m4v'))
+
+            if needs_seekable:
+                # Write to temp file to allow ffmpeg to seek for moov atom
+                suffix = os.path.splitext(filename)[1] if filename else '.m4a'
+                with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+                    tmp.write(file.read())
+                    tmp_path = tmp.name
+                try:
+                    out, _ = (
+                        ffmpeg.input(tmp_path, threads=0)
+                        .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                        .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True)
+                    )
+                finally:
+                    os.unlink(tmp_path)
+            else:
+                # Use stdin pipe for other formats (MP3, WAV, etc.)
+                out, _ = (
+                    ffmpeg.input("pipe:", threads=0)
+                    .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                    .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
+                )
         except ffmpeg.Error as e:
             raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
     else:
