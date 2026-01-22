@@ -1,0 +1,3 @@
+FROM onerahmet/openai-whisper-asr-webservice:latest-gpu
+COPY app/utils.py /app/app/utils.py
+COPY app/webservice.py /app/app/webservice.py
