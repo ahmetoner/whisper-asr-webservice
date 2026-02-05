@@ -22,11 +22,12 @@ asr_model.load_model()
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
+contact_url = projectMetadata.get("Homepage") or projectMetadata.get("Home-page") or "https://github.com/ahmetoner/whisper-asr-webservice"
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),
     description=projectMetadata["Summary"],
     version=projectMetadata["Version"],
-    contact={"url": projectMetadata["Home-page"]},
+    contact={"url": contact_url},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
 )

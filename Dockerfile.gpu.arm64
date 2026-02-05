@@ -1,0 +1,57 @@
+FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
+
+FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
+
+FROM nvcr.io/nvidia/pytorch:25.09-py3
+
+LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
+
+ENV POETRY_VENV=/app/.venv
+
+RUN python3 -m venv $POETRY_VENV \
+    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install poetry==2.1.3
+
+ENV PATH="${PATH}:${POETRY_VENV}/bin"
+
+WORKDIR /app
+
+COPY . .
+COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
+
+# 裝torchaudio
+RUN apt update && \
+    apt install -y libsox-dev libavformat-dev libavcodec-dev libavutil-dev libavdevice-dev \
+    libavfilter-dev libswresample-dev libswscale-dev && \
+    rm -rf /var/lib/apt/lists/*
+RUN pip install -U sentencepiece soundfile cmake ninja cupy-cuda13x \
+    cuda-python nvidia-ml-py pybind11 torchcodec
+RUN pip uninstall pynvml -y
+RUN git clone https://github.com/pytorch/audio.git torchaudio && \
+    cd torchaudio && \
+    git fetch origin && \
+    git fetch --all --tags && \
+    git switch -c 2.9 --track remotes/origin/release/2.9 && \
+    export USE_CUDA=1 USE_FFMPEG=1 BUILD_SOX=1 TORIO_USE_FFMPEG_VERSION=6 \
+    TORCH_CUDA_ARCH_LIST="8.7 9.0 10.0 11.0+PTX" CUDA_ARCH_LIST="8.7 9.0 10.0 11.0" \
+    USE_CUDNN=1 USE_CUSPARSELT=1 MAX_JOBS=8 && \
+    PYBIND11_INC="$(python3 -c 'import pybind11, sys; print(pybind11.get_include())')" && \
+    export CPATH="$PYBIND11_INC${CPATH:+:$CPATH}" && \
+    export CXXFLAGS="-I$PYBIND11_INC ${CXXFLAGS:-}" && \
+    export CPLUS_INCLUDE_PATH=/usr/local/cuda-13.0/targets/sbsa-linux/include/cccl:${CPLUS_INCLUDE_PATH} && \
+    export CPATH=/usr/local/cuda-13.0/targets/sbsa-linux/include/cccl:${CPATH} && \
+    python3 -m pip install -v . --no-use-pep517 --no-build-isolation --no-deps && \
+    cd .. && rm -rf torchaudio
+
+RUN pip install whisperx --use-deprecated=legacy-resolver --no-deps
+RUN pip install huggingface-hub==1.3.4 pandas pyannote.core lightning pyannote.database julius primePy opentelemetry-api opentelemetry-sdk
+RUN pip install opentelemetry-exporter-otlp pyannote-pipeline
+RUN pip install pyannote-audio torch-audiomentations torch_pitch_shift --no-deps
+RUN pip install -e .
+RUN pip install nvidia-ml-py
+
+EXPOSE 9000
+
+ENTRYPOINT ["whisper-asr-webservice"]
