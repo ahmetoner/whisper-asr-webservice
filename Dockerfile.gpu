@@ -1,45 +1,113 @@
-FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
+# STAGE 1: Build FFmpeg 7.1 from source
+# We must build manually to get Shared Libraries (.so) with -fPIC enabled.
+FROM ubuntu:22.04 AS ffmpeg-builder
 
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /tmp/ffmpeg-build
+
+# Install dependencies to build FFmpeg
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    pkg-config \
+    yasm \
+    nasm \
+    libssl-dev \
+    zlib1g-dev \
+    libx264-dev \
+    libx265-dev \
+    libvpx-dev \
+    libmp3lame-dev \
+    libopus-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and compile FFmpeg 7.1
+# --enable-shared is the CRITICAL flag to fix the R_X86_64_PC32 error
+RUN wget -qO ffmpeg.tar.bz2 https://ffmpeg.org/releases/ffmpeg-7.1.tar.bz2 \
+    && tar xjvf ffmpeg.tar.bz2 \
+    && cd ffmpeg-7.1 \
+    && ./configure \
+    --prefix=/usr/local \
+    --enable-shared \
+    --disable-static \
+    --disable-doc \
+    --disable-ffplay \
+    --enable-gpl \
+    --enable-nonfree \
+    --enable-version3 \
+    --enable-openssl \
+    --enable-libx264 \
+    --enable-libx265 \
+    --enable-libvpx \
+    --enable-libmp3lame \
+    --enable-libopus \
+    && make -j$(nproc) \
+    && make install
+
+
+# STAGE 2: Final Runtime Image
 FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
-
 FROM nvidia/cuda:12.6.3-base-ubuntu22.04
 
-LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
+LABEL org.opencontainers.image.source="https://github.com"
 
 ENV PYTHON_VERSION=3.10
-
 ENV POETRY_VENV=/app/.venv
+# Ensure pkg-config finds the new FFmpeg libs
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
+# 1. Install standard build tools, Python, and Runtime Libraries
+# We install the same codec libraries (libx264-dev, etc) so the shared objects are present
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq install --no-install-recommends \
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-venv \
     python3-pip \
+    python3-dev \
     libcudnn8 \
-    python3-pip \
+    pkg-config \
+    build-essential \
+    git \
+    libssl-dev \
+    libx264-dev \
+    libx265-dev \
+    libvpx-dev \
+    libmp3lame-dev \
+    libopus-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# 2. Copy FFmpeg BINARIES AND SHARED LIBS from the builder stage
+COPY --from=ffmpeg-builder /usr/local /usr/local
+
+# Update linker cache so the system finds the new FFmpeg libraries
+RUN ldconfig
+
+# Standard Python Setup
 RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
     ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python && \
     ln -s -f /usr/bin/pip3 /usr/bin/pip
 
 RUN python3 -m venv $POETRY_VENV \
-    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install -U pip setuptools wheel \
     && $POETRY_VENV/bin/pip install poetry==2.1.3
 
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
-
 COPY . .
-COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
+
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry config virtualenvs.in-project true
+
+# 3. Explicitly install Cython first (Required for PyAV build)
+RUN poetry run pip install Cython
+
+# 4. Install dependencies
+# pkg-config will now find the dynamic libraries in /usr/local/lib
 RUN poetry install --extras cuda
 
 EXPOSE 9000
-
 ENTRYPOINT ["whisper-asr-webservice"]
