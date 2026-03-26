@@ -216,6 +216,7 @@ async def asr(
 
 class SourceUriBody(BaseModel):
     source_uri: str
+    prompt: Optional[str] = None
 
 
 @app.post("/asr-source-uri", tags=["Endpoints"])
@@ -293,7 +294,7 @@ async def asr_source_uri(body: SourceUriBody):
         audio_data,
         "transcribe",
         None,
-        None,
+        body.prompt,
         True,
         True,
         None,
