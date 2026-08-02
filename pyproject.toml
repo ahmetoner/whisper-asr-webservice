@@ -11,15 +11,13 @@ dependencies = [
     "numpy (>=2.2.6)",
     "openai-whisper (>=20250625)",
     "faster-whisper (>=1.2.1)",
-    "whisperx (>=3.4.5)",
+    "ctranslate2 (>=4.6.0)",
+    "whisperx (>=3.8.6)",
     "tqdm (>=4.70.0)",
     "llvmlite (>=0.48.0)",
     "numba (>=0.66.0)",
 ]
-authors = [
-    { name = "Ahmet Öner" },
-    { name = "Besim Alibegovic" }
-]
+authors = [{ name = "Ahmet Öner" }, { name = "Besim Alibegovic" }]
 license = { text = "MIT" }
 readme = "README.md"
 keywords = ["speech-recognition", "whisper", "asr", "webservice"]
@@ -36,14 +34,8 @@ Repository = "https://github.com/ahmetoner/whisper-asr-webservice"
 whisper-asr-webservice = "app.webservice:start"
 
 [project.optional-dependencies]
-cpu = [
-    "torch (==2.7.1)",
-    "torchaudio (==2.7.1)"
-]
-cuda = [
-    "torch (==2.7.1+cu126)",
-    "torchaudio (==2.7.1+cu126)"
-]
+cpu = ["torch (==2.8.0)", "torchaudio (==2.8.0)"]
+cuda = ["torch (==2.8.0+cu128)", "torchaudio (==2.8.0+cu128)"]
 
 [[tool.poetry.source]]
 name = "pytorch-cpu"
@@ -52,22 +44,22 @@ priority = "explicit"
 
 [[tool.poetry.source]]
 name = "pytorch-cuda"
-url = "https://download.pytorch.org/whl/cu126"
+url = "https://download.pytorch.org/whl/cu128"
 priority = "explicit"
 
 [tool.poetry.dependencies]
 torch = [
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
-    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
- ]
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu" },
+    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda" },
+    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi" },
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi" },
+]
 torchaudio = [
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
-    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
- ]
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu" },
+    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda" },
+    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi" },
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi" },
+]
 
 
 [tool.poetry.group.dev.dependencies]
@@ -90,16 +82,16 @@ line-length = 120
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "C",  # flake8-comprehensions
-    "B",  # flake8-bugbear
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
 ]
 ignore = [
-    "E501",  # line too long, handled by black
-    "C901",  # too complex
+    "E501", # line too long, handled by black
+    "C901", # too complex
 ]
 
 [tool.ruff.lint.isort]

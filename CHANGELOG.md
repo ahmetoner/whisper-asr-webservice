@@ -4,6 +4,18 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded to Python 3.13 (supported range is now >=3.10,<3.14)
+  - CPU Docker image base: python:3.12-bookworm -> python:3.13-bookworm
+  - GPU Docker image base: nvidia/cuda:12.9.2-cudnn-runtime-ubuntu24.04 -> nvidia/cuda:13.3.1-cudnn-runtime-ubuntu24.04
+    (Python 3.13 via deadsnakes PPA, cuDNN 9 from the base image, FFmpeg 7.1 built from source with shared libs)
+- Upgraded
+  - [whisperX](https://github.com/m-bain/whisperX) to [v3.8.6](https://github.com/m-bain/whisperX/releases/tag/v3.8.6)
+  - ctranslate2 to v4.6.0 (first release with Python 3.13 wheels)
+  - torch to v2.8.0 (CUDA wheels moved from cu126 to cu128)
+  - torchaudio to v2.8.0
+
 [1.10.0] (2026-08-09)
 ---------------------
 

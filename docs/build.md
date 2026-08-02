@@ -21,11 +21,11 @@ poetry install --extras cuda
 ```
 
 !!! Note
-    By default, this will install the CPU version of PyTorch. For GPU support, you'll need to install the appropriate CUDA version of PyTorch separately:
+    The `cpu` extra installs the CPU-only build of PyTorch. The `cuda` extra installs PyTorch from the cu128 wheel index:
     ```shell
-    # For CUDA support (example for CUDA 11.8):
-    pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
+    pip3 install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128
     ```
+    The GPU Docker image is based on CUDA 13 (`nvidia/cuda:13.3.1-cudnn-runtime-ubuntu24.04`). The cu128 PyTorch wheels bundle their own CUDA 12.8 runtime libraries and run fine inside the CUDA 13 image; what matters is the host NVIDIA driver version (use a driver that supports CUDA 13, i.e. >= 580, when running the GPU image). PyTorch 2.8 has no cu130 wheels, which is why the wheel index stays cu128 for now.
 
 ### Run
 
