@@ -41,6 +41,19 @@ class CONFIG:
     # Default sample rate for audio input. 16 kHz is commonly used in speech-to-text tasks.
     SAMPLE_RATE = int(os.getenv("SAMPLE_RATE", 16000))
 
+    # Logging level for the application logger (DEBUG, INFO, WARNING, ERROR).
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+
+    # Directory the upload is spooled to before being handed to ffmpeg.
+    # Empty means the system temp directory. Point this at real disk if the
+    # system temp directory is a RAM-backed tmpfs, as it is in many containers.
+    UPLOAD_SPOOL_DIR = os.getenv("UPLOAD_SPOOL_DIR", "") or None
+
+    # When set, uploads that fail to decode are archived in this directory for
+    # offline replay. Off by default: it stores raw user audio and grows
+    # without bound, so it is a debugging aid, not a production setting.
+    DEBUG_FAILED_UPLOADS_DIR = os.getenv("DEBUG_FAILED_UPLOADS_DIR", "")
+
     # Subtitle output options for whisperx
     SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH", 1000))
     SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))

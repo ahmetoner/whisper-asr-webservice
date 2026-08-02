@@ -20,8 +20,21 @@ from app.utils import AudioDecodeError, load_audio
 # No-op if the embedding application already configured logging; otherwise
 # make our INFO request/decode logs visible (the root logger would only
 # show WARNING and above by default).
-logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(name)s %(message)s")
+logging.basicConfig(level=CONFIG.LOG_LEVEL, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger("whisper_asr")
+
+
+def _decode_upload(audio_file: UploadFile, encode: bool):
+    """Decode an upload, mapping a decode failure to 400 instead of 500.
+
+    Only the redacted client_detail reaches the response; load_audio has
+    already logged the full diagnostics.
+    """
+    try:
+        return load_audio(audio_file.file, encode)
+    except AudioDecodeError as e:
+        raise HTTPException(status_code=400, detail=e.client_detail) from e
+
 
 asr_model = ASRModelFactory.create_asr_model()
 asr_model.load_model()
@@ -104,12 +117,8 @@ async def asr(
         output,
         encode,
     )
-    try:
-        audio = load_audio(audio_file.file, encode)
-    except AudioDecodeError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
     result = asr_model.transcribe(
-        audio,
+        _decode_upload(audio_file, encode),
         task,
         language,
         initial_prompt,
@@ -139,11 +148,7 @@ async def detect_language(
         audio_file.content_type,
         encode,
     )
-    try:
-        audio = load_audio(audio_file.file, encode)
-    except AudioDecodeError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
-    detected_lang_code, confidence = asr_model.language_detection(audio)
+    detected_lang_code, confidence = asr_model.language_detection(_decode_upload(audio_file, encode))
     return {
         "detected_language": tokenizer.LANGUAGES[detected_lang_code],
         "language_code": detected_lang_code,
