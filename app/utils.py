@@ -1,4 +1,3 @@
-import contextlib
 import json
 import logging
 import os
@@ -19,8 +18,15 @@ logger = logging.getLogger("whisper_asr")
 # Raised when an uploaded file cannot be decoded to any audio samples.
 # Subclasses RuntimeError so existing callers that caught the previous
 # ffmpeg RuntimeError keep working.
+#
+# str(err) carries the full diagnostics and belongs in the server log.
+# client_detail is the redacted version safe to put in an HTTP response:
+# it describes the upload but never server paths or ffmpeg output, both of
+# which disclose filesystem layout to anyone who can post a bad file.
 class AudioDecodeError(RuntimeError):
-    pass
+    def __init__(self, message: str, client_detail: str):
+        super().__init__(message)
+        self.client_detail = client_detail
 
 
 class ResultWriter:
@@ -137,7 +143,7 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
         # Android MediaMuxer) needs seekable input. On a pipe, ffmpeg finds
         # the moov but cannot seek back to the media data, and once the file
         # outgrows the IO buffer it silently decodes to 0 samples.
-        tmp = tempfile.NamedTemporaryFile(suffix=".upload", delete=False)
+        tmp = tempfile.NamedTemporaryFile(suffix=".upload", delete=False, dir=CONFIG.UPLOAD_SPOOL_DIR)
         try:
             tmp.write(data)
             tmp.close()
@@ -149,10 +155,19 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
         except ffmpeg.Error as e:
             raise _decode_error("Failed to decode audio", data, magic, e.stderr) from e
         finally:
-            with contextlib.suppress(OSError):
+            try:
                 os.unlink(tmp.name)
+            except OSError:
+                # Not fatal, but a recurring failure here means the spool
+                # directory is slowly filling up, so leave a trace.
+                logger.debug("Could not remove spooled upload %s", tmp.name, exc_info=True)
     else:
         out = data
+
+    if len(out) % 2:
+        # np.frombuffer would raise a bare ValueError and turn a malformed
+        # upload into a 500; route it through the same 400 path as the rest.
+        raise _decode_error(f"Raw PCM payload has an odd length ({len(out)} bytes)", data, magic, stderr)
 
     audio = np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
     if audio.size == 0:
@@ -180,10 +195,11 @@ def _decode_error(reason: str, data: bytes, magic: str, stderr: bytes) -> AudioD
         dump_path or "disabled",
         (stderr or b"").decode(errors="replace").strip() or "(none)",
     )
-    detail = f"{reason} ({len(data)} bytes, magic={magic})"
+    client_detail = f"{reason} ({len(data)} bytes, magic={magic})"
+    message = client_detail
     if dump_path:
-        detail += f", upload saved to {dump_path}"
-    return AudioDecodeError(f"{detail}: {_stderr_excerpt(stderr)}")
+        message += f", upload saved to {dump_path}"
+    return AudioDecodeError(f"{message}: {_stderr_excerpt(stderr)}", client_detail)
 
 
 def _dump_failed_upload(data: bytes, stderr: bytes) -> Optional[str]:
@@ -192,7 +208,7 @@ def _dump_failed_upload(data: bytes, stderr: bytes) -> Optional[str]:
     Enabled by setting DEBUG_FAILED_UPLOADS_DIR; off by default so a
     production instance does not archive user audio.
     """
-    dump_dir = os.getenv("DEBUG_FAILED_UPLOADS_DIR", "")
+    dump_dir = CONFIG.DEBUG_FAILED_UPLOADS_DIR
     if not dump_dir:
         return None
     try:

@@ -5,6 +5,7 @@ import subprocess
 
 import pytest
 
+from app.config import CONFIG
 from app.utils import AudioDecodeError, load_audio
 
 ffmpeg_cli = shutil.which("ffmpeg")
@@ -75,9 +76,17 @@ def test_empty_decode_raises_clear_error():
         load_audio(io.BytesIO(b""), encode=False)
 
 
+def test_odd_length_raw_pcm_raises_decode_error():
+    # int16 samples are 2 bytes, so an odd-length raw payload cannot be
+    # parsed. np.frombuffer would raise a bare ValueError (-> 500); this
+    # must land on the same 400 path as every other bad upload.
+    with pytest.raises(AudioDecodeError):
+        load_audio(io.BytesIO(b"\x00\x01\x02"), encode=False)
+
+
 def test_no_audio_track_raises_error_with_ffmpeg_stderr(video_only_mp4):
-    # A video without any audio track: the error must carry ffmpeg's own
-    # diagnostics so the client can see why the file was rejected.
+    # A video without any audio track: the logged error must carry ffmpeg's
+    # own diagnostics so an operator can see why the file was rejected.
     with open(video_only_mp4, "rb") as f:
         with pytest.raises(AudioDecodeError) as excinfo:
             load_audio(f, encode=True)
@@ -85,20 +94,33 @@ def test_no_audio_track_raises_error_with_ffmpeg_stderr(video_only_mp4):
 
 
 def test_error_message_includes_upload_facts():
-    # For a debugging build the client-visible error should identify the
-    # upload: byte size and magic bytes (real container type, regardless
+    # Both the logged message and the client-visible detail should identify
+    # the upload: byte size and magic bytes (real container type, regardless
     # of the filename the client chose).
     data = b"\x00\x01junkjunkjunk"
     with pytest.raises(AudioDecodeError) as excinfo:
         load_audio(io.BytesIO(data), encode=True)
-    msg = str(excinfo.value)
-    assert f"{len(data)} bytes" in msg
-    assert data[:12].hex() in msg
+    for msg in (str(excinfo.value), excinfo.value.client_detail):
+        assert f"{len(data)} bytes" in msg
+        assert data[:12].hex() in msg
+
+
+def test_client_detail_hides_server_paths_and_ffmpeg_output(tmp_path, monkeypatch):
+    # The HTTP response must not disclose filesystem layout: neither the
+    # dump path nor ffmpeg stderr (which names the spool temp file).
+    dump_dir = tmp_path / "dumps"
+    monkeypatch.setattr(CONFIG, "DEBUG_FAILED_UPLOADS_DIR", str(dump_dir))
+    with pytest.raises(AudioDecodeError) as excinfo:
+        load_audio(io.BytesIO(b"this is not audio at all"), encode=True)
+    detail = excinfo.value.client_detail
+    assert str(dump_dir) not in detail
+    assert ".upload" not in detail
+    assert "ffmpeg" not in detail.lower()
 
 
 def test_dumps_failing_upload_when_enabled(tmp_path, monkeypatch):
     dump_dir = tmp_path / "dumps"
-    monkeypatch.setenv("DEBUG_FAILED_UPLOADS_DIR", str(dump_dir))
+    monkeypatch.setattr(CONFIG, "DEBUG_FAILED_UPLOADS_DIR", str(dump_dir))
     data = b"this is not audio at all"
     with pytest.raises(AudioDecodeError) as excinfo:
         load_audio(io.BytesIO(data), encode=True)
@@ -107,16 +129,27 @@ def test_dumps_failing_upload_when_enabled(tmp_path, monkeypatch):
     assert uploads[0].read_bytes() == data
     # ffmpeg stderr is saved next to the upload for offline analysis.
     assert len(list(dump_dir.glob("failed-*.stderr.txt"))) == 1
-    # The error tells the operator where the sample was saved.
+    # The logged error tells the operator where the sample was saved.
     assert str(uploads[0]) in str(excinfo.value)
 
 
-def test_no_dump_when_env_unset(tmp_path, monkeypatch):
-    monkeypatch.delenv("DEBUG_FAILED_UPLOADS_DIR", raising=False)
+def test_no_dump_when_disabled(tmp_path, monkeypatch):
+    monkeypatch.setattr(CONFIG, "DEBUG_FAILED_UPLOADS_DIR", "")
     monkeypatch.chdir(tmp_path)
     with pytest.raises(AudioDecodeError):
         load_audio(io.BytesIO(b"junk"), encode=True)
     assert list(tmp_path.iterdir()) == []
+
+
+def test_spooled_upload_is_removed(tmp_path, monkeypatch):
+    # The temp file handed to ffmpeg must not survive the call, on either
+    # the success or the failure path.
+    spool = tmp_path / "spool"
+    spool.mkdir()
+    monkeypatch.setattr(CONFIG, "UPLOAD_SPOOL_DIR", str(spool))
+    with pytest.raises(AudioDecodeError):
+        load_audio(io.BytesIO(b"junk"), encode=True)
+    assert list(spool.iterdir()) == []
 
 
 def test_success_and_failure_are_logged(sine_m4a, caplog):
