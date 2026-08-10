@@ -82,7 +82,9 @@ class WhisperXASR(ASRModel):
             min_speakers = options.get("min_speakers", None)
             max_speakers = options.get("max_speakers", None)
             # add min/max number of speakers if known
-            diarize_segments = self.model['diarize_model'](audio, min_speakers, max_speakers)
+            diarize_segments = self.model['diarize_model'](
+                audio, min_speakers=min_speakers, max_speakers=max_speakers
+            )
             result = whisperx.assign_word_speakers(diarize_segments, result)
         result["language"] = language
 
