@@ -16,6 +16,8 @@ services:
       - ASR_MODEL=base
     ports:
       - "9000:9000"
+    tmpfs:
+      - /tmp
     volumes:
       - ./app:/app/app
       - cache-whisper:/root/.cache

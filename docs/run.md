@@ -9,6 +9,7 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
     ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest
     docker run -d -p 9000:9000 \
+      --tmpfs /tmp \
       -e ASR_MODEL=base \
       -e ASR_ENGINE=openai_whisper \
       onerahmet/openai-whisper-asr-webservice:latest
@@ -23,6 +24,7 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
     ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest
     docker run -d -p 9000:9000 \
+      --tmpfs /tmp \
       -e ASR_MODEL=base \
       -e ASR_ENGINE=openai_whisper \
       onerahmet/openai-whisper-asr-webservice:latest
@@ -33,6 +35,7 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
     ```shell
     docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
     docker run -d --gpus all -p 9000:9000 \
+      --tmpfs /tmp \
       -e ASR_MODEL=base \
       -e ASR_ENGINE=openai_whisper \
       onerahmet/openai-whisper-asr-webservice:latest-gpu
@@ -62,6 +65,7 @@ The model will then be loaded from the cache instead of being downloaded again o
 
     ```shell
     docker run -d -p 9000:9000 \
+      --tmpfs /tmp \
       -v $PWD/cache:/root/.cache \
       onerahmet/openai-whisper-asr-webservice:latest
     ```
@@ -70,6 +74,7 @@ The model will then be loaded from the cache instead of being downloaded again o
 
     ```shell
     docker run -d -p 9000:9000 \
+      --tmpfs /tmp \
       -e ASR_MODEL_PATH=/data/whisper \
       -v $PWD/cache:/data/whisper \
       onerahmet/openai-whisper-asr-webservice:latest

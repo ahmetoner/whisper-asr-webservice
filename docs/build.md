@@ -48,9 +48,9 @@ poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
         docker build -t whisper-asr-webservice .
         
         # Run Container
-        docker run -d -p 9000:9000 whisper-asr-webservice
+        docker run -d -p 9000:9000 --tmpfs /tmp whisper-asr-webservice
         # or with specific model
-        docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
+        docker run -d -p 9000:9000 --tmpfs /tmp -e ASR_MODEL=base whisper-asr-webservice
         ```
     
     === ":octicons-file-code-16: `GPU`"
@@ -60,9 +60,9 @@ poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
         docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
         
         # Run Container
-        docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
+        docker run -d --gpus all -p 9000:9000 --tmpfs /tmp whisper-asr-webservice-gpu
         # or with specific model
-        docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-gpu
+        docker run -d --gpus all -p 9000:9000 --tmpfs /tmp -e ASR_MODEL=base whisper-asr-webservice-gpu
         ```
 
     With `docker-compose`:

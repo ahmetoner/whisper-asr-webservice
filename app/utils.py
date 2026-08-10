@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+import tempfile
 from dataclasses import asdict
 from typing import BinaryIO, TextIO
 
@@ -111,16 +113,22 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     A NumPy array containing the audio waveform, in float32 dtype.
     """
     if encode:
-        try:
-            # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-            # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-            out, _ = (
-                ffmpeg.input("pipe:", threads=0)
-                .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-                .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
-            )
-        except ffmpeg.Error as e:
-            raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+        # ffmpeg needs a file on disk to seek for audio metadata, as it can be at the end of the file (e.g., .mp4).
+        # The input is written to a temporary file in /tmp (an in-memory tmpfs in Docker).
+        # This allows ffmpeg to seek and read the metadata before processing the audio.
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            shutil.copyfileobj(file, temp_file)
+            temp_file.seek(0)
+            try:
+                # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
+                # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
+                out, _ = (
+                    ffmpeg.input(temp_file.name, threads=0, sn=None, vn=None)
+                    .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                    .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True)
+                )
+            except ffmpeg.Error as e:
+                raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
     else:
         out = file.read()
 
