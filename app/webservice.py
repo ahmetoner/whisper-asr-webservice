@@ -89,7 +89,7 @@ async def asr(
     output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
     result = asr_model.transcribe(
-        load_audio(audio_file.file, encode),
+        load_audio(audio_file.file, encode, filename=audio_file.filename),
         task,
         language,
         initial_prompt,
@@ -113,7 +113,7 @@ async def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
-    detected_lang_code, confidence = asr_model.language_detection(load_audio(audio_file.file, encode))
+    detected_lang_code, confidence = asr_model.language_detection(load_audio(audio_file.file, encode, filename=audio_file.filename))
     return {
         "detected_language": tokenizer.LANGUAGES[detected_lang_code],
         "language_code": detected_lang_code,
