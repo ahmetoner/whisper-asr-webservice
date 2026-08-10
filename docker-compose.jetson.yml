@@ -1,0 +1,35 @@
+version: "3.4"
+
+services:
+  whisper-asr-webservice-jetson:
+    container_name: whisper-asr-webservice-jetson
+    image: whisper-asr-webservice-jetson:jp6.1-cu12.6-py3.10
+    build:
+      context: .
+      dockerfile: Dockerfile.jetson
+      args:
+        # JetPack 6.1 / L4T R36.4.  Change to match your device's JetPack.
+        L4T_VERSION: r36.4.0
+        # sm_87 = Orin (Nano / NX / AGX).  Add "7.2" for Xavier if needed.
+        CUDA_ARCH_LIST: "8.7"
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - ASR_MODEL=medium
+      - ASR_ENGINE=whisperx
+      # - HF_TOKEN=hf_...            # Required for whisperx diarisation
+      # - ASR_ENGINE=faster_whisper
+      # - ASR_QUANTIZATION=float16   # float16 is much faster on Orin
+    ports:
+      - "9000:9000"
+    volumes:
+      - cache-whisper:/root/.cache
+
+volumes:
+  cache-whisper:
