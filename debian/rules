@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+UPSTREAM_GIT := https://github.com/ahmetoner/whisper-asr-webservice.git
+
+export PYBUILD_NAME=whisper-asr-webservice
+
+export PACKAGE_VERSION=$(shell dpkg-parsechangelog | grep Version: | cut -d' ' -f2 | sed -e 's/^[[:digit:]]*://' -e 's/[-].*//' -e 's/~/.0/' | head -n 1)
+export SETUPTOOLS_SCM_PRETEND_VERSION=$(shell dpkg-parsechangelog -SVersion | sed -e 's/^[[:digit:]]*://' -e 's/[-].*//' -e 's/~/.0/' -e 's/+dfsg1//' | head -n 1)
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
