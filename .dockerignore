@@ -1,3 +1,10 @@
-.git
-.venv
-venv
+# Ignore all files and directories by default
+**/*
+
+# Exception: allow files and folders essential for the build
+!pyproject.toml
+!poetry.lock
+!app/
+!Dockerfile
+!Dockerfile.gpu
+!README.md
