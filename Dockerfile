@@ -22,7 +22,7 @@ COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/sw
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 
 RUN poetry config virtualenvs.in-project true
-RUN poetry install --extras cpu
+RUN poetry install --no-cache --extras cpu
 
 EXPOSE 9000
 
