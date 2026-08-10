@@ -37,12 +37,12 @@ whisper-asr-webservice = "app.webservice:start"
 
 [project.optional-dependencies]
 cpu = [
-    "torch (==2.7.1)",
-    "torchaudio (==2.7.1)"
+    "torch (>=2.4.0)",
+    "torchaudio (>=2.4.0)"
 ]
 cuda = [
-    "torch (==2.7.1+cu126)",
-    "torchaudio (==2.7.1+cu126)"
+    "torch (>=2.4.0)",
+    "torchaudio (>=2.4.0)"
 ]
 
 [[tool.poetry.source]]
@@ -52,7 +52,7 @@ priority = "explicit"
 
 [[tool.poetry.source]]
 name = "pytorch-cuda"
-url = "https://download.pytorch.org/whl/cu126"
+url = "https://download.pytorch.org/whl/cu118"
 priority = "explicit"
 
 [tool.poetry.dependencies]
