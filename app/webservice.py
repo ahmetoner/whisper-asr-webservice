@@ -107,6 +107,28 @@ async def asr(
         },
     )
 
+@app.post("/audio/transcriptions", tags=["Endpoints"])
+async def audio_transcriptions(
+    file: UploadFile = File(...),  # noqa: B008
+):
+    result = asr_model.transcribe(
+        load_audio(file.file, True),
+        "transcribe",
+        "en",
+        "initial_prompt",
+        True,
+        False,
+        {"diarize": False, "min_speakers": 1, "max_speakers": 1},
+        "json",
+    )
+    return StreamingResponse(
+        result,
+        media_type="text/plain",
+        headers={
+            "Asr-Engine": CONFIG.ASR_ENGINE,
+            "Content-Disposition": f'attachment; filename="{quote(file.filename)}.json"',
+        },
+    )
 
 @app.post("/detect-language", tags=["Endpoints"])
 async def detect_language(
