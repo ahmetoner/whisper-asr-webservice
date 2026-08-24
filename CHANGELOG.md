@@ -4,6 +4,24 @@ Changelog
 Unreleased
 ----------
 
+[1.10.0] (2026-08-09)
+---------------------
+
+### Changed
+
+- Upgrade CUDA image to 12.9.2-cudnn-runtime-ubuntu24.04
+- Upgraded
+  - Python to v3.12
+  - Poetry to v2.4.1
+  - fastapi to v0.141.1
+  - uvicorn to v0.52.1
+  - python-multipart to v0.0.32
+  - faster-whisper to v1.2.1
+  - tqdm to v4.70.0
+  - llvmlite to v0.48.0
+  - numba to v0.66.0
+  - whisperx to v3.4.5
+
 [1.9.1] (2025-07-01)
 --------------------
 
@@ -306,6 +324,7 @@ Unreleased
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[1.10.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.10.0
 [1.9.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.9.1
 [1.9.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.9.0
 [1.8.2]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.8.2
