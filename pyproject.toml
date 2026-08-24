@@ -38,16 +38,17 @@ whisper-asr-webservice = "app.webservice:start"
 [project.optional-dependencies]
 cpu = [
     "torch (==2.7.1)",
-    "torchaudio (==2.7.1)"
+    "torchaudio (==2.8.0)"
 ]
 cuda = [
-    "torch (==2.7.1+cu126)",
-    "torchaudio (==2.7.1+cu126)"
+    "torch (==2.8.0+cu126)",
+    "torchaudio (==2.8.0+cu126)"
 ]
 xpu = [
     "pytorch-triton-xpu (==3.4.0)",
     "torch (==2.8.0+xpu)",
     "torchaudio (==2.8.0+xpu)",
+    "torchvision (==0.23.0+xpu)",
     "intel-extension-for-pytorch (==2.8.10+xpu)",
     "oneccl_bind_pt (==2.8.0+xpu)"
 ]
@@ -90,7 +91,9 @@ torchaudio = [
     { markers = "extra == 'cpu' and extra != 'cuda' and extra != 'xpu' and sys_platform == 'darwin'", source = "pypi"},
     { markers = "extra == 'cpu' and extra != 'cuda' and extra != 'xpu' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
  ]
-
+torchvision = [
+    { markers = "extra == 'xpu' and extra != 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-xpu"},
+ ]
  pytorch-triton-xpu = [
     { markers = "extra == 'xpu' and extra != 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-xpu"}
  ]
