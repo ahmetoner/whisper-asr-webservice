@@ -28,10 +28,21 @@ docker run -d -p 9000:9000 \
   onerahmet/openai-whisper-asr-webservice:latest
 ```
 
-### GPU
+### GPU (cuda)
 
 ```shell
 docker run -d --gpus all -p 9000:9000 \
+  -e ASR_MODEL=base \
+  -e ASR_ENGINE=openai_whisper \
+  onerahmet/openai-whisper-asr-webservice:latest-gpu
+```
+
+### GPU (intel)
+
+Only `openai_whisper` engine is avialable on intel gpu.
+
+```shell
+docker run -d --device=/dev/dri all -p 9000:9000 \
   -e ASR_MODEL=base \
   -e ASR_ENGINE=openai_whisper \
   onerahmet/openai-whisper-asr-webservice:latest-gpu
@@ -55,7 +66,7 @@ docker run -d -p 9000:9000 \
 - Voice activity detection (VAD) filtering
 - Speaker diarization (with WhisperX)
 - FFmpeg integration for broad audio/video format support
-- GPU acceleration support
+- GPU acceleration support (nvidia(cuda) or intel(xpu))
 - Configurable model loading/unloading
 - REST API with Swagger documentation
 
@@ -66,7 +77,7 @@ Key configuration options:
 - `ASR_ENGINE`: Engine selection (openai_whisper, faster_whisper, whisperx)
 - `ASR_MODEL`: Model selection (tiny, base, small, medium, large-v3, etc.)
 - `ASR_MODEL_PATH`: Custom path to store/load models
-- `ASR_DEVICE`: Device selection (cuda, cpu)
+- `ASR_DEVICE`: Device selection (cuda, xpu, cpu)
 - `MODEL_IDLE_TIMEOUT`: Timeout for model unloading
 
 ## Documentation
@@ -85,6 +96,9 @@ poetry install --extras cpu
 
 # Install dependencies for cuda
 poetry install --extras cuda
+
+# Install dependencies for intel xpu
+poetry install --extras xpu
 
 # Run service
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000

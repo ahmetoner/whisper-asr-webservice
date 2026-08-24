@@ -4,6 +4,10 @@ from threading import Thread
 from typing import BinaryIO, Union
 
 import torch
+
+if torch.xpu.is_available():
+    import intel_extension_for_pytorch as ipex
+
 import whisper
 from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
@@ -18,7 +22,10 @@ class OpenAIWhisperASR(ASRModel):
         if torch.cuda.is_available():
             self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH).cuda()
         else:
-            self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
+            if torch.xpu.is_available():
+                self.model = whisper.load_model(name=CONFIG.MODEL_NAME, device="xpu", download_root=CONFIG.MODEL_PATH)
+            else:
+                self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
 
         Thread(target=self.monitor_idleness, daemon=True).start()
 

@@ -17,7 +17,7 @@ class CONFIG:
         print("You must set the HF_TOKEN environment variable to download the diarization model used by WhisperX.")
 
     # Determine the computation device (GPU or CPU)
-    DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+    DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else ("xpu" if torch.xpu.is_available() else "cpu"))
 
     # Model name to use (e.g., "base", "small", etc.)
     MODEL_NAME = os.getenv("ASR_MODEL", "base")

@@ -28,16 +28,25 @@ Docker Hub: <https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice>
       onerahmet/openai-whisper-asr-webservice:latest
     ```
 
-=== ":octicons-file-code-16: `GPU`"
+=== ":octicons-file-code-16: `GPU (cuda)`"
 
     ```shell
-    docker pull onerahmet/openai-whisper-asr-webservice:latest-gpu
+    docker pull onerahmet/openai-whisper-asr-webservice:latest-cuda
     docker run -d --gpus all -p 9000:9000 \
       -e ASR_MODEL=base \
       -e ASR_ENGINE=openai_whisper \
       onerahmet/openai-whisper-asr-webservice:latest-gpu
     ```
 
+=== ":octicons-file-code-16: `GPU (intel)`"
+
+    ```shell
+    docker pull onerahmet/openai-whisper-asr-webservice:latest-intel
+    docker run -d --device=/dev/dri all -p 9000:9000 \
+      -e ASR_MODEL=base \
+      -e ASR_ENGINE=openai_whisper \
+      onerahmet/openai-whisper-asr-webservice:latest-gpu
+    ```
 ### Environment Variables
 
 The following environment variables can be used to configure the service:
