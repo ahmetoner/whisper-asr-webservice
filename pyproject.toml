@@ -38,11 +38,11 @@ whisper-asr-webservice = "app.webservice:start"
 [project.optional-dependencies]
 cpu = [
     "torch (==2.7.1)",
-    "torchaudio (==2.8.0)"
+    "torchaudio (==2.7.1)"
 ]
 cuda = [
-    "torch (==2.8.0+cu126)",
-    "torchaudio (==2.8.0+cu126)"
+    "torch (==2.7.1+cu126)",
+    "torchaudio (==2.7.1+cu126)"
 ]
 xpu = [
     "pytorch-triton-xpu (==3.4.0)",
