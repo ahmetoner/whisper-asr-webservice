@@ -20,7 +20,7 @@ jobs:
             platforms: linux/arm64,linux/amd64
           - docker_file: Dockerfile.gpu
             tag_extension: -gpu
-            platforms: linux/amd64
+            platforms: linux/amd64,linux/arm64
     steps:
     - name: Checkout
       uses: actions/checkout@v3
