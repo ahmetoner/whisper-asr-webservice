@@ -5,7 +5,7 @@
 
 # Whisper ASR Box
 
-Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
+Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and are also multitask models that can perform multilingual speech recognition as well as speech translation and language identification.
 
 🎉 **Join our Discord Community!** Connect with other users, get help, and stay updated on the latest features: [https://discord.gg/4Q5YVrePzZ](https://discord.gg/4Q5YVrePzZ)
 
