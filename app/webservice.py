@@ -98,12 +98,14 @@ async def asr(
         {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
         output,
     )
+    # ponytail: full RFC 5987 encoding deferred; ASCII-safe fallback is enough for current clients.
+    filename = quote(audio_file.filename or "audio")
     return StreamingResponse(
         result,
         media_type="text/plain",
         headers={
             "Asr-Engine": CONFIG.ASR_ENGINE,
-            "Content-Disposition": f'attachment; filename="{quote(audio_file.filename)}.{output}"',
+            "Content-Disposition": f'attachment; filename="{filename}.{output}"',
         },
     )
 
