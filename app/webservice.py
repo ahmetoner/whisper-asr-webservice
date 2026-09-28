@@ -1,4 +1,5 @@
 import importlib.metadata
+import logging
 import os
 from os import path
 from typing import Annotated, Optional, Union
@@ -6,7 +7,7 @@ from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import FastAPI, File, Query, UploadFile, applications
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -14,7 +15,26 @@ from whisper import tokenizer
 
 from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModelFactory
-from app.utils import load_audio
+from app.utils import AudioDecodeError, load_audio
+
+# No-op if the embedding application already configured logging; otherwise
+# make our INFO request/decode logs visible (the root logger would only
+# show WARNING and above by default).
+logging.basicConfig(level=CONFIG.LOG_LEVEL, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+logger = logging.getLogger("whisper_asr")
+
+
+def _decode_upload(audio_file: UploadFile, encode: bool):
+    """Decode an upload, mapping a decode failure to 400 instead of 500.
+
+    Only the redacted client_detail reaches the response; load_audio has
+    already logged the full diagnostics.
+    """
+    try:
+        return load_audio(audio_file.file, encode)
+    except AudioDecodeError as e:
+        raise HTTPException(status_code=400, detail=e.client_detail) from e
+
 
 asr_model = ASRModelFactory.create_asr_model()
 asr_model.load_model()
@@ -88,8 +108,17 @@ async def asr(
     ),
     output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
 ):
+    logger.info(
+        "ASR request: file=%r, content_type=%r, task=%r, language=%r, output=%r, encode=%s",
+        audio_file.filename,
+        audio_file.content_type,
+        task,
+        language,
+        output,
+        encode,
+    )
     result = asr_model.transcribe(
-        load_audio(audio_file.file, encode),
+        _decode_upload(audio_file, encode),
         task,
         language,
         initial_prompt,
@@ -113,7 +142,13 @@ async def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
-    detected_lang_code, confidence = asr_model.language_detection(load_audio(audio_file.file, encode))
+    logger.info(
+        "Language detection request: file=%r, content_type=%r, encode=%s",
+        audio_file.filename,
+        audio_file.content_type,
+        encode,
+    )
+    detected_lang_code, confidence = asr_model.language_detection(_decode_upload(audio_file, encode))
     return {
         "detected_language": tokenizer.LANGUAGES[detected_lang_code],
         "language_code": detected_lang_code,

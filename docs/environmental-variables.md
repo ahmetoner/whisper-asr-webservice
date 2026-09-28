@@ -75,6 +75,39 @@ The `ASR_QUANTIZATION` defines the precision for model weights:
 
 Defaults to `float32` for GPU, `int8` for CPU.
 
+### Configuring the `Log Level`
+
+```shell
+export LOG_LEVEL=INFO
+```
+
+Defaults to `INFO`. Accepts the standard Python levels (`DEBUG`, `INFO`, `WARNING`, `ERROR`). `DEBUG` additionally
+reports failures to clean up spooled uploads.
+
+### Configuring the `Upload Spool Directory`
+
+```shell
+export UPLOAD_SPOOL_DIR=/var/tmp/whisper-uploads
+```
+
+Uploads are written to a temporary file before being handed to FFmpeg, because seekable input is required to decode
+containers such as MP4/M4A that keep their index at the end of the file. Defaults to the system temporary directory.
+Set this if the system temporary directory is a RAM-backed `tmpfs`, as it is in many container images, and you expect
+large uploads.
+
+### Debugging Failed Uploads
+
+```shell
+export DEBUG_FAILED_UPLOADS_DIR=/var/tmp/whisper-failed
+```
+
+When set, any upload that fails to decode is written to this directory alongside the FFmpeg output, so it can be
+replayed offline. Disabled by default.
+
+!!! warning
+
+    This stores raw user audio and grows without bound. It is a debugging aid, not a production setting.
+
 ### Configuring Subtitle Options (WhisperX)
 
 ```shell
