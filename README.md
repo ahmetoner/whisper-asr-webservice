@@ -3,8 +3,6 @@
 ![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
 ![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
 
-> 🚀 **Try Speech Box Desktop App | Offline, multi-language desktop transcriptions**: [https://speechbox.gumroad.com/l/desktop-app](https://speechbox.gumroad.com/l/desktop-app)
-
 # Whisper ASR Box
 
 Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
@@ -13,11 +11,11 @@ Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models 
 
 ## Features
 
-Current release (v1.9.1) supports following whisper models:
+Current release (v1.10.0) supports following whisper models:
 
 - [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
-- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.1.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.1.1)
-- [whisperX](https://github.com/m-bain/whisperX)@[v3.4.2](https://github.com/m-bain/whisperX/releases/tag/v3.4.2)
+- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.2.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.2.1)
+- [whisperX](https://github.com/m-bain/whisperX)@[v3.4.5](https://github.com/m-bain/whisperX/releases/tag/v3.4.5)
 
 ## Quick Usage
 

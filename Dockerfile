@@ -2,7 +2,7 @@ FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
 
 FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
 
-FROM python:3.10-bookworm
+FROM python:3.12-bookworm
 
 LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
 
