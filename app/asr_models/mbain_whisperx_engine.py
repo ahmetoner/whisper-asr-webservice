@@ -31,8 +31,13 @@ class WhisperXASR(ASRModel):
         )
 
         if CONFIG.HF_TOKEN != "":
+            # whisperx >=3.8 renamed use_auth_token to token and changed its
+            # default model to pyannote/speaker-diarization-community-1; pin
+            # the pre-3.8 model so existing gated-token grants and diarization
+            # output stay stable.
             self.model['diarize_model'] = DiarizationPipeline(
-                use_auth_token=CONFIG.HF_TOKEN,
+                model_name="pyannote/speaker-diarization-3.1",
+                token=CONFIG.HF_TOKEN,
                 device=CONFIG.DEVICE
             )
 
