@@ -23,6 +23,7 @@ Unreleased
   - numba to v0.68.1
   - GitHub Actions to their latest major versions
 - WhisperX diarization now uses `pyannote/speaker-diarization-community-1`; accept its conditions on Hugging Face
+- Only the selected ASR engine is imported at startup, reducing startup time and memory use
 
 ### Fixed
 
