@@ -86,6 +86,19 @@ export ASR_VAD_FILTER=true  # default value of the `vad_filter` request paramete
 All three are optional; when they are not set each engine keeps its own default. With `faster_whisper`, setting
 `ASR_BATCH_SIZE` switches to batched inference, which always uses voice activity detection to split the audio.
 
+### Configuring API Key Authentication
+
+```shell
+export API_KEY=your_secret_key
+```
+
+When set, `/asr` and `/detect-language` require the key in the `X-API-Key` request header and answer
+`401 Unauthorized` otherwise. The Swagger UI stays public and offers an "Authorize" button to enter the key.
+
+```shell
+curl -X POST -H "X-API-Key: your_secret_key" -F "audio_file=@audio.mp3" "http://localhost:9000/asr"
+```
+
 ### Configuring Subtitle Options (WhisperX)
 
 ```shell

@@ -45,6 +45,9 @@ class CONFIG:
     # Default value of the vad_filter request parameter (faster_whisper)
     VAD_FILTER = os.getenv("ASR_VAD_FILTER", "false").lower() == "true"
 
+    # Optional API key. When set, requests must send it in the X-API-Key header.
+    API_KEY = os.getenv("API_KEY", "")
+
     # Default sample rate for audio input. 16 kHz is commonly used in speech-to-text tasks.
     SAMPLE_RATE = int(os.getenv("SAMPLE_RATE", 16000))
 

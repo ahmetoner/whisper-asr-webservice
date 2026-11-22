@@ -1,5 +1,7 @@
 import pytest
 
+from app import webservice
+
 
 def test_index_redirects_to_docs(client):
     response = client.get("/", follow_redirects=False)
@@ -57,3 +59,29 @@ def test_openapi_metadata(client):
     info = client.get("/openapi.json").json()["info"]
     assert info["title"] == "Whisper Asr Webservice"
     assert info["contact"]["url"] == "https://github.com/ahmetoner/whisper-asr-webservice/"
+
+
+def test_health(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_health_stays_public_when_api_key_configured(client, monkeypatch):
+    monkeypatch.setattr(webservice.CONFIG, "API_KEY", "secret")
+    assert client.get("/health").status_code == 200
+
+
+@pytest.mark.parametrize("endpoint", ["/asr", "/detect-language"])
+def test_api_key_required_when_configured(client, monkeypatch, pcm_bytes, endpoint):
+    monkeypatch.setattr(webservice.CONFIG, "API_KEY", "secret")
+    files = {"audio_file": ("tone.pcm", pcm_bytes)}
+    assert client.post(f"{endpoint}?encode=false", files=files).status_code == 401
+    assert client.post(f"{endpoint}?encode=false", files=files, headers={"X-API-Key": "wrong"}).status_code == 401
+    assert client.post(f"{endpoint}?encode=false", files=files, headers={"X-API-Key": "secret"}).status_code == 200
+
+
+def test_docs_stay_public_when_api_key_configured(client, monkeypatch):
+    monkeypatch.setattr(webservice.CONFIG, "API_KEY", "secret")
+    assert client.get("/docs").status_code == 200
+    assert client.get("/openapi.json").status_code == 200

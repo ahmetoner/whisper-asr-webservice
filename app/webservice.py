@@ -1,14 +1,16 @@
 import importlib.metadata
 import os
+import secrets
 from os import path
 from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile, applications
+from fastapi import FastAPI, File, HTTPException, Query, Security, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.security import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
 
@@ -56,6 +58,14 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
     applications.get_swagger_ui_html = swagger_monkey_patch
 
 
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+def verify_api_key(api_key: Annotated[Optional[str], Security(api_key_header)]):
+    if CONFIG.API_KEY and not (api_key and secrets.compare_digest(api_key, CONFIG.API_KEY)):
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+
+
 def read_audio(audio_file: UploadFile, encode: bool):
     try:
         return load_audio(audio_file.file, encode)
@@ -68,7 +78,12 @@ async def index():
     return "/docs"
 
 
-@app.post("/asr", tags=["Endpoints"])
+@app.get("/health", include_in_schema=False)
+async def health():
+    return {"status": "ok"}
+
+
+@app.post("/asr", tags=["Endpoints"], dependencies=[Security(verify_api_key)])
 def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
@@ -124,7 +139,7 @@ def asr(
     )
 
 
-@app.post("/detect-language", tags=["Endpoints"])
+@app.post("/detect-language", tags=["Endpoints"], dependencies=[Security(verify_api_key)])
 def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
