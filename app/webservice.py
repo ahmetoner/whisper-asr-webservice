@@ -3,7 +3,9 @@ import logging
 import os
 import secrets
 import time
+from contextlib import asynccontextmanager
 from os import path
+from threading import Event, Thread
 from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
 
@@ -11,7 +13,7 @@ import click
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Query, Security, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.security import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
@@ -51,7 +53,24 @@ if CONFIG.ASR_ENGINE == "whisperx" and not CONFIG.HF_TOKEN:
     logger.warning("HF_TOKEN is not set, so WhisperX speaker diarization is disabled")
 
 asr_model = ASRModelFactory.create_asr_model()
-asr_model.load_model()
+model_ready = Event()
+
+
+def load_initial_model():
+    try:
+        with asr_model.loaded_model():
+            pass
+    except Exception:
+        logger.exception("Failed to load the model")
+        os._exit(1)
+    model_ready.set()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Thread(target=load_initial_model, daemon=True).start()
+    yield
+
 
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 LanguageCode = Literal[tuple(LANGUAGE_CODES)]
@@ -71,6 +90,7 @@ app = FastAPI(
     contact={"url": projectUrls.get("Homepage")},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
+    lifespan=lifespan,
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
@@ -113,6 +133,8 @@ async def index():
 
 @app.get("/health", include_in_schema=False)
 async def health():
+    if not model_ready.is_set():
+        return JSONResponse({"status": "loading"}, status_code=503)
     return {"status": "ok"}
 
 

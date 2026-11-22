@@ -32,6 +32,8 @@ ASRModelFactory.create_asr_model = staticmethod(lambda: FAKE_MODEL)
 
 from app import webservice  # noqa: E402  (must be imported after the factory is patched)
 
+webservice.load_initial_model()
+
 
 @pytest.fixture
 def client():

@@ -21,6 +21,7 @@ Unreleased
 
 ### Changed
 
+- The service starts accepting connections immediately and loads the model in the background; `/health` returns 503 with `{"status": "loading"}` until the model is ready, and requests sent meanwhile wait for it
 - Upgraded
   - Python requirement to >=3.12,<3.14
   - Poetry to v2.5.2

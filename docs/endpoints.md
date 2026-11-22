@@ -101,8 +101,10 @@ curl -F "audio_file=@audio.mp3" "http://localhost:9000/detect-language"
 
 ## Health Check
 
-`GET /health` returns `{"status": "ok"}` once the model is loaded and the service accepts requests. It does not
-require the API key, so container orchestrators and load balancers can use it.
+The service starts accepting connections right away and loads the model in the background. Until the model is
+loaded, `GET /health` returns `503` with `{"status": "loading"}`, and `/asr` and `/detect-language` requests wait for
+the model. Afterwards it returns `{"status": "ok"}`. It does not require the API key, so container orchestrators and
+load balancers can use it.
 
 ```shell
 curl http://localhost:9000/health

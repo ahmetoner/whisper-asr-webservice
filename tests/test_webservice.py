@@ -2,8 +2,10 @@ import logging
 import os
 import subprocess
 import sys
+from threading import Event
 
 import pytest
+from fastapi.testclient import TestClient
 
 from app import webservice
 
@@ -70,6 +72,19 @@ def test_health(client):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+def test_health_reports_loading_until_the_model_is_loaded(client, monkeypatch):
+    monkeypatch.setattr(webservice, "model_ready", Event())
+    response = client.get("/health")
+    assert response.status_code == 503
+    assert response.json() == {"status": "loading"}
+
+
+def test_model_is_loaded_in_the_background_on_startup(monkeypatch):
+    monkeypatch.setattr(webservice, "model_ready", Event())
+    with TestClient(webservice.app):
+        assert webservice.model_ready.wait(timeout=5)
 
 
 def test_health_stays_public_when_api_key_configured(client, monkeypatch):
