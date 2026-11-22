@@ -43,3 +43,25 @@ def test_whisperx_applies_initial_prompt_for_one_request(monkeypatch):
     model.transcribe(None, "transcribe", None, "Kennedy", None, None, {}, "txt")
     assert pipeline.seen_prompt == "Kennedy"
     assert pipeline.options.initial_prompt is None
+
+
+def test_whisperx_passes_speaker_limits_by_keyword(monkeypatch):
+    class Pipeline:
+        options = None
+
+        def transcribe(self, audio, **kwargs):
+            return {"language": "en", "segments": []}
+
+    calls = []
+    monkeypatch.setattr(wx.whisperx, "load_align_model", lambda **kwargs: (None, None))
+    monkeypatch.setattr(wx.whisperx, "align", lambda *args, **kwargs: {"segments": []})
+    monkeypatch.setattr(wx.whisperx, "assign_word_speakers", lambda diarization, result: result)
+    model = wx.WhisperXASR()
+    model.model = {
+        "whisperx": Pipeline(),
+        "diarize_model": lambda audio, **kwargs: calls.append(kwargs),
+        "align_model": {},
+    }
+    options = {"diarize": True, "min_speakers": 2, "max_speakers": 4}
+    model.transcribe(None, "transcribe", None, None, None, None, options, "txt")
+    assert calls == [{"min_speakers": 2, "max_speakers": 4}]

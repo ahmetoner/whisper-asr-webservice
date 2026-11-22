@@ -82,10 +82,10 @@ class WhisperXASR(ASRModel):
             )
 
             if options.get("diarize", False) and self.model['diarize_model'] is not None:
-                min_speakers = options.get("min_speakers", None)
-                max_speakers = options.get("max_speakers", None)
                 # add min/max number of speakers if known
-                diarize_segments = self.model['diarize_model'](audio, min_speakers, max_speakers)
+                diarize_segments = self.model['diarize_model'](
+                    audio, min_speakers=options.get("min_speakers"), max_speakers=options.get("max_speakers")
+                )
                 result = whisperx.assign_word_speakers(diarize_segments, result)
             self.last_activity_time = time.time()
         result["language"] = language
