@@ -28,6 +28,7 @@ Unreleased
 - WhisperX diarization now uses `pyannote/speaker-diarization-community-1`; accept its conditions on Hugging Face
 - Only the selected ASR engine is imported at startup, reducing startup time and memory use
 - Docker images use the FFmpeg n9.1 build layer
+- Refreshed locked dependencies to pick up security fixes (aiohttp, certifi, filelock, lightning, nltk, pillow, urllib3 and more)
 
 ### Fixed
 
@@ -48,6 +49,144 @@ Unreleased
 - Upgraded the FFmpeg build layer from n7.1 to n9.1, which includes upstream FFmpeg security fixes
 - Upgraded torch to v2.8.0, fixing
   - CVE-2025-3730
+- Upgraded aiohttp to v3.14.5, fixing
+  - CVE-2026-111063
+  - CVE-2026-111064
+  - CVE-2026-111065
+  - CVE-2026-111066
+  - CVE-2026-111748
+  - CVE-2026-111749
+  - CVE-2026-111750
+  - CVE-2026-123817
+  - CVE-2026-128124
+  - CVE-2026-128125
+  - CVE-2026-128126
+  - CVE-2026-128127
+  - CVE-2026-128128
+  - CVE-2026-128129
+  - CVE-2026-128130
+  - CVE-2026-128131
+  - CVE-2026-128132
+- Upgraded certifi to v2026.11.20, fixing
+  - GHSA-6q48-6c7w-9gw2
+- Upgraded filelock to v4.3.0, fixing
+  - CVE-2026-112907
+  - CVE-2026-112908
+  - CVE-2026-112909
+  - CVE-2026-112910
+  - CVE-2026-112911
+  - CVE-2026-112913
+  - CVE-2026-112915
+  - CVE-2026-112935
+  - CVE-2026-112936
+  - CVE-2026-112938
+  - CVE-2026-112939
+  - CVE-2026-112940
+- Upgraded lightning to v2.6.6, fixing
+  - CVE-2026-58659
+- Upgraded mako to v1.4.3, fixing
+  - CVE-2026-102991
+- Upgraded multidict to v7.2.1, fixing
+  - CVE-2026-104874
+- Upgraded nltk to v3.10.4, fixing
+  - CVE-2026-12876
+  - CVE-2026-71513
+  - CVE-2026-71514
+  - CVE-2026-78680
+  - CVE-2026-78681
+  - CVE-2026-78682
+  - CVE-2026-79657
+  - CVE-2026-79674
+  - CVE-2026-79675
+  - CVE-2026-79676
+  - CVE-2026-80206
+  - CVE-2026-81722
+  - CVE-2026-81723
+  - CVE-2026-81724
+  - CVE-2026-81725
+  - CVE-2026-81726
+  - CVE-2026-81727
+  - CVE-2026-126295
+  - CVE-2026-126296
+  - CVE-2026-126297
+  - CVE-2026-126298
+  - CVE-2026-126299
+  - CVE-2026-126300
+  - CVE-2026-126301
+  - CVE-2026-126302
+  - CVE-2026-126303
+  - CVE-2026-126304
+  - CVE-2026-128134
+  - CVE-2026-128135
+  - CVE-2026-128136
+  - CVE-2026-128137
+  - CVE-2026-128139
+  - CVE-2026-128140
+  - CVE-2026-129221
+  - CVE-2026-129222
+  - CVE-2026-129223
+  - CVE-2026-129224
+  - CVE-2026-129225
+  - CVE-2026-129226
+  - CVE-2026-129227
+  - CVE-2026-129228
+  - CVE-2026-129229
+  - CVE-2026-129230
+  - CVE-2026-129231
+  - CVE-2026-129232
+  - CVE-2026-129233
+  - CVE-2026-129234
+  - GHSA-j456-xh4h-cpf2
+- Upgraded pillow to v13.0.0, fixing
+  - CVE-2026-96636
+  - CVE-2026-96637
+  - CVE-2026-96638
+  - CVE-2026-96639
+  - CVE-2026-96640
+  - CVE-2026-96641
+  - CVE-2026-96642
+  - CVE-2026-96643
+  - CVE-2026-96644
+  - CVE-2026-96778
+  - CVE-2026-112390
+  - CVE-2026-112391
+  - CVE-2026-112392
+  - CVE-2026-112393
+  - CVE-2026-112394
+  - CVE-2026-112395
+  - CVE-2026-112396
+  - CVE-2026-112397
+  - CVE-2026-112398
+  - CVE-2026-112399
+  - CVE-2026-112400
+  - CVE-2026-112401
+  - CVE-2026-112402
+  - CVE-2026-112403
+  - CVE-2026-112404
+  - CVE-2026-112405
+  - CVE-2026-112406
+  - CVE-2026-112891
+  - CVE-2026-112892
+  - CVE-2026-112893
+  - CVE-2026-112894
+  - CVE-2026-112895
+  - CVE-2026-112896
+  - CVE-2026-112897
+  - CVE-2026-112898
+  - CVE-2026-112899
+  - CVE-2026-112900
+  - CVE-2026-112901
+  - CVE-2026-112902
+  - CVE-2026-114501
+  - CVE-2026-128066
+  - CVE-2026-128067
+  - GHSA-78g4-xqwv-q3g8
+- Upgraded setuptools to v84.2.1, fixing
+  - GHSA-xmj3-9gf7-h52w
+- Upgraded urllib3 to v2.8.0, fixing
+  - CVE-2026-97687
+  - CVE-2026-97688
+  - CVE-2026-97689
 
 [1.10.0] (2026-08-09)
 ---------------------
