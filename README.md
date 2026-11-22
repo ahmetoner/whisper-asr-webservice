@@ -54,6 +54,10 @@ curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
 | [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper`           | Faster and lighter on memory; VAD and batched inference  |
 | [WhisperX](https://github.com/m-bain/whisperX)               | `whisperx`                 | Word alignment and speaker diarization                   |
 
+## Request Flow
+
+![Request flow](docs/assets/images/request-flow.svg)
+
 ## Configuration
 
 The most common settings are listed below. See the [configuration reference](https://ahmetoner.github.io/whisper-asr-webservice/environmental-variables/) for all of them.

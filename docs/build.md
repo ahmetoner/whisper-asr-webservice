@@ -7,6 +7,25 @@
 - [FFmpeg](https://ffmpeg.org) on the `PATH`
 - For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
 
+## Request Flow
+
+![Request flow](assets/images/request-flow.svg)
+
+The diagram source is [`request-flow.excalidraw`](assets/images/request-flow.excalidraw), which can be opened and
+edited at [excalidraw.com](https://excalidraw.com).
+
+## Project Structure
+
+| Path                                 | Responsibility                                                       |
+|--------------------------------------|----------------------------------------------------------------------|
+| `app/webservice.py`                  | FastAPI application, endpoints, API key check and CLI entry point    |
+| `app/config.py`                      | Reads the environment variables                                      |
+| `app/utils.py`                       | Audio decoding with FFmpeg and the output format writers             |
+| `app/factory/asr_model_factory.py`   | Creates the engine selected by `ASR_ENGINE`                          |
+| `app/asr_models/asr_model.py`        | Engine base class: model lock, lazy loading and idle unloading       |
+| `app/asr_models/*_engine.py`         | `openai_whisper`, `faster_whisper` and `whisperx` implementations    |
+| `tests/`                             | API and audio decoding tests                                         |
+
 ## Install
 
 ```shell
