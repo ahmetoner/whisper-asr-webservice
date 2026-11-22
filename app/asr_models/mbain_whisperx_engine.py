@@ -1,3 +1,4 @@
+import os
 import time
 from dataclasses import replace
 from io import StringIO
@@ -16,6 +17,8 @@ from app.config import CONFIG
 class WhisperXASR(ASRModel):
 
     def load_model(self):
+        # NLTK only downloads into a directory that already exists
+        os.makedirs(CONFIG.NLTK_DATA, exist_ok=True)
         asr_options = {"without_timestamps": False}
         if CONFIG.BEAM_SIZE:
             asr_options["beam_size"] = CONFIG.BEAM_SIZE

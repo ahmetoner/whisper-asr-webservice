@@ -81,6 +81,29 @@ docker run -d -p 9000:9000 \
 !!! note
     Cached models are not re-downloaded, so you will not receive upstream model updates until you clear the cache.
 
+## Running as a Non-Root User
+
+The images run as root by default, so existing setups and `/root/.cache` volumes keep working unchanged. To run as
+another user, set `XDG_CACHE_HOME` to a directory that user can write and mount the cache there:
+
+```shell
+mkdir -p cache
+docker run -d -p 9000:9000 \
+  --user "$(id -u):$(id -g)" \
+  -e XDG_CACHE_HOME=/cache \
+  -v $PWD/cache:/cache \
+  onerahmet/openai-whisper-asr-webservice:latest
+```
+
+- All engines store their models and other downloaded data under `XDG_CACHE_HOME`.
+- To reuse a cache created by a container running as root, change its owner first, e.g.
+  `sudo chown -R "$(id -u):$(id -g)" cache`.
+- Do not make the cache writable by everyone (`chmod 777`). NLTK, which WhisperX uses for word alignment, refuses to
+  load data from such a directory and the request fails. Change the owner as above instead.
+- Rootless Docker and rootless Podman need no extra options.
+- In Docker Compose, set `user: "1000:1000"` and the `XDG_CACHE_HOME` environment variable on the service. In
+  Kubernetes, set `runAsUser` and `runAsNonRoot: true` in the pod's `securityContext`.
+
 ## Verify
 
 Once the container is running, open <http://localhost:9000/docs> to see the interactive API documentation.

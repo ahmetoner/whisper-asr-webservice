@@ -1,3 +1,7 @@
+import os
+import subprocess
+import sys
+
 import pytest
 
 from app import webservice
@@ -85,3 +89,10 @@ def test_docs_stay_public_when_api_key_configured(client, monkeypatch):
     monkeypatch.setattr(webservice.CONFIG, "API_KEY", "secret")
     assert client.get("/docs").status_code == 200
     assert client.get("/openapi.json").status_code == 200
+
+
+def test_model_path_follows_xdg_cache_home(tmp_path):
+    env = {k: v for k, v in os.environ.items() if k != "ASR_MODEL_PATH"} | {"XDG_CACHE_HOME": str(tmp_path)}
+    code = "from app.config import CONFIG; print(CONFIG.MODEL_PATH)"
+    result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
+    assert result.stdout.strip() == str(tmp_path / "whisper")

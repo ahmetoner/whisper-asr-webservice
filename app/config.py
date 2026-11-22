@@ -23,7 +23,12 @@ class CONFIG:
     MODEL_NAME = os.getenv("ASR_MODEL", "base")
 
     # Path to the model directory
-    MODEL_PATH = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
+    # Defaults to $XDG_CACHE_HOME/whisper (~/.cache/whisper), next to the Hugging Face and torch caches
+    CACHE_HOME = os.getenv("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache")
+    MODEL_PATH = os.getenv("ASR_MODEL_PATH", os.path.join(CACHE_HOME, "whisper"))
+
+    # WhisperX downloads NLTK sentence tokenizer data on first use; keep it with the other caches instead of ~/nltk_data
+    NLTK_DATA = os.environ.setdefault("NLTK_DATA", os.path.join(CACHE_HOME, "nltk_data")).split(os.pathsep)[0]
 
     # Model quantization level. Defines the precision for model weights:
     #   'float32' - 32-bit floating-point precision (higher precision, slower inference)

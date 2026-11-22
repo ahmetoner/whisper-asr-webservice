@@ -6,7 +6,8 @@ The service is configured with environment variables. All of them are optional.
 |----------------------------|---------------------------------|----------------------------------------------------------------|
 | `ASR_ENGINE`               | `openai_whisper`                | `openai_whisper`, `faster_whisper` or `whisperx`               |
 | `ASR_MODEL`                | `base`                          | Model to load, see [Models](#models)                           |
-| `ASR_MODEL_PATH`           | `~/.cache/whisper`              | Model download directory (`openai_whisper`, `faster_whisper`)  |
+| `ASR_MODEL_PATH`           | `$XDG_CACHE_HOME/whisper`       | Model download directory (`openai_whisper`, `faster_whisper`)  |
+| `XDG_CACHE_HOME`           | `~/.cache`                      | Base directory for downloaded models and data                  |
 | `ASR_DEVICE`               | `cuda` if available, else `cpu` | Device to run the model on                                     |
 | `ASR_QUANTIZATION`         | `float32` on GPU, `int8` on CPU | Weight precision (`faster_whisper`, `whisperx`)                |
 | `ASR_BEAM_SIZE`            | engine default                  | Beam size used for decoding                                    |
