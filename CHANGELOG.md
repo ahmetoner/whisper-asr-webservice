@@ -10,6 +10,7 @@ Unreleased
 - `ASR_BEAM_SIZE`, `ASR_BATCH_SIZE` and `ASR_VAD_FILTER` environment variables
 - `/health` endpoint for container health checks, public even when `API_KEY` is set
 - Optional API key authentication with the `API_KEY` environment variable
+- GitHub release is created automatically when a version tag's Docker images are published successfully
 
 ### Changed
 
