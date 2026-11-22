@@ -1,0 +1,23 @@
+def test_index_redirects_to_docs(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (302, 307)
+    assert response.headers["location"].endswith("/docs")
+
+
+def test_asr_returns_transcript(client, fake_model, pcm_bytes):
+    response = client.post("/asr?encode=false&output=txt", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert response.status_code == 200
+    assert response.text == "hello world\n"
+    assert 'filename="tone.pcm.txt"' in response.headers["content-disposition"]
+    assert len(fake_model.calls[0]["audio"]) == 16000
+
+
+def test_asr_rejects_unknown_output(client, pcm_bytes):
+    response = client.post("/asr?encode=false&output=docx", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert response.status_code == 422
+
+
+def test_detect_language(client, pcm_bytes):
+    response = client.post("/detect-language?encode=false", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert response.status_code == 200
+    assert response.json() == {"detected_language": "english", "language_code": "en", "confidence": 0.99}

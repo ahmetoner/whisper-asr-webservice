@@ -85,6 +85,7 @@ torchvision = [
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=9.2.0,<10.0.0"
+httpx2 = ">=2.16.2,<3.0.0"
 ruff = ">=0.17.6,<1.0.0"
 black = ">=26.10.1,<27.0.0"
 mkdocs-material = ">=9.8.2,<10.0.0"
