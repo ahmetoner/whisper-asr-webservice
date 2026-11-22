@@ -30,11 +30,12 @@ MEDIA_TYPES = {
 }
 
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
+projectUrls = dict(url.split(", ", 1) for url in projectMetadata.get_all("Project-URL") or [])
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),
     description=projectMetadata["Summary"],
     version=projectMetadata["Version"],
-    contact={"url": projectMetadata["Home-page"]},
+    contact={"url": projectUrls.get("Homepage")},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
 )

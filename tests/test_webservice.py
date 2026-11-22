@@ -51,3 +51,9 @@ def test_asr_rejects_empty_upload(client, fake_model):
     response = client.post("/asr?encode=false", files={"audio_file": ("x.pcm", b"")})
     assert response.status_code == 400
     assert fake_model.calls == []
+
+
+def test_openapi_metadata(client):
+    info = client.get("/openapi.json").json()["info"]
+    assert info["title"] == "Whisper Asr Webservice"
+    assert info["contact"]["url"] == "https://github.com/ahmetoner/whisper-asr-webservice/"

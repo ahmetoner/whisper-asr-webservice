@@ -37,6 +37,7 @@ Unreleased
 - `/asr` responses now use a `Content-Type` matching the requested `output` format
 - Swagger UI showing a text field instead of a file picker for `audio_file` in Docker images
 - Server becoming unresponsive, including `/docs`, while a transcription is running
+- Missing contact URL in the OpenAPI metadata
 
 ### Security
 
