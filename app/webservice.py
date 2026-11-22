@@ -68,7 +68,7 @@ async def index():
 
 
 @app.post("/asr", tags=["Endpoints"])
-async def asr(
+def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
     task: Literal["transcribe", "translate"] = Query(default="transcribe"),
@@ -124,7 +124,7 @@ async def asr(
 
 
 @app.post("/detect-language", tags=["Endpoints"])
-async def detect_language(
+def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
