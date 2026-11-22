@@ -45,8 +45,10 @@ logger.info(
     projectMetadata["Version"], CONFIG.ASR_ENGINE, CONFIG.MODEL_NAME, CONFIG.DEVICE, CONFIG.MODEL_QUANTIZATION,
 )
 logger.debug(
-    "Settings: model path %s, beam size %s, batch size %s, VAD filter %s, idle timeout %ss, API key %s",
+    "Settings: model path %s, beam size %s, batch size %s, VAD filter %s, idle timeout %ss, "
+    "unload after request %s, API key %s",
     CONFIG.MODEL_PATH, CONFIG.BEAM_SIZE, CONFIG.BATCH_SIZE, CONFIG.VAD_FILTER, CONFIG.MODEL_IDLE_TIMEOUT,
+    CONFIG.MODEL_UNLOAD_AFTER_REQUEST,
     "set" if CONFIG.API_KEY else "not set",
 )
 if CONFIG.ASR_ENGINE == "whisperx" and not CONFIG.HF_TOKEN:

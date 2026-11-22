@@ -14,6 +14,7 @@ The service is configured with environment variables. All of them are optional.
 | `ASR_BATCH_SIZE`           | engine default                  | Batch size for batched inference (`faster_whisper`, `whisperx`) |
 | `ASR_VAD_FILTER`           | `false`                         | Default value of the `vad_filter` request parameter            |
 | `MODEL_IDLE_TIMEOUT`       | `0`                             | Seconds of inactivity before the model is unloaded; `0` keeps it loaded |
+| `MODEL_UNLOAD_AFTER_REQUEST` | `false`                       | Unload the model after every request, see [Model Unloading](#model-unloading) |
 | `API_KEY`                  | unset                           | Require this key in the `X-API-Key` request header             |
 | `HF_TOKEN`                 | unset                           | Hugging Face token for WhisperX diarization                    |
 | `SUBTITLE_MAX_LINE_WIDTH`  | `1000`                          | Maximum characters per subtitle line (`whisperx`)              |
@@ -61,6 +62,10 @@ per request with the `vad_filter` parameter.
 
 When `MODEL_IDLE_TIMEOUT` is greater than `0`, the model is unloaded after that many seconds without requests, which
 frees CPU or GPU memory. It is loaded again on the next request, which then takes longer to complete.
+
+With `MODEL_UNLOAD_AFTER_REQUEST=true`, the model is unloaded as soon as each request finishes, so it only uses memory
+while a request is processed. Every request then includes the model loading time. This suits occasional use on a
+machine that needs its memory for other work.
 
 ## Limits
 

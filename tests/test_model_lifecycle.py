@@ -1,6 +1,7 @@
 import logging
 
 from app.asr_models import mbain_whisperx_engine as wx
+from app.config import CONFIG
 from tests.conftest import FakeASRModel
 
 
@@ -92,3 +93,12 @@ def test_engines_do_not_share_state():
     first.load_model()
     assert second.model is None
     assert first.model_lock is not second.model_lock
+
+
+def test_model_is_unloaded_after_each_request_when_configured(monkeypatch):
+    monkeypatch.setattr(CONFIG, "MODEL_UNLOAD_AFTER_REQUEST", True)
+    model = FakeASRModel()
+    assert model.transcribe(None, "transcribe", None, None, None, None, {}, "txt").read() == "hello world\n"
+    assert model.model is None
+    assert model.language_detection(None) == ("en", 0.99)
+    assert model.model is None

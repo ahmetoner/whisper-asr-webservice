@@ -40,6 +40,7 @@ class CONFIG:
     # Idle timeout in seconds. If set to a non-zero value, the model will be unloaded
     # after being idle for this many seconds. A value of 0 means the model will never be unloaded.
     MODEL_IDLE_TIMEOUT = int(os.getenv("MODEL_IDLE_TIMEOUT", 0))
+    MODEL_UNLOAD_AFTER_REQUEST = os.getenv("MODEL_UNLOAD_AFTER_REQUEST", "false").lower() == "true"
 
     # Optional decoding settings. When unset, each engine keeps its own default.
     BEAM_SIZE = int(os.getenv("ASR_BEAM_SIZE")) if os.getenv("ASR_BEAM_SIZE") else None

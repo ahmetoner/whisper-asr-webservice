@@ -69,6 +69,9 @@ class ASRModel(ABC):
                 yield self.model
             finally:
                 self.last_activity_time = time.time()
+                if CONFIG.MODEL_UNLOAD_AFTER_REQUEST:
+                    self.release_model()
+                    logger.info("Model unloaded because MODEL_UNLOAD_AFTER_REQUEST is set")
 
     def transcribe(
         self,
@@ -101,7 +104,9 @@ class ASRModel(ABC):
             time.sleep(15)
             with self.model_lock:
                 if time.time() - self.last_activity_time > CONFIG.MODEL_IDLE_TIMEOUT:
-                    self.release_model()
+                    if self.model is not None:
+                        self.release_model()
+                        logger.info("Model unloaded after %ss of inactivity", CONFIG.MODEL_IDLE_TIMEOUT)
                     break
 
     def release_model(self):
@@ -114,4 +119,3 @@ class ASRModel(ABC):
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-        logger.info("Model unloaded after %ss of inactivity", CONFIG.MODEL_IDLE_TIMEOUT)
