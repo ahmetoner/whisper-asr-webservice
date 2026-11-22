@@ -1,5 +1,3 @@
-from io import StringIO
-
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
@@ -12,17 +10,21 @@ class FakeASRModel(ASRModel):
     """Stands in for a real engine so the API can be tested without downloading models."""
 
     def __init__(self):
+        super().__init__()
         self.calls = []
 
-    def load_model(self):
-        self.model = "loaded"
+    def _load_model(self):
+        return "loaded"
 
-    def transcribe(self, audio, task, language, initial_prompt, vad_filter, word_timestamps, options, output):
-        self.calls.append({"audio": audio, "task": task, "language": language, "output": output, **options})
-        return StringIO("hello world\n")
+    def _transcribe(self, audio, task, language, initial_prompt, vad_filter, word_timestamps, options):
+        self.calls.append({"audio": audio, "task": task, "language": language, **options})
+        return {"text": "hello world\n"}
 
-    def language_detection(self, audio):
+    def _detect_language(self, audio):
         return "en", 0.99
+
+    def write_result(self, result, file, output):
+        file.write(result["text"])
 
 
 FAKE_MODEL = FakeASRModel()
