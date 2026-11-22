@@ -1,85 +1,72 @@
-## Development Environment
+# Development
 
-Install poetry v2.X with following command:
+## Requirements
 
-```shell
-pip3 install poetry
-```
+- Python 3.12 or 3.13
+- [Poetry](https://python-poetry.org) 2.x
+- [FFmpeg](https://ffmpeg.org) on the `PATH`
+- For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
 
-### Installation
-
-Install dependencies for cpu
-
-```shell
-poetry install --extras cpu
-```
-
-Install dependencies for cuda
+## Install
 
 ```shell
-poetry install --extras cuda
+poetry install --extras cpu   # CPU build of PyTorch
+poetry install --extras cuda  # PyTorch for CUDA 12.8
 ```
 
-!!! Note
-    Python 3.12 or 3.13 is required. The `cpu` extra installs the CPU build of PyTorch, and the `cuda` extra
-    installs PyTorch 2.8 built for CUDA 12.8 (supports GPUs up to and including the RTX 50xx / Blackwell series).
-    You need an NVIDIA driver that supports CUDA 12.8 or newer.
-
-### Run
-
-Starting the Webservice:
+## Run
 
 ```shell
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
 ```
 
-### Build
+Configure the service with the [environment variables](environmental-variables.md), for example
+`ASR_ENGINE=faster_whisper ASR_MODEL=tiny poetry run whisper-asr-webservice`.
 
-=== ":octicons-file-code-16: `Docker`"
+## Test and Lint
 
-    With `Dockerfile`:
+```shell
+poetry run pytest
+poetry run ruff check app tests
+```
 
-    === ":octicons-file-code-16: `CPU`"
-    
-        ```shell
-        # Build Image
-        docker build -t whisper-asr-webservice .
-        
-        # Run Container
-        docker run -d -p 9000:9000 whisper-asr-webservice
-        # or with specific model
-        docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
-        ```
-    
-    === ":octicons-file-code-16: `GPU`"
-    
-        ```shell
-        # Build Image
-        docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
-        
-        # Run Container
-        docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
-        # or with specific model
-        docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-gpu
-        ```
+The tests replace the ASR engine with a stub, so they run without downloading models. Audio decoding tests are skipped
+when FFmpeg is not installed.
 
-    With `docker-compose`:
-    
-    === ":octicons-file-code-16: `CPU`"
-    
-        ```shell
-        docker-compose up --build
-        ```
-    
-    === ":octicons-file-code-16: `GPU`"
-    
-        ```shell
-        docker-compose -f docker-compose.gpu.yml up --build
-        ```
-=== ":octicons-file-code-16: `Poetry`"
+## Build Docker Images
 
-    Build .whl package
-    
+=== "CPU"
+
     ```shell
-    poetry build
+    docker build -t whisper-asr-webservice .
+    docker run -d -p 9000:9000 whisper-asr-webservice
     ```
+
+=== "GPU"
+
+    ```shell
+    docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
+    docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
+    ```
+
+=== "Docker Compose"
+
+    ```shell
+    docker compose up --build                            # CPU
+    docker compose -f docker-compose.gpu.yml up --build  # GPU
+    ```
+
+    The Compose files mount `./app` into the container, so code changes take effect after a restart without a rebuild.
+
+## Documentation
+
+```shell
+poetry run mkdocs serve
+```
+
+The site is served at <http://localhost:8000> and reloads on changes.
+
+## Releases
+
+Pushing a version tag publishes the Docker images, creates a GitHub release and deploys this documentation.
+Pushing to the `debug` branch publishes the `debug` and `debug-gpu` images for testing.

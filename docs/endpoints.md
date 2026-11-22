@@ -1,100 +1,128 @@
-## Quick start
+# API
 
-After running the docker image interactive Swagger API documentation is available at [localhost:9000/docs](http://localhost:9000/docs)
+The service exposes two endpoints. Both accept a file upload as `multipart/form-data` in the `audio_file` field.
+Interactive documentation is available at `/docs`, and the OpenAPI schema at `/openapi.json`.
 
-There are 2 endpoints available:
+| Method | Path               | Description                                 |
+|--------|--------------------|---------------------------------------------|
+| `POST` | `/asr`             | Transcribe or translate an audio file       |
+| `POST` | `/detect-language` | Detect the spoken language of an audio file |
 
-- [/asr](##Automatic-Speech-recognition-service-/asr) (Automatic Speech Recognition)
-- [/detect-language](##Language-detection-service-/detect-language)
+## Transcription
 
-## Automatic speech recognition service /asr
+`POST /asr`
 
-- 2 task choices:
-  - **transcribe**: (default) task, transcribes the uploaded file.
-  - **translate**: will provide an English transcript no matter which language was spoken.
-- Files are automatically converted with FFmpeg.
-  - Full list of supported [audio](https://ffmpeg.org/general.html#Audio-Codecs) and [video](https://ffmpeg.org/general.html#Video-Codecs) formats.
-- You can enable word level timestamps output by `word_timestamps` parameter
-- You can Enable the voice activity detection (VAD) to filter out parts of the audio without speech  by `vad_filter` parameter (only with `Faster Whisper` for now).
+Transcribes the uploaded file in its original language, or translates it into English.
 
-### Request URL Query Params
+### Parameters
 
-| Name            | Values                                         | Description                                                    |
-|-----------------|------------------------------------------------|----------------------------------------------------------------|
-| audio_file      | File                                           | Audio or video file to transcribe                              |
-| output          | `text` (default), `json`, `vtt`, `srt`, `tsv` | Output format                                                  |
-| task            | `transcribe`, `translate`                      | Task type - transcribe in source language or translate to English |
-| language        | `en` (default is auto recognition)             | Source language code (see supported languages)                 |
-| word_timestamps | false (default)                                | Enable word-level timestamps (Faster Whisper only)             |
-| vad_filter      | false (default)                                | Enable voice activity detection filtering (Faster Whisper only) |
-| encode          | true (default)                                 | Encode audio through FFmpeg before processing                  |
-| diarize         | false (default)                                | Enable speaker diarization (WhisperX only)                     |
-| min_speakers    | null (default)                                 | Minimum number of speakers for diarization (WhisperX only)     |
-| max_speakers    | null (default)                                 | Maximum number of speakers for diarization (WhisperX only)     |
+| Name              | Type    | Default        | Description                                                                 |
+|-------------------|---------|----------------|-----------------------------------------------------------------------------|
+| `audio_file`      | file    | required       | Audio or video file                                                         |
+| `task`            | string  | `transcribe`   | `transcribe` or `translate` (into English)                                  |
+| `language`        | string  | auto-detected  | Language code of the audio, e.g. `en`, `de`, `tr`                           |
+| `output`          | string  | `txt`          | `txt`, `json`, `vtt`, `srt` or `tsv`                                        |
+| `initial_prompt`  | string  | none           | Text that guides the style or vocabulary of the transcript                  |
+| `encode`          | boolean | `true`         | Decode the file with FFmpeg. Set to `false` to send raw PCM (see below)     |
+| `word_timestamps` | boolean | `false`        | Include word-level timestamps. `openai_whisper` and `faster_whisper`        |
+| `vad_filter`      | boolean | `false`        | Skip parts of the audio without speech. `faster_whisper` only               |
+| `diarize`         | boolean | `false`        | Label segments by speaker. `whisperx` only, requires `HF_TOKEN`             |
+| `min_speakers`    | integer | none           | Lower bound on the number of speakers. `whisperx` only                      |
+| `max_speakers`    | integer | none           | Upper bound on the number of speakers. `whisperx` only                      |
 
-Example request with cURL
+All parameters except `audio_file` are query parameters. Some engine-specific parameters are hidden in the Swagger UI
+when a different engine is configured.
 
-```bash
-curl -X POST -H "content-type: multipart/form-data" -F "audio_file=@/path/to/file" "0.0.0.0:9000/asr?output=json"
+### Examples
+
+```shell
+# Plain text transcript
+curl -F "audio_file=@meeting.mp3" "http://localhost:9000/asr"
+
+# SRT subtitles for a video
+curl -F "audio_file=@video.mp4" "http://localhost:9000/asr?output=srt" -o video.srt
+
+# English translation of German audio
+curl -F "audio_file=@interview.wav" "http://localhost:9000/asr?task=translate&language=de"
+
+# Speaker diarization with WhisperX
+curl -F "audio_file=@call.m4a" "http://localhost:9000/asr?output=json&diarize=true&max_speakers=2"
 ```
 
-### Response (JSON)
+### Output Formats
 
-- **text**: Contains the full transcript
-- **segments**: Contains an entry per segment. Each entry provides `timestamps`, `transcript`, `token ids`, `word level timestamps` and other metadata
-- **language**: Detected or provided language (as a language code)
+| `output` | Content type                 | Description                                         |
+|----------|------------------------------|-----------------------------------------------------|
+| `txt`    | `text/plain`                 | Plain transcript                                    |
+| `json`   | `application/json`           | Full result with segments, timestamps and metadata  |
+| `vtt`    | `text/vtt`                   | WebVTT subtitles                                    |
+| `srt`    | `application/x-subrip`       | SubRip subtitles                                    |
+| `tsv`    | `text/tab-separated-values`  | Segment start, end (in milliseconds) and text       |
 
-### Response Formats
+The JSON output contains:
 
-The API supports multiple output formats:
+- `text`: the full transcript
+- `segments`: one entry per segment, with start and end times, text and engine-specific metadata such as word
+  timestamps and, when diarization is enabled, the speaker label
+- `language`: the detected or requested language code
 
-- **text**: Plain text transcript (default)
-- **json**: Detailed JSON with segments, timestamps, and metadata
-- **vtt**: WebVTT subtitle format
-- **srt**: SubRip subtitle format  
-- **tsv**: Tab-separated values with timestamps
+The response includes an `Asr-Engine` header with the engine that produced it.
 
-### Supported Languages
+### Input
 
-The service supports all languages supported by Whisper. Some common language codes:
+With `encode=true` (the default), any audio or video format supported by FFmpeg is accepted, including MP3, WAV,
+FLAC, OGG, Opus, M4A, MP4, MOV, MKV and WebM. Audio is converted to 16 kHz mono before transcription.
 
-- Turkish (tr)
-- English (en)
-- Spanish (es)
-- French (fr)
-- German (de)
-- Italian (it)
-- Portuguese (pt)
-- And many more...
+With `encode=false`, the file must be raw 16-bit little-endian mono PCM at 16 kHz. This skips FFmpeg and is useful
+when the client already has decoded audio.
 
-See the [Whisper documentation](https://github.com/openai/whisper#available-models-and-languages) for the full list of supported languages.
+## Language Detection
 
-### Speaker Diarization
+`POST /detect-language`
 
-When using the WhisperX engine with diarization enabled (`diarize=true`), the output will include speaker labels for each segment. This requires:
+Detects the language spoken in the first 30 seconds of the file.
 
-1. WhisperX engine to be configured
-2. Valid Hugging Face token set in HF_TOKEN
-3. Sufficient memory for diarization models
+| Name         | Type    | Default  | Description                                   |
+|--------------|---------|----------|-----------------------------------------------|
+| `audio_file` | file    | required | Audio or video file                           |
+| `encode`     | boolean | `true`   | Decode the file with FFmpeg                   |
 
-You can optionally specify `min_speakers` and `max_speakers` if you know the expected number of speakers.
-
-## Language detection service /detect-language
-
-Detects the language spoken in the uploaded file. Only processes first 30 seconds.
-
-Returns a json with following fields:
-
-- **detected_language**: Human readable language name (e.g. "english")
-- **language_code**: ISO language code (e.g. "en")
-- **confidence**: Confidence score between 0 and 1 indicating detection reliability
-
-Example response:
+```shell
+curl -F "audio_file=@audio.mp3" "http://localhost:9000/detect-language"
+```
 
 ```json
 {
-    "detected_language": "english",
-    "language_code": "en",
-    "confidence": 0.98
+  "detected_language": "english",
+  "language_code": "en",
+  "confidence": 0.98
 }
 ```
+
+## Health Check
+
+`GET /health` returns `{"status": "ok"}` once the model is loaded and the service accepts requests. It does not
+require the API key, so container orchestrators and load balancers can use it.
+
+```shell
+curl http://localhost:9000/health
+```
+
+## Authentication
+
+When the `API_KEY` environment variable is set, both endpoints require the key in the `X-API-Key` header. The
+documentation pages stay public, and the Swagger UI provides an **Authorize** button to enter the key.
+
+```shell
+curl -H "X-API-Key: your-secret-key" -F "audio_file=@audio.mp3" "http://localhost:9000/asr"
+```
+
+## Errors
+
+| Status | Cause                                                                     |
+|--------|---------------------------------------------------------------------------|
+| `400`  | The file could not be decoded or contains no audio                        |
+| `401`  | `API_KEY` is set and the `X-API-Key` header is missing or wrong           |
+| `422`  | A parameter has an invalid value, e.g. an unknown `output` or `language`  |
+
+Error responses are JSON objects with a `detail` field describing the problem.

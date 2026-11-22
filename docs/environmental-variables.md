@@ -1,127 +1,76 @@
-### Configuring the `Engine`
+# Configuration
 
-=== ":octicons-file-code-16: `openai_whisper`"
+The service is configured with environment variables. All of them are optional.
 
-    ```shell
-    export ASR_ENGINE=openai_whisper
-    ```
+| Variable                   | Default                         | Description                                                    |
+|----------------------------|---------------------------------|----------------------------------------------------------------|
+| `ASR_ENGINE`               | `openai_whisper`                | `openai_whisper`, `faster_whisper` or `whisperx`               |
+| `ASR_MODEL`                | `base`                          | Model to load, see [Models](#models)                           |
+| `ASR_MODEL_PATH`           | `~/.cache/whisper`              | Model download directory (`openai_whisper`, `faster_whisper`)  |
+| `ASR_DEVICE`               | `cuda` if available, else `cpu` | Device to run the model on                                     |
+| `ASR_QUANTIZATION`         | `float32` on GPU, `int8` on CPU | Weight precision (`faster_whisper`, `whisperx`)                |
+| `ASR_BEAM_SIZE`            | engine default                  | Beam size used for decoding                                    |
+| `ASR_BATCH_SIZE`           | engine default                  | Batch size for batched inference (`faster_whisper`, `whisperx`) |
+| `ASR_VAD_FILTER`           | `false`                         | Default value of the `vad_filter` request parameter            |
+| `MODEL_IDLE_TIMEOUT`       | `0`                             | Seconds of inactivity before the model is unloaded; `0` keeps it loaded |
+| `API_KEY`                  | unset                           | Require this key in the `X-API-Key` request header             |
+| `HF_TOKEN`                 | unset                           | Hugging Face token for WhisperX diarization                    |
+| `SUBTITLE_MAX_LINE_WIDTH`  | `1000`                          | Maximum characters per subtitle line (`whisperx`)              |
+| `SUBTITLE_MAX_LINE_COUNT`  | `2`                             | Maximum lines per subtitle (`whisperx`)                        |
+| `SUBTITLE_HIGHLIGHT_WORDS` | `false`                         | Highlight the current word in subtitles (`whisperx`)           |
+| `SAMPLE_RATE`              | `16000`                         | Sample rate audio is converted to. Whisper expects 16 kHz      |
 
-=== ":octicons-file-code-16: `faster_whisper`"
+## Models
 
-    ```shell
-    export ASR_ENGINE=faster_whisper
-    ```
+| Type              | Models                                                                                          |
+|-------------------|-------------------------------------------------------------------------------------------------|
+| Multilingual      | `tiny`, `base`, `small`, `medium`, `large-v1`, `large-v2`, `large-v3` (`large`), `large-v3-turbo` (`turbo`) |
+| English only      | `tiny.en`, `base.en`, `small.en`, `medium.en`                                                   |
+| Distilled         | `distil-small.en`, `distil-medium.en`, `distil-large-v2`, `distil-large-v3` (`faster_whisper`, `whisperx`) |
 
-=== ":octicons-file-code-16: `whisperx`"
+Larger models are more accurate but slower and need more memory. `turbo` is close to `large-v3` in accuracy at a
+fraction of the cost and is a good default on GPU. For English-only audio, the `.en` models are more accurate than
+their multilingual counterparts, especially at the `tiny` and `base` sizes. Distilled models trade a little accuracy
+for faster inference.
 
-    ```shell
-    export ASR_ENGINE=whisperx
-    ```
+## Device and Quantization
 
-### Configuring the `Model`
+`ASR_QUANTIZATION` sets the precision of the model weights for `faster_whisper` and `whisperx`:
 
-```shell
-export ASR_MODEL=base
-```
+| Value     | Speed   | Accuracy | Notes                     |
+|-----------|---------|----------|---------------------------|
+| `float32` | slowest | highest  | Default on GPU            |
+| `float16` | faster  | high     | Recommended on GPU        |
+| `int8`    | fastest | lower    | Default on CPU            |
 
-Available ASR_MODELs are:
+## Decoding
 
-- Standard models: `tiny`, `base`, `small`, `medium`, `large-v1`, `large-v2`, `large-v3` (or `large`), `large-v3-turbo` (or `turbo`)
-- English-optimized models: `tiny.en`, `base.en`, `small.en`, `medium.en`
-- Distilled models: `distil-large-v2`, `distil-medium.en`, `distil-small.en`, `distil-large-v3` (only for whisperx and faster-whisper)
+`ASR_BEAM_SIZE` and `ASR_BATCH_SIZE` tune decoding. When they are not set, each engine uses its own default.
 
-For English-only applications, the `.en` models tend to perform better, especially for the `tiny.en` and `base.en`
-models. We observed that the difference becomes less significant for the `small.en` and `medium.en` models.
+With `faster_whisper`, setting `ASR_BATCH_SIZE` enables batched inference, which is significantly faster on GPU.
+Batched inference always applies voice activity detection to split the audio.
 
-The distilled models offer improved inference speed while maintaining good accuracy.
+`ASR_VAD_FILTER=true` enables voice activity detection by default for `faster_whisper`. Clients can still override it
+per request with the `vad_filter` parameter.
 
-### Configuring the `Model Path`
+## Model Unloading
 
-```shell
-export ASR_MODEL_PATH=/data/whisper
-```
+When `MODEL_IDLE_TIMEOUT` is greater than `0`, the model is unloaded after that many seconds without requests, which
+frees CPU or GPU memory. It is loaded again on the next request, which then takes longer to complete.
 
-### Configuring the `Model Unloading Timeout`
+## Authentication
 
-```shell
-export MODEL_IDLE_TIMEOUT=300
-```
+When `API_KEY` is set, `/asr` and `/detect-language` return `401 Unauthorized` unless the request includes the key in
+the `X-API-Key` header. The documentation pages remain public. See [API](endpoints.md#authentication).
 
-Defaults to `0`. After no activity for this period (in seconds), unload the model until it is requested again. Setting
-`0` disables the timeout, keeping the model loaded indefinitely.
+## Speaker Diarization
 
-### Configuring the `SAMPLE_RATE`
+Diarization is available with the `whisperx` engine and requires a Hugging Face access token:
 
-```shell
-export SAMPLE_RATE=16000
-```
+1. Create a token at <https://huggingface.co/settings/tokens>.
+2. Accept the user conditions of
+   [`pyannote/speaker-diarization-community-1`](https://huggingface.co/pyannote/speaker-diarization-community-1) with
+   the same account.
+3. Start the service with `ASR_ENGINE=whisperx` and `HF_TOKEN=<your token>`.
 
-Defaults to `16000`. Default sample rate for audio input. `16 kHz` is commonly used in `speech-to-text` tasks.
-
-### Configuring Device and Quantization
-
-```shell
-export ASR_DEVICE=cuda  # or 'cpu'
-export ASR_QUANTIZATION=float32  # or 'float16', 'int8'
-```
-
-The `ASR_DEVICE` defaults to `cuda` if GPU is available, otherwise `cpu`. 
-
-The `ASR_QUANTIZATION` defines the precision for model weights:
-
-- `float32`: 32-bit floating-point precision (higher precision, slower inference)
-- `float16`: 16-bit floating-point precision (lower precision, faster inference)
-- `int8`: 8-bit integer precision (lowest precision, fastest inference)
-
-Defaults to `float32` for GPU, `int8` for CPU.
-
-### Configuring Decoding Options
-
-```shell
-export ASR_BEAM_SIZE=5      # beam size used for decoding (all engines)
-export ASR_BATCH_SIZE=8     # batched inference (faster_whisper and whisperx)
-export ASR_VAD_FILTER=true  # default value of the `vad_filter` request parameter (faster_whisper)
-```
-
-All three are optional; when they are not set each engine keeps its own default. With `faster_whisper`, setting
-`ASR_BATCH_SIZE` switches to batched inference, which always uses voice activity detection to split the audio.
-
-### Configuring API Key Authentication
-
-```shell
-export API_KEY=your_secret_key
-```
-
-When set, `/asr` and `/detect-language` require the key in the `X-API-Key` request header and answer
-`401 Unauthorized` otherwise. The Swagger UI stays public and offers an "Authorize" button to enter the key.
-
-```shell
-curl -X POST -H "X-API-Key: your_secret_key" -F "audio_file=@audio.mp3" "http://localhost:9000/asr"
-```
-
-### Configuring Subtitle Options (WhisperX)
-
-```shell
-export SUBTITLE_MAX_LINE_WIDTH=1000
-export SUBTITLE_MAX_LINE_COUNT=2
-export SUBTITLE_HIGHLIGHT_WORDS=false
-```
-
-These options only apply when using the WhisperX engine:
-
-- `SUBTITLE_MAX_LINE_WIDTH`: Maximum width of subtitle lines (default: 1000)
-- `SUBTITLE_MAX_LINE_COUNT`: Maximum number of lines per subtitle (default: 2)
-- `SUBTITLE_HIGHLIGHT_WORDS`: Enable word highlighting in subtitles (default: false)
-
-### Hugging Face Token
-
-```shell
-export HF_TOKEN=your_token_here
-```
-
-Required when using the WhisperX engine to download the diarization model.
-
-!!! Note
-    Since v1.11.0 WhisperX uses `pyannote/speaker-diarization-community-1` for diarization. You must accept
-    the user conditions of [that model](https://huggingface.co/pyannote/speaker-diarization-community-1) on Hugging
-    Face with the account that owns `HF_TOKEN`.
+The `diarize`, `min_speakers` and `max_speakers` request parameters then become available.

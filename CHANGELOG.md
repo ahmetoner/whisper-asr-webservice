@@ -33,6 +33,7 @@ Unreleased
 - CPU Docker image is based on `python:3.12-slim-bookworm`
 - Docker images include the FFmpeg license (LGPL v2.1+) at `/usr/local/share/doc/ffmpeg`
 - Docker images no longer include development dependencies, and dependencies are installed in their own layer so rebuilds after code changes are faster
+- Rewrote the README and documentation, adding the API reference, a complete configuration table and the development guide
 
 ### Fixed
 
