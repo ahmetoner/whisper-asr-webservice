@@ -20,6 +20,7 @@ The service is configured with environment variables. All of them are optional.
 | `SUBTITLE_MAX_LINE_COUNT`  | `2`                             | Maximum lines per subtitle (`whisperx`)                        |
 | `SUBTITLE_HIGHLIGHT_WORDS` | `false`                         | Highlight the current word in subtitles (`whisperx`)           |
 | `SAMPLE_RATE`              | `16000`                         | Sample rate audio is converted to. Whisper expects 16 kHz      |
+| `LOG_LEVEL`                | `INFO`                          | `DEBUG`, `INFO`, `WARNING` or `ERROR`, see [Logging](#logging) |
 
 ## Models
 
@@ -58,6 +59,17 @@ per request with the `vad_filter` parameter.
 
 When `MODEL_IDLE_TIMEOUT` is greater than `0`, the model is unloaded after that many seconds without requests, which
 frees CPU or GPU memory. It is loaded again on the next request, which then takes longer to complete.
+
+## Logging
+
+At `INFO`, the service logs its configuration at startup, model loading and unloading, and one line per request with
+the file name, audio length and processing time. Set `LOG_LEVEL=DEBUG` to also log all settings, FFmpeg decoding
+times, the options passed to the engine and the detected language, plus the health check requests that are hidden
+otherwise.
+
+```shell
+docker run -d -p 9000:9000 -e LOG_LEVEL=DEBUG onerahmet/openai-whisper-asr-webservice:latest
+```
 
 ## Authentication
 

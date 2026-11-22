@@ -1,3 +1,4 @@
+import logging
 import time
 from io import StringIO
 from threading import Thread
@@ -7,18 +8,21 @@ import torch
 import whisper
 from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
-from app.asr_models.asr_model import ASRModel
+from app.asr_models.asr_model import ASRModel, loading_message
 from app.config import CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 class OpenAIWhisperASR(ASRModel):
 
     def load_model(self):
 
-        if torch.cuda.is_available():
-            self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH).cuda()
-        else:
-            self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
+        with loading_message():
+            if torch.cuda.is_available():
+                self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH).cuda()
+            else:
+                self.model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
 
         Thread(target=self.monitor_idleness, daemon=True).start()
 
@@ -46,7 +50,9 @@ class OpenAIWhisperASR(ASRModel):
             self.last_activity_time = time.time()
             if self.model is None:
                 self.load_model()
+            logger.debug("Transcribing with %s", options_dict)
             result = self.model.transcribe(audio, **options_dict)
+            logger.debug("Got %d segments in language %s", len(result["segments"]), result["language"])
             self.last_activity_time = time.time()
 
         output_file = StringIO()

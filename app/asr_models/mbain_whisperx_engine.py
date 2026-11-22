@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from dataclasses import replace
@@ -10,8 +11,10 @@ from whisperx.audio import N_SAMPLES
 from whisperx.diarize import DiarizationPipeline
 from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
-from app.asr_models.asr_model import ASRModel
+from app.asr_models.asr_model import ASRModel, loading_message
 from app.config import CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 class WhisperXASR(ASRModel):
@@ -22,22 +25,23 @@ class WhisperXASR(ASRModel):
         asr_options = {"without_timestamps": False}
         if CONFIG.BEAM_SIZE:
             asr_options["beam_size"] = CONFIG.BEAM_SIZE
-        model = {
-            'whisperx': whisperx.load_model(
-                CONFIG.MODEL_NAME,
-                device=CONFIG.DEVICE,
-                compute_type=CONFIG.MODEL_QUANTIZATION,
-                asr_options=asr_options
-            ),
-            'diarize_model': None,
-            'align_model': {},
-        }
+        with loading_message():
+            model = {
+                'whisperx': whisperx.load_model(
+                    CONFIG.MODEL_NAME,
+                    device=CONFIG.DEVICE,
+                    compute_type=CONFIG.MODEL_QUANTIZATION,
+                    asr_options=asr_options
+                ),
+                'diarize_model': None,
+                'align_model': {},
+            }
 
-        if CONFIG.HF_TOKEN != "":
-            model['diarize_model'] = DiarizationPipeline(
-                token=CONFIG.HF_TOKEN,
-                device=CONFIG.DEVICE
-            )
+            if CONFIG.HF_TOKEN != "":
+                model['diarize_model'] = DiarizationPipeline(
+                    token=CONFIG.HF_TOKEN,
+                    device=CONFIG.DEVICE
+                )
 
         self.model = model
 
@@ -67,6 +71,7 @@ class WhisperXASR(ASRModel):
             default_options = pipeline.options
             if initial_prompt:
                 pipeline.options = replace(default_options, initial_prompt=initial_prompt)
+            logger.debug("Transcribing with batch_size=%s initial_prompt=%r %s", CONFIG.BATCH_SIZE, initial_prompt, options_dict)
             try:
                 result = pipeline.transcribe(audio, batch_size=CONFIG.BATCH_SIZE, **options_dict)
             finally:
@@ -76,6 +81,7 @@ class WhisperXASR(ASRModel):
             # Load the required model and cache it
             # If we transcribe models in many different languages, this may lead to OOM propblems
             if language not in self.model['align_model']:
+                logger.info("Loading the alignment model for language %s", language)
                 self.model['align_model'][language] = whisperx.load_align_model(
                     language_code=language, device=CONFIG.DEVICE
                 )
@@ -87,6 +93,7 @@ class WhisperXASR(ASRModel):
             )
 
             if options.get("diarize", False) and self.model['diarize_model'] is not None:
+                logger.debug("Diarizing with min_speakers=%s max_speakers=%s", options.get("min_speakers"), options.get("max_speakers"))
                 # add min/max number of speakers if known
                 diarize_segments = self.model['diarize_model'](
                     audio, min_speakers=options.get("min_speakers"), max_speakers=options.get("max_speakers")
@@ -107,11 +114,11 @@ class WhisperXASR(ASRModel):
             if self.model is None:
                 self.load_model()
             if audio.shape[0] < N_SAMPLES:
-                print("Warning: audio is shorter than 30s, language detection may be inaccurate.")
+                logger.warning("Audio is shorter than 30s, language detection may be inaccurate")
             results = self.model['whisperx'].model.detect_language(audio)
             language = results[0]
             language_probability = round(float(results[1]), 2)
-            print(f"Detected language: {language} ({language_probability}) in first 30s of audio...")
+            logger.debug("Detected language %s (%s) in the first 30s of audio", language, language_probability)
         return language, language_probability
 
 

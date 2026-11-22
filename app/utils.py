@@ -1,7 +1,9 @@
 import json
+import logging
 import os
 import shutil
 import tempfile
+import time
 from dataclasses import asdict
 from typing import BinaryIO, TextIO
 
@@ -10,6 +12,8 @@ import numpy as np
 from faster_whisper.utils import format_timestamp
 
 from app.config import CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 class ResultWriter:
@@ -115,6 +119,7 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     ------
     ValueError if the input cannot be decoded as audio.
     """
+    start = time.time()
     if encode:
         # Write the upload to a temporary file instead of piping it: containers such as MP4/M4A/MOV
         # can keep their index at the end of the file, which ffmpeg can only read from a seekable input.
@@ -132,10 +137,12 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
             except ffmpeg.Error as e:
                 error = e.stderr.decode(errors="replace").strip().splitlines()
                 raise ValueError(f"Failed to load audio: {error[-1] if error else 'unknown error'}") from e
+            logger.debug("Decoded %d bytes with FFmpeg in %.2fs", tmp.tell(), time.time() - start)
     else:
         out = file.read()
         if len(out) % 2:
             raise ValueError("Raw audio must be 16-bit little-endian mono PCM (an even number of bytes)")
+        logger.debug("Read %d bytes of raw PCM", len(out))
 
     if not out:
         raise ValueError("The uploaded file contains no audio")

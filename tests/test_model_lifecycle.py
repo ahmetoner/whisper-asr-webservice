@@ -1,3 +1,5 @@
+import logging
+
 from app.asr_models import mbain_whisperx_engine as wx
 from tests.conftest import FakeASRModel
 
@@ -65,3 +67,13 @@ def test_whisperx_passes_speaker_limits_by_keyword(monkeypatch):
     options = {"diarize": True, "min_speakers": 2, "max_speakers": 4}
     model.transcribe(None, "transcribe", None, None, None, None, options, "txt")
     assert calls == [{"min_speakers": 2, "max_speakers": 4}]
+
+
+def test_loading_message_reports_start_and_finish(caplog):
+    from app.asr_models.asr_model import loading_message
+
+    caplog.set_level(logging.INFO, logger="app")
+    with loading_message():
+        pass
+    assert "Loading the" in caplog.text
+    assert "Model loaded in" in caplog.text

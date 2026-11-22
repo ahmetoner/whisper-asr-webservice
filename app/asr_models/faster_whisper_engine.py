@@ -1,3 +1,4 @@
+import logging
 import time
 from io import StringIO
 from threading import Thread
@@ -6,21 +7,24 @@ from typing import BinaryIO, Union
 import whisper
 from faster_whisper import BatchedInferencePipeline, WhisperModel
 
-from app.asr_models.asr_model import ASRModel
+from app.asr_models.asr_model import ASRModel, loading_message
 from app.config import CONFIG
 from app.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
+
+logger = logging.getLogger(__name__)
 
 
 class FasterWhisperASR(ASRModel):
 
     def load_model(self):
 
-        self.model = WhisperModel(
-            model_size_or_path=CONFIG.MODEL_NAME,
-            device=CONFIG.DEVICE,
-            compute_type=CONFIG.MODEL_QUANTIZATION,
-            download_root=CONFIG.MODEL_PATH
-        )
+        with loading_message():
+            self.model = WhisperModel(
+                model_size_or_path=CONFIG.MODEL_NAME,
+                device=CONFIG.DEVICE,
+                compute_type=CONFIG.MODEL_QUANTIZATION,
+                download_root=CONFIG.MODEL_PATH
+            )
 
         Thread(target=self.monitor_idleness, daemon=True).start()
 
@@ -51,6 +55,7 @@ class FasterWhisperASR(ASRModel):
             segments = []
             text = ""
             beam_size = CONFIG.BEAM_SIZE or 5
+            logger.debug("Transcribing with beam_size=%s batch_size=%s %s", beam_size, CONFIG.BATCH_SIZE, options_dict)
             if CONFIG.BATCH_SIZE:
                 segment_generator, info = BatchedInferencePipeline(self.model).transcribe(
                     audio, beam_size=beam_size, batch_size=CONFIG.BATCH_SIZE, **options_dict
@@ -61,6 +66,7 @@ class FasterWhisperASR(ASRModel):
                 segments.append(segment)
                 text = text + segment.text
             result = {"language": options_dict.get("language", info.language), "segments": segments, "text": text}
+            logger.debug("Got %d segments, detected language %s (%.2f)", len(segments), info.language, info.language_probability)
             self.last_activity_time = time.time()
 
         output_file = StringIO()

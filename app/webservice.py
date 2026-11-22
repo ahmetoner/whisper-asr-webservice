@@ -1,6 +1,8 @@
 import importlib.metadata
+import logging
 import os
 import secrets
+import time
 from os import path
 from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
@@ -18,6 +20,36 @@ from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModelFactory
 from app.utils import load_audio
 
+logging.basicConfig(
+    level=max(logging.getLevelName(CONFIG.LOG_LEVEL), logging.INFO),
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logging.getLogger("app").setLevel(CONFIG.LOG_LEVEL)
+logger = logging.getLogger(__name__)
+if CONFIG.LOG_LEVEL != "DEBUG":
+    logging.getLogger("uvicorn.access").addFilter(lambda record: "/health" not in record.getMessage())
+
+
+def _rename_uvicorn_logger(record):
+    record.name = "uvicorn"
+    return True
+
+
+logging.getLogger("uvicorn.error").addFilter(_rename_uvicorn_logger)
+
+projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
+logger.info(
+    "Whisper ASR Webservice %s: engine %s, model %s, device %s, quantization %s",
+    projectMetadata["Version"], CONFIG.ASR_ENGINE, CONFIG.MODEL_NAME, CONFIG.DEVICE, CONFIG.MODEL_QUANTIZATION,
+)
+logger.debug(
+    "Settings: model path %s, beam size %s, batch size %s, VAD filter %s, idle timeout %ss, API key %s",
+    CONFIG.MODEL_PATH, CONFIG.BEAM_SIZE, CONFIG.BATCH_SIZE, CONFIG.VAD_FILTER, CONFIG.MODEL_IDLE_TIMEOUT,
+    "set" if CONFIG.API_KEY else "not set",
+)
+if CONFIG.ASR_ENGINE == "whisperx" and not CONFIG.HF_TOKEN:
+    logger.warning("HF_TOKEN is not set, so WhisperX speaker diarization is disabled")
+
 asr_model = ASRModelFactory.create_asr_model()
 asr_model.load_model()
 
@@ -31,7 +63,6 @@ MEDIA_TYPES = {
     "json": "application/json",
 }
 
-projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 projectUrls = dict(url.split(", ", 1) for url in projectMetadata.get_all("Project-URL") or [])
 app = FastAPI(
     title=projectMetadata["Name"].title().replace("-", " "),
@@ -63,6 +94,7 @@ api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 def verify_api_key(api_key: Annotated[Optional[str], Security(api_key_header)]):
     if CONFIG.API_KEY and not (api_key and secrets.compare_digest(api_key, CONFIG.API_KEY)):
+        logger.warning("Rejected a request with a missing or invalid API key")
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
 
@@ -70,6 +102,7 @@ def read_audio(audio_file: UploadFile, encode: bool):
     try:
         return load_audio(audio_file.file, encode)
     except ValueError as e:
+        logger.warning("Could not read %r: %s", audio_file.filename, e)
         raise HTTPException(status_code=400, detail=str(e)) from e
 
 
@@ -119,8 +152,10 @@ def asr(
     ),
     output: Literal["txt", "vtt", "srt", "tsv", "json"] = Query(default="txt"),
 ):
+    start = time.time()
+    audio = read_audio(audio_file, encode)
     result = asr_model.transcribe(
-        read_audio(audio_file, encode),
+        audio,
         task,
         language,
         initial_prompt,
@@ -128,6 +163,10 @@ def asr(
         word_timestamps,
         {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
         output,
+    )
+    logger.info(
+        "Transcribed %r (%.1fs of audio, task %s, language %s, output %s) in %.1fs",
+        audio_file.filename, len(audio) / CONFIG.SAMPLE_RATE, task, language or "auto", output, time.time() - start,
     )
     return StreamingResponse(
         result,
@@ -144,7 +183,11 @@ def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
+    start = time.time()
     detected_lang_code, confidence = asr_model.language_detection(read_audio(audio_file, encode))
+    logger.info(
+        "Detected language %s (%.2f) in %r in %.1fs", detected_lang_code, confidence, audio_file.filename, time.time() - start
+    )
     return {
         "detected_language": tokenizer.LANGUAGES[detected_lang_code],
         "language_code": detected_lang_code,
@@ -169,7 +212,7 @@ def detect_language(
 )
 @click.version_option(version=projectMetadata["Version"])
 def start(host: str, port: Optional[int] = None):
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(app, host=host, port=port, log_level=CONFIG.LOG_LEVEL.lower(), log_config=None)
 
 
 if __name__ == "__main__":

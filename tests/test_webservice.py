@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import sys
@@ -96,3 +97,18 @@ def test_model_path_follows_xdg_cache_home(tmp_path):
     code = "from app.config import CONFIG; print(CONFIG.MODEL_PATH)"
     result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
     assert result.stdout.strip() == str(tmp_path / "whisper")
+
+
+def test_requests_are_logged(client, pcm_bytes, caplog):
+    caplog.set_level(logging.INFO, logger="app")
+    client.post("/asr?encode=false", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    client.post("/detect-language?encode=false", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert "Transcribed 'tone.pcm' (1.0s of audio" in caplog.text
+    assert "Detected language en (0.99) in 'tone.pcm'" in caplog.text
+
+
+def test_invalid_log_level_is_rejected():
+    env = os.environ | {"LOG_LEVEL": "LOUD"}
+    result = subprocess.run([sys.executable, "-c", "import app.config"], env=env, capture_output=True, text=True)
+    assert result.returncode != 0
+    assert "Invalid LOG_LEVEL" in result.stderr

@@ -11,6 +11,7 @@ Unreleased
 - `/health` endpoint for container health checks, public even when `API_KEY` is set
 - Docker images define a `HEALTHCHECK` that uses the `/health` endpoint
 - Docker images carry OCI labels: title, description, version, revision, creation time, license, documentation and source URLs
+- Logging with timestamps and a `LOG_LEVEL` setting: startup configuration, model loading and every request with its duration at `INFO`, and decoding times and engine options at `DEBUG`
 - Optional API key authentication with the `API_KEY` environment variable
 - GitHub release is created automatically when a version tag's Docker images are published successfully
 - Docker images can run as a non-root user (`--user`) with `XDG_CACHE_HOME` pointing to a writable cache directory; `ASR_MODEL_PATH` now defaults to `$XDG_CACHE_HOME/whisper`

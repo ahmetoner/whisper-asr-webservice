@@ -1,12 +1,25 @@
 import gc
+import logging
 import time
 from abc import ABC, abstractmethod
+from contextlib import contextmanager
 from threading import Lock
 from typing import Union
 
 import torch
 
 from app.config import CONFIG
+
+logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def loading_message():
+    logger.info("Loading the %s '%s' model on %s, downloading it first if it is not cached...",
+                CONFIG.ASR_ENGINE, CONFIG.MODEL_NAME, CONFIG.DEVICE)
+    start = time.time()
+    yield
+    logger.info("Model loaded in %.1fs", time.time() - start)
 
 
 class ASRModel(ABC):
@@ -72,4 +85,4 @@ class ASRModel(ABC):
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-        print("Model unloaded due to timeout")
+        logger.info("Model unloaded after %ss of inactivity", CONFIG.MODEL_IDLE_TIMEOUT)

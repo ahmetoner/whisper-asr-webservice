@@ -13,8 +13,6 @@ class CONFIG:
 
     # Retrieve Huggingface Token
     HF_TOKEN = os.getenv("HF_TOKEN", "")
-    if ASR_ENGINE == "whisperx" and HF_TOKEN == "":
-        print("You must set the HF_TOKEN environment variable to download the diarization model used by WhisperX.")
 
     # Determine the computation device (GPU or CPU)
     DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
@@ -60,3 +58,7 @@ class CONFIG:
     SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH", 1000))
     SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))
     SUBTITLE_HIGHLIGHT_WORDS = os.getenv("SUBTITLE_HIGHLIGHT_WORDS", "false").lower() == "true"
+
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+    if LOG_LEVEL not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
+        raise ValueError("Invalid LOG_LEVEL. Choose 'DEBUG', 'INFO', 'WARNING' or 'ERROR'.")

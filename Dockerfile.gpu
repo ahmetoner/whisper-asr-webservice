@@ -47,7 +47,8 @@ RUN /opt/poetry/bin/poetry install --only-root
 
 FROM base
 
-ENV PATH="${PATH}:/app/.venv/bin"
+ENV PATH="${PATH}:/app/.venv/bin" \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
