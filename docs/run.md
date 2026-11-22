@@ -10,7 +10,7 @@ The service is published on [Docker Hub](https://hub.docker.com/r/onerahmet/open
 | `<version>`     | `linux/amd64`, `linux/arm64` | A specific release, CPU        |
 | `<version>-gpu` | `linux/amd64`                | A specific release, NVIDIA GPU |
 
-Pin a version tag (for example `v1.10.0`) in production so that upgrades happen only when you choose. All releases are
+Pin a version tag (for example `v1.11.0`) in production so that upgrades happen only when you choose. All releases are
 listed on the [releases page](https://github.com/ahmetoner/whisper-asr-webservice/releases).
 
 ## CPU
