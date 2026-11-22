@@ -20,8 +20,10 @@ jobs:
       - name: Cache Poetry downloads
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pypoetry
-          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          path: |
+            ~/.cache/pypoetry/artifacts
+            ~/.cache/pypoetry/cache
+          key: poetry-downloads-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Install dependencies

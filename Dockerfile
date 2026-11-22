@@ -24,7 +24,7 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 WORKDIR /app
 
 # Install dependencies first so this layer is reused when only the application code changes
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock poetry.toml ./
 RUN poetry config virtualenvs.in-project true \
     && poetry install --extras cpu --without dev --no-root
 
