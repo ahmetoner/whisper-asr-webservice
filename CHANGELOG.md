@@ -4,6 +4,31 @@ Changelog
 Unreleased
 ----------
 
+### Changed
+
+- Upgraded
+  - Python requirement to >=3.12,<3.14
+  - Poetry to v2.5.2
+  - PyTorch to v2.8.0 (CUDA builds now use CUDA 12.8, adding RTX 50xx / Blackwell `sm_120` support)
+  - whisperx to v3.8.6 and pyannote-audio to v4.1.1
+  - fastapi to v0.165.0
+  - uvicorn to v0.54.0
+  - python-multipart to v0.0.34
+  - tqdm to v4.70.1
+  - llvmlite to v0.50.0
+  - numba to v0.68.1
+  - GitHub Actions to their latest major versions
+- WhisperX diarization now uses `pyannote/speaker-diarization-community-1`; accept its conditions on Hugging Face
+
+### Fixed
+
+- WhisperX crash loop at startup (`Weights only load failed`) caused by lightning 2.6 with pyannote-audio 3.x
+
+### Security
+
+- Upgraded torch to v2.8.0, fixing
+  - CVE-2025-3730
+
 [1.10.0] (2026-08-09)
 ---------------------
 

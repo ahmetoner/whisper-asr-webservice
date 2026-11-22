@@ -1,7 +1,7 @@
 import importlib.metadata
 import os
 from os import path
-from typing import Annotated, Optional, Union
+from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
 
 import click
@@ -20,6 +20,7 @@ asr_model = ASRModelFactory.create_asr_model()
 asr_model.load_model()
 
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
+LanguageCode = Literal[tuple(LANGUAGE_CODES)]
 
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
@@ -56,8 +57,8 @@ async def index():
 async def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
-    task: Union[str, None] = Query(default="transcribe", enum=["transcribe", "translate"]),
-    language: Union[str, None] = Query(default=None, enum=LANGUAGE_CODES),
+    task: Literal["transcribe", "translate"] = Query(default="transcribe"),
+    language: Annotated[Optional[LanguageCode], Query()] = None,
     initial_prompt: Union[str, None] = Query(default=None),
     vad_filter: Annotated[
         bool | None,
@@ -86,7 +87,7 @@ async def asr(
         description="Max speakers in this file",
         include_in_schema=(True if CONFIG.ASR_ENGINE == "whisperx" else False),
     ),
-    output: Union[str, None] = Query(default="txt", enum=["txt", "vtt", "srt", "tsv", "json"]),
+    output: Literal["txt", "vtt", "srt", "tsv", "json"] = Query(default="txt"),
 ):
     result = asr_model.transcribe(
         load_audio(audio_file.file, encode),

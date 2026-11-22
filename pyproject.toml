@@ -2,19 +2,24 @@
 name = "whisper-asr-webservice"
 version = "1.11.0-dev"
 description = "Whisper ASR Webservice is a general-purpose speech recognition webservice."
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.12,<3.14"
 dependencies = [
-    "fastapi (>=0.141.1)",
-    "uvicorn[standard] (>=0.52.1)",
-    "python-multipart (>=0.0.32)",
+    "fastapi (>=0.165.0)",
+    "uvicorn[standard] (>=0.54.0)",
+    "python-multipart (>=0.0.34)",
     "ffmpeg-python (>=0.2.0)",
     "numpy (>=2.2.6)",
     "openai-whisper (>=20250625)",
     "faster-whisper (>=1.2.1)",
-    "whisperx (>=3.4.5)",
-    "tqdm (>=4.70.0)",
-    "llvmlite (>=0.48.0)",
-    "numba (>=0.66.0)",
+    "whisperx (>=3.8.6)",
+    "tqdm (>=4.70.1)",
+    "llvmlite (>=0.50.0)",
+    "numba (>=0.68.1)",
+    # pyannote-audio (whisperx diarization) requires torchcodec, but torchcodec 0.7 (the release matching
+    # torch 2.8) ships no linux/aarch64 wheels. The service always hands pyannote in-memory waveforms, so
+    # torchcodec's decoders are never used; on linux/aarch64 any installable release is sufficient.
+    "torchcodec (>=0.7.0,<0.8.0) ; sys_platform != 'linux' or platform_machine != 'aarch64'",
+    "torchcodec (>=0.11.0) ; sys_platform == 'linux' and platform_machine == 'aarch64'",
 ]
 authors = [
     { name = "Ahmet Öner" },
@@ -37,12 +42,14 @@ whisper-asr-webservice = "app.webservice:start"
 
 [project.optional-dependencies]
 cpu = [
-    "torch (==2.7.1)",
-    "torchaudio (==2.7.1)"
+    "torch (==2.8.0)",
+    "torchaudio (==2.8.0)",
+    "torchvision (==0.23.0)"
 ]
 cuda = [
-    "torch (==2.7.1+cu126)",
-    "torchaudio (==2.7.1+cu126)"
+    "torch (==2.8.0+cu128)",
+    "torchaudio (==2.8.0+cu128)",
+    "torchvision (==0.23.0+cu128)"
 ]
 
 [[tool.poetry.source]]
@@ -52,7 +59,7 @@ priority = "explicit"
 
 [[tool.poetry.source]]
 name = "pytorch-cuda"
-url = "https://download.pytorch.org/whl/cu126"
+url = "https://download.pytorch.org/whl/cu128"
 priority = "explicit"
 
 [tool.poetry.dependencies]
@@ -68,14 +75,20 @@ torchaudio = [
     { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
     { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
  ]
+torchvision = [
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
+    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
+    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
+    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
+ ]
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=8.3.4,<9.0.0"
-ruff = ">=0.9.6,<1.0.0"
-black = ">=25.1.0,<26.0.0"
-mkdocs-material = ">=9.6.4,<10.0.0"
-pymdown-extensions = ">=10.14.3,<11.0.0"
+pytest = ">=9.2.0,<10.0.0"
+ruff = ">=0.17.6,<1.0.0"
+black = ">=26.10.1,<27.0.0"
+mkdocs-material = ">=9.8.2,<10.0.0"
+pymdown-extensions = ">=13.1.2,<14.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0"]

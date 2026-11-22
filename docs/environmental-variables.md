@@ -96,3 +96,8 @@ export HF_TOKEN=your_token_here
 ```
 
 Required when using the WhisperX engine to download the diarization model.
+
+!!! Note
+    Since v1.11.0 WhisperX uses `pyannote/speaker-diarization-community-1` for diarization. You must accept
+    the user conditions of [that model](https://huggingface.co/pyannote/speaker-diarization-community-1) on Hugging
+    Face with the account that owns `HF_TOKEN`.

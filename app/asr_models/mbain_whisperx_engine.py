@@ -32,7 +32,7 @@ class WhisperXASR(ASRModel):
 
         if CONFIG.HF_TOKEN != "":
             self.model['diarize_model'] = DiarizationPipeline(
-                use_auth_token=CONFIG.HF_TOKEN,
+                token=CONFIG.HF_TOKEN,
                 device=CONFIG.DEVICE
             )
 

@@ -21,11 +21,9 @@ poetry install --extras cuda
 ```
 
 !!! Note
-    By default, this will install the CPU version of PyTorch. For GPU support, you'll need to install the appropriate CUDA version of PyTorch separately:
-    ```shell
-    # For CUDA support (example for CUDA 11.8):
-    pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
-    ```
+    Python 3.12 or 3.13 is required. The `cpu` extra installs the CPU build of PyTorch, and the `cuda` extra
+    installs PyTorch 2.8 built for CUDA 12.8 (supports GPUs up to and including the RTX 50xx / Blackwell series).
+    You need an NVIDIA driver that supports CUDA 12.8 or newer.
 
 ### Run
 
