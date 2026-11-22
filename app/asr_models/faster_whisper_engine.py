@@ -4,7 +4,7 @@ from threading import Thread
 from typing import BinaryIO, Union
 
 import whisper
-from faster_whisper import WhisperModel
+from faster_whisper import BatchedInferencePipeline, WhisperModel
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
@@ -50,7 +50,13 @@ class FasterWhisperASR(ASRModel):
                 self.load_model()
             segments = []
             text = ""
-            segment_generator, info = self.model.transcribe(audio, beam_size=5, **options_dict)
+            beam_size = CONFIG.BEAM_SIZE or 5
+            if CONFIG.BATCH_SIZE:
+                segment_generator, info = BatchedInferencePipeline(self.model).transcribe(
+                    audio, beam_size=beam_size, batch_size=CONFIG.BATCH_SIZE, **options_dict
+                )
+            else:
+                segment_generator, info = self.model.transcribe(audio, beam_size=beam_size, **options_dict)
             for segment in segment_generator:
                 segments.append(segment)
                 text = text + segment.text

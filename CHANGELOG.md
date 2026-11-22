@@ -7,6 +7,7 @@ Unreleased
 ### Added
 
 - API test suite and a CI workflow running ruff and pytest
+- `ASR_BEAM_SIZE`, `ASR_BATCH_SIZE` and `ASR_VAD_FILTER` environment variables
 
 ### Changed
 

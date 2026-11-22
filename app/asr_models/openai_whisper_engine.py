@@ -40,6 +40,8 @@ class OpenAIWhisperASR(ASRModel):
             options_dict["initial_prompt"] = initial_prompt
         if word_timestamps:
             options_dict["word_timestamps"] = word_timestamps
+        if CONFIG.BEAM_SIZE:
+            options_dict["beam_size"] = CONFIG.BEAM_SIZE
         with self.model_lock:
             self.last_activity_time = time.time()
             if self.model is None:

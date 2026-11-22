@@ -17,6 +17,8 @@ class WhisperXASR(ASRModel):
 
     def load_model(self):
         asr_options = {"without_timestamps": False}
+        if CONFIG.BEAM_SIZE:
+            asr_options["beam_size"] = CONFIG.BEAM_SIZE
         model = {
             'whisperx': whisperx.load_model(
                 CONFIG.MODEL_NAME,
@@ -63,7 +65,7 @@ class WhisperXASR(ASRModel):
             if initial_prompt:
                 pipeline.options = replace(default_options, initial_prompt=initial_prompt)
             try:
-                result = pipeline.transcribe(audio, **options_dict)
+                result = pipeline.transcribe(audio, batch_size=CONFIG.BATCH_SIZE, **options_dict)
             finally:
                 pipeline.options = default_options
             language = result["language"]

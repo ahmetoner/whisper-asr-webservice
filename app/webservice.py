@@ -81,7 +81,7 @@ def asr(
             description="Enable the voice activity detection (VAD) to filter out parts of the audio without speech",
             include_in_schema=(True if CONFIG.ASR_ENGINE == "faster_whisper" else False),
         ),
-    ] = False,
+    ] = CONFIG.VAD_FILTER,
     word_timestamps: bool = Query(
         default=False,
         description="Word level timestamps",

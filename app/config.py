@@ -38,6 +38,13 @@ class CONFIG:
     # after being idle for this many seconds. A value of 0 means the model will never be unloaded.
     MODEL_IDLE_TIMEOUT = int(os.getenv("MODEL_IDLE_TIMEOUT", 0))
 
+    # Optional decoding settings. When unset, each engine keeps its own default.
+    BEAM_SIZE = int(os.getenv("ASR_BEAM_SIZE")) if os.getenv("ASR_BEAM_SIZE") else None
+    BATCH_SIZE = int(os.getenv("ASR_BATCH_SIZE")) if os.getenv("ASR_BATCH_SIZE") else None
+
+    # Default value of the vad_filter request parameter (faster_whisper)
+    VAD_FILTER = os.getenv("ASR_VAD_FILTER", "false").lower() == "true"
+
     # Default sample rate for audio input. 16 kHz is commonly used in speech-to-text tasks.
     SAMPLE_RATE = int(os.getenv("SAMPLE_RATE", 16000))
 

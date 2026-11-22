@@ -75,6 +75,17 @@ The `ASR_QUANTIZATION` defines the precision for model weights:
 
 Defaults to `float32` for GPU, `int8` for CPU.
 
+### Configuring Decoding Options
+
+```shell
+export ASR_BEAM_SIZE=5      # beam size used for decoding (all engines)
+export ASR_BATCH_SIZE=8     # batched inference (faster_whisper and whisperx)
+export ASR_VAD_FILTER=true  # default value of the `vad_filter` request parameter (faster_whisper)
+```
+
+All three are optional; when they are not set each engine keeps its own default. With `faster_whisper`, setting
+`ASR_BATCH_SIZE` switches to batched inference, which always uses voice activity detection to split the audio.
+
 ### Configuring Subtitle Options (WhisperX)
 
 ```shell
