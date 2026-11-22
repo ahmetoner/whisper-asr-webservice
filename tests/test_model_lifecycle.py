@@ -19,3 +19,27 @@ def test_whisperx_reloads_after_idle_release(monkeypatch):
     assert model.model is None
     model.load_model()
     assert model.model == {"whisperx": "pipeline", "diarize_model": None, "align_model": {}}
+
+
+def test_whisperx_applies_initial_prompt_for_one_request(monkeypatch):
+    from dataclasses import dataclass
+
+    @dataclass
+    class Options:
+        initial_prompt: str = None
+
+    class Pipeline:
+        options = Options()
+
+        def transcribe(self, audio, **kwargs):
+            self.seen_prompt = self.options.initial_prompt
+            return {"language": "en", "segments": []}
+
+    pipeline = Pipeline()
+    monkeypatch.setattr(wx.whisperx, "load_align_model", lambda **kwargs: (None, None))
+    monkeypatch.setattr(wx.whisperx, "align", lambda *args, **kwargs: {"segments": []})
+    model = wx.WhisperXASR()
+    model.model = {"whisperx": pipeline, "diarize_model": None, "align_model": {}}
+    model.transcribe(None, "transcribe", None, "Kennedy", None, None, {}, "txt")
+    assert pipeline.seen_prompt == "Kennedy"
+    assert pipeline.options.initial_prompt is None

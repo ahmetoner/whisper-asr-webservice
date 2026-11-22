@@ -1,4 +1,5 @@
 import time
+from dataclasses import replace
 from io import StringIO
 from threading import Thread
 from typing import BinaryIO, Union
@@ -51,14 +52,20 @@ class WhisperXASR(ASRModel):
         options_dict = {"task": task}
         if language:
             options_dict["language"] = language
-        if initial_prompt:
-            options_dict["initial_prompt"] = initial_prompt
         with self.model_lock:
             self.last_activity_time = time.time()
             if self.model is None:
                 self.load_model()
 
-            result = self.model['whisperx'].transcribe(audio, **options_dict)
+            # whisperx takes the initial prompt from the pipeline options, not as a transcribe() argument
+            pipeline = self.model['whisperx']
+            default_options = pipeline.options
+            if initial_prompt:
+                pipeline.options = replace(default_options, initial_prompt=initial_prompt)
+            try:
+                result = pipeline.transcribe(audio, **options_dict)
+            finally:
+                pipeline.options = default_options
             language = result["language"]
 
             # Load the required model and cache it
