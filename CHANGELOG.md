@@ -33,6 +33,7 @@ Unreleased
 - `/detect-language` returning the confidence of the wrong language with the openai_whisper engine
 - Empty transcripts for M4A/MP4/MOV files that store their index at the end of the file
 - Undecodable, empty or malformed raw (`encode=false`) uploads now return HTTP 400
+- `/asr` responses now use a `Content-Type` matching the requested `output` format
 
 ### Security
 

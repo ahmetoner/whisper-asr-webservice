@@ -21,6 +21,13 @@ asr_model.load_model()
 
 LANGUAGE_CODES = sorted(tokenizer.LANGUAGES.keys())
 LanguageCode = Literal[tuple(LANGUAGE_CODES)]
+MEDIA_TYPES = {
+    "txt": "text/plain",
+    "vtt": "text/vtt",
+    "srt": "application/x-subrip",
+    "tsv": "text/tab-separated-values",
+    "json": "application/json",
+}
 
 projectMetadata = importlib.metadata.metadata("whisper-asr-webservice")
 app = FastAPI(
@@ -108,7 +115,7 @@ async def asr(
     )
     return StreamingResponse(
         result,
-        media_type="text/plain",
+        media_type=MEDIA_TYPES[output],
         headers={
             "Asr-Engine": CONFIG.ASR_ENGINE,
             "Content-Disposition": f'attachment; filename="{quote(audio_file.filename)}.{output}"',
