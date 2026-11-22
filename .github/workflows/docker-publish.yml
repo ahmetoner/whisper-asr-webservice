@@ -47,12 +47,16 @@ jobs:
       run: |
         if [ "$GITHUB_REF" = "refs/heads/debug" ]; then TAG=debug; else TAG=$GITHUB_REF_NAME; fi
         ARCH=${{ matrix.platform }}; ARCH=${ARCH#linux/}
+        echo "VERSION=$TAG" >> "$GITHUB_ENV"
         echo "IMAGE=$DOCKER_USER/$REPO_NAME:$TAG${{ matrix.tag_extension }}-$ARCH" >> "$GITHUB_ENV"
         echo "CACHE=$DOCKER_USER/$REPO_NAME:buildcache${{ matrix.tag_extension }}-$ARCH" >> "$GITHUB_ENV"
     - name: Build and push the Docker image
       run: |
         if [ "$GITHUB_REF_TYPE" = tag ]; then CACHE_FROM="--no-cache"; else CACHE_FROM="--cache-from type=registry,ref=$CACHE"; fi
         docker buildx build . --pull $CACHE_FROM --cache-to "type=registry,ref=$CACHE,mode=max" \
+          --label "org.opencontainers.image.version=$VERSION" \
+          --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+          --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
           --platform=${{ matrix.platform }} -t "$IMAGE" -f ${{ matrix.docker_file }} --push
     # Fails on fixable HIGH/CRITICAL vulnerabilities; MEDIUM ones only produce a warning. Accepted findings are in .trivyignore.
     - name: Trivy scan (HIGH, CRITICAL)

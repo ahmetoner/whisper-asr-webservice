@@ -9,6 +9,8 @@ Unreleased
 - API test suite and a CI workflow running ruff and pytest
 - `ASR_BEAM_SIZE`, `ASR_BATCH_SIZE` and `ASR_VAD_FILTER` environment variables
 - `/health` endpoint for container health checks, public even when `API_KEY` is set
+- Docker images define a `HEALTHCHECK` that uses the `/health` endpoint
+- Docker images carry OCI labels: title, description, version, revision, creation time, license, documentation and source URLs
 - Optional API key authentication with the `API_KEY` environment variable
 - GitHub release is created automatically when a version tag's Docker images are published successfully
 - Docker images can run as a non-root user (`--user`) with `XDG_CACHE_HOME` pointing to a writable cache directory; `ASR_MODEL_PATH` now defaults to `$XDG_CACHE_HOME/whisper`
@@ -37,6 +39,7 @@ Unreleased
 - CPU Docker image is based on `python:3.12-slim-bookworm`
 - Docker images include the FFmpeg license (LGPL v2.1+) at `/usr/local/share/doc/ffmpeg`
 - Docker images no longer include development dependencies, and dependencies are installed in their own layer so rebuilds after code changes are faster
+- Docker images are built in a separate stage and no longer contain Poetry, its dependencies or download caches, making them several GB smaller
 - Rewrote the README and documentation, adding the API reference, a complete configuration table and the development guide
 
 ### Fixed
