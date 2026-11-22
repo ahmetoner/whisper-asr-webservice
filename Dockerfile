@@ -1,4 +1,4 @@
-FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
+FROM onerahmet/ffmpeg:n9.1 AS ffmpeg
 
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 

@@ -27,6 +27,7 @@ Unreleased
   - GitHub Actions to their latest major versions
 - WhisperX diarization now uses `pyannote/speaker-diarization-community-1`; accept its conditions on Hugging Face
 - Only the selected ASR engine is imported at startup, reducing startup time and memory use
+- Docker images use the FFmpeg n9.1 build layer
 
 ### Fixed
 
@@ -44,6 +45,7 @@ Unreleased
 
 ### Security
 
+- Upgraded the FFmpeg build layer from n7.1 to n9.1, which includes upstream FFmpeg security fixes
 - Upgraded torch to v2.8.0, fixing
   - CVE-2025-3730
 

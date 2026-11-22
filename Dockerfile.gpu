@@ -1,4 +1,4 @@
-FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
+FROM onerahmet/ffmpeg:n9.1 AS ffmpeg
 
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
@@ -12,7 +12,7 @@ ENV POETRY_VENV=/app/.venv
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
-    && apt-get -qq install --no-install-recommends \
+    && apt-get -qq install -y --no-install-recommends \
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-venv \
     python3-pip \
