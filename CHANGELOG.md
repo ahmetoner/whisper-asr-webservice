@@ -30,6 +30,7 @@ Unreleased
 - Model failing to reload after `MODEL_IDLE_TIMEOUT` unloaded it, especially with WhisperX
 - `initial_prompt` causing HTTP 500 with the WhisperX engine
 - WhisperX diarization ignoring `min_speakers` and `max_speakers`
+- `/detect-language` returning the confidence of the wrong language with the openai_whisper engine
 
 ### Security
 

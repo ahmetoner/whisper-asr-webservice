@@ -70,7 +70,7 @@ class OpenAIWhisperASR(ASRModel):
             _, probs = self.model.detect_language(mel)
         detected_lang_code = max(probs, key=probs.get)
 
-        return detected_lang_code, probs[max(probs)]
+        return detected_lang_code, probs[detected_lang_code]
 
     def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
         options = {"max_line_width": 1000, "max_line_count": 10, "highlight_words": False}
