@@ -30,6 +30,7 @@ Unreleased
 - Docker images use the FFmpeg n9.1 build layer
 - Refreshed locked dependencies to pick up security fixes (aiohttp, certifi, filelock, lightning, nltk, pillow, urllib3 and more)
 - CPU Docker image is based on `python:3.12-slim-bookworm`
+- Docker images include the FFmpeg license (LGPL v2.1+) at `/usr/local/share/doc/ffmpeg`
 
 ### Fixed
 
