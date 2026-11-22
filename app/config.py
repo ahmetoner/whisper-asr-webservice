@@ -59,6 +59,9 @@ class CONFIG:
     SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))
     SUBTITLE_HIGHLIGHT_WORDS = os.getenv("SUBTITLE_HIGHLIGHT_WORDS", "false").lower() == "true"
 
+    MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", 0))
+    MAX_PENDING_REQUESTS = int(os.getenv("MAX_PENDING_REQUESTS", 0))
+
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
     if LOG_LEVEL not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
         raise ValueError("Invalid LOG_LEVEL. Choose 'DEBUG', 'INFO', 'WARNING' or 'ERROR'.")

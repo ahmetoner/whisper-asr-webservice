@@ -5,13 +5,13 @@ import secrets
 import time
 from contextlib import asynccontextmanager
 from os import path
-from threading import Event, Thread
+from threading import BoundedSemaphore, Event, Thread
 from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import FastAPI, File, HTTPException, Query, Security, UploadFile, applications
+from fastapi import Depends, FastAPI, File, HTTPException, Query, Security, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.security import APIKeyHeader
@@ -91,6 +91,7 @@ app = FastAPI(
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
     lifespan=lifespan,
+    max_body_size=CONFIG.MAX_UPLOAD_SIZE_MB * 1024 * 1024 if CONFIG.MAX_UPLOAD_SIZE_MB > 0 else None,
 )
 
 assets_path = os.getcwd() + "/swagger-ui-assets"
@@ -118,6 +119,22 @@ def verify_api_key(api_key: Annotated[Optional[str], Security(api_key_header)]):
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
 
+pending_requests = BoundedSemaphore(CONFIG.MAX_PENDING_REQUESTS) if CONFIG.MAX_PENDING_REQUESTS > 0 else None
+
+
+def limit_pending_requests():
+    if pending_requests is None:
+        yield
+        return
+    if not pending_requests.acquire(blocking=False):
+        logger.warning("Rejected a request because %s requests are already pending", CONFIG.MAX_PENDING_REQUESTS)
+        raise HTTPException(status_code=503, detail="Too many pending requests, try again later")
+    try:
+        yield
+    finally:
+        pending_requests.release()
+
+
 def read_audio(audio_file: UploadFile, encode: bool):
     try:
         return load_audio(audio_file.file, encode)
@@ -138,7 +155,7 @@ async def health():
     return {"status": "ok"}
 
 
-@app.post("/asr", tags=["Endpoints"], dependencies=[Security(verify_api_key)])
+@app.post("/asr", tags=["Endpoints"], dependencies=[Security(verify_api_key), Depends(limit_pending_requests)])
 def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
@@ -200,7 +217,9 @@ def asr(
     )
 
 
-@app.post("/detect-language", tags=["Endpoints"], dependencies=[Security(verify_api_key)])
+@app.post(
+    "/detect-language", tags=["Endpoints"], dependencies=[Security(verify_api_key), Depends(limit_pending_requests)]
+)
 def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),

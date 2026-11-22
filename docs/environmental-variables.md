@@ -20,6 +20,8 @@ The service is configured with environment variables. All of them are optional.
 | `SUBTITLE_MAX_LINE_COUNT`  | `2`                             | Maximum lines per subtitle (`whisperx`)                        |
 | `SUBTITLE_HIGHLIGHT_WORDS` | `false`                         | Highlight the current word in subtitles (`whisperx`)           |
 | `SAMPLE_RATE`              | `16000`                         | Sample rate audio is converted to. Whisper expects 16 kHz      |
+| `MAX_UPLOAD_SIZE_MB`       | `0`                             | Largest accepted upload in MB; `0` means no limit, see [Limits](#limits) |
+| `MAX_PENDING_REQUESTS`     | `0`                             | Requests processed or waiting at once; `0` means no limit      |
 | `LOG_LEVEL`                | `INFO`                          | `DEBUG`, `INFO`, `WARNING` or `ERROR`, see [Logging](#logging) |
 
 ## Models
@@ -59,6 +61,18 @@ per request with the `vad_filter` parameter.
 
 When `MODEL_IDLE_TIMEOUT` is greater than `0`, the model is unloaded after that many seconds without requests, which
 frees CPU or GPU memory. It is loaded again on the next request, which then takes longer to complete.
+
+## Limits
+
+The model processes one request at a time, and every request waiting for it keeps its decoded audio in memory (about
+230 MB per hour of audio). On a shared or public server, set limits so that load cannot exhaust the memory:
+
+```shell
+export MAX_UPLOAD_SIZE_MB=500       # larger uploads are rejected with 413 while they are being received
+export MAX_PENDING_REQUESTS=4       # further requests are rejected with 503 until one finishes
+```
+
+Both limits are off by default.
 
 ## Logging
 

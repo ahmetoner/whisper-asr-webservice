@@ -2,7 +2,7 @@ import logging
 import os
 import subprocess
 import sys
-from threading import Event
+from threading import BoundedSemaphore, Event
 
 import pytest
 from fastapi.testclient import TestClient
@@ -127,3 +127,30 @@ def test_invalid_log_level_is_rejected():
     result = subprocess.run([sys.executable, "-c", "import app.config"], env=env, capture_output=True, text=True)
     assert result.returncode != 0
     assert "Invalid LOG_LEVEL" in result.stderr
+
+
+def test_requests_are_rejected_when_too_many_are_pending(client, monkeypatch, pcm_bytes):
+    semaphore = BoundedSemaphore(1)
+    monkeypatch.setattr(webservice, "pending_requests", semaphore)
+    files = {"audio_file": ("tone.pcm", pcm_bytes)}
+    semaphore.acquire()
+    assert client.post("/asr?encode=false", files=files).status_code == 503
+    assert client.post("/detect-language?encode=false", files=files).status_code == 503
+    semaphore.release()
+    assert client.post("/asr?encode=false", files=files).status_code == 200
+    assert client.post("/asr?encode=false", files=files).status_code == 200
+
+
+def test_uploads_over_max_upload_size_are_rejected(tmp_path):
+    code = """
+import sys
+sys.path.insert(0, ".")
+from tests.conftest import webservice
+from fastapi.testclient import TestClient
+client = TestClient(webservice.app)
+files = {"audio_file": ("big.pcm", bytes(2 * 1024 * 1024))}
+print(client.post("/asr?encode=false", files=files).status_code)
+"""
+    env = os.environ | {"MAX_UPLOAD_SIZE_MB": "1"}
+    result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
+    assert result.stdout.strip().splitlines()[-1] == "413"

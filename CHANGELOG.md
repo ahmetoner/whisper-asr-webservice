@@ -8,6 +8,7 @@ Unreleased
 
 - API test suite and a CI workflow running ruff and pytest
 - `ASR_BEAM_SIZE`, `ASR_BATCH_SIZE` and `ASR_VAD_FILTER` environment variables
+- `MAX_UPLOAD_SIZE_MB` and `MAX_PENDING_REQUESTS` limits that reject oversized uploads (413) and excess requests (503); both are off by default
 - `/health` endpoint for container health checks, public even when `API_KEY` is set
 - Docker images define a `HEALTHCHECK` that uses the `/health` endpoint
 - Docker images carry OCI labels: title, description, version, revision, creation time, license, documentation and source URLs

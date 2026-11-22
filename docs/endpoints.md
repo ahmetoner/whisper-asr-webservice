@@ -125,6 +125,8 @@ curl -H "X-API-Key: your-secret-key" -F "audio_file=@audio.mp3" "http://localhos
 |--------|---------------------------------------------------------------------------|
 | `400`  | The file could not be decoded or contains no audio                        |
 | `401`  | `API_KEY` is set and the `X-API-Key` header is missing or wrong           |
+| `413`  | The upload is larger than `MAX_UPLOAD_SIZE_MB`                            |
 | `422`  | A parameter has an invalid value, e.g. an unknown `output` or `language`  |
+| `503`  | `MAX_PENDING_REQUESTS` requests are already being processed or waiting    |
 
-Error responses are JSON objects with a `detail` field describing the problem.
+Error responses are JSON objects with a `detail` field describing the problem, except `413`, which is plain text.
