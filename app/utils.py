@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+import tempfile
 from dataclasses import asdict
 from typing import BinaryIO, TextIO
 
@@ -111,16 +113,21 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     A NumPy array containing the audio waveform, in float32 dtype.
     """
     if encode:
-        try:
-            # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-            # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-            out, _ = (
-                ffmpeg.input("pipe:", threads=0)
-                .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-                .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True, input=file.read())
-            )
-        except ffmpeg.Error as e:
-            raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+        # Write the upload to a temporary file instead of piping it: containers such as MP4/M4A/MOV
+        # can keep their index at the end of the file, which ffmpeg can only read from a seekable input.
+        with tempfile.NamedTemporaryFile() as tmp:
+            shutil.copyfileobj(file, tmp)
+            tmp.flush()
+            try:
+                # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
+                # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
+                out, _ = (
+                    ffmpeg.input(tmp.name, threads=0)
+                    .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
+                    .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True)
+                )
+            except ffmpeg.Error as e:
+                raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
     else:
         out = file.read()
 
