@@ -11,6 +11,8 @@ Unreleased
 - `/health` endpoint for container health checks, public even when `API_KEY` is set
 - Optional API key authentication with the `API_KEY` environment variable
 - GitHub release is created automatically when a version tag's Docker images are published successfully
+- Trivy vulnerability scans on pull requests and before publishing images: fixable HIGH/CRITICAL findings fail the pipeline, MEDIUM findings produce a warning
+- Per-architecture Docker image tags (`<version>-amd64`, `<version>-arm64`, `<version>-gpu-amd64`); arm64 images are built on native runners instead of under emulation
 
 ### Changed
 

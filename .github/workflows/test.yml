@@ -31,3 +31,19 @@ jobs:
         run: poetry run ruff check app tests
       - name: Test
         run: poetry run pytest -q
+
+  # Fails on fixable HIGH/CRITICAL vulnerabilities and misconfigurations; MEDIUM ones only produce a warning.
+  # Accepted findings are listed in .trivyignore.
+  security:
+    runs-on: ubuntu-latest
+    env:
+      TRIVY: docker run --rm -v ${{ github.workspace }}:/src -w /src aquasec/trivy:0.76.2
+    steps:
+      - uses: actions/checkout@v5
+      - name: Trivy scan (HIGH, CRITICAL)
+        run: $TRIVY fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .
+      - name: Trivy scan (MEDIUM)
+        run: |
+          status=0
+          $TRIVY fs --scanners vuln,misconfig --severity MEDIUM --ignore-unfixed --exit-code 2 . || status=$?
+          if [ "$status" = 2 ]; then echo "::warning::Trivy found MEDIUM vulnerabilities, see the scan output"; elif [ "$status" != 0 ]; then exit "$status"; fi

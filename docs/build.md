@@ -70,3 +70,8 @@ The site is served at <http://localhost:8000> and reloads on changes.
 
 Pushing a version tag publishes the Docker images, creates a GitHub release and deploys this documentation.
 Pushing to the `debug` branch publishes the `debug` and `debug-gpu` images for testing.
+
+Each architecture is built on a native GitHub runner and scanned with Trivy before the multi-platform tags are
+published, so a failed scan never updates a published tag. The per-architecture images stay available as
+`<tag>-amd64`, `<tag>-arm64` and `<tag>-gpu-amd64`. Builds of the `debug` branch reuse the layer cache stored in the
+`buildcache-*` tags; version tags are always built from scratch.
