@@ -1,6 +1,6 @@
 FROM onerahmet/ffmpeg:n7.1 AS ffmpeg
 
-FROM swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
+FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
 FROM nvidia/cuda:12.9.2-cudnn-runtime-ubuntu24.04
 
