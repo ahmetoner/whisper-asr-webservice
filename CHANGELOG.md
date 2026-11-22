@@ -199,6 +199,11 @@ Unreleased
   - CVE-2026-97687
   - CVE-2026-97688
   - CVE-2026-97689
+- Upgraded openssl to v3.0.13-0ubuntu3.16 in the GPU Docker image, fixing
+  - CVE-2026-45447
+  - CVE-2026-84782
+- Upgraded apt to v2.8.4ubuntu0.1 in the GPU Docker image, fixing
+  - CVE-2026-109518
 
 [1.10.0] (2026-08-09)
 ---------------------
