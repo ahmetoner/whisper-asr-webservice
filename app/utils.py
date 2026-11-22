@@ -111,6 +111,9 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     Returns
     -------
     A NumPy array containing the audio waveform, in float32 dtype.
+    Raises
+    ------
+    ValueError if the input cannot be decoded as audio.
     """
     if encode:
         # Write the upload to a temporary file instead of piping it: containers such as MP4/M4A/MOV
@@ -127,8 +130,14 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
                     .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True)
                 )
             except ffmpeg.Error as e:
-                raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+                error = e.stderr.decode(errors="replace").strip().splitlines()
+                raise ValueError(f"Failed to load audio: {error[-1] if error else 'unknown error'}") from e
     else:
         out = file.read()
+        if len(out) % 2:
+            raise ValueError("Raw audio must be 16-bit little-endian mono PCM (an even number of bytes)")
+
+    if not out:
+        raise ValueError("The uploaded file contains no audio")
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0

@@ -6,7 +6,7 @@ from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import FastAPI, File, Query, UploadFile, applications
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -46,6 +46,13 @@ if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/
         )
 
     applications.get_swagger_ui_html = swagger_monkey_patch
+
+
+def read_audio(audio_file: UploadFile, encode: bool):
+    try:
+        return load_audio(audio_file.file, encode)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
@@ -90,7 +97,7 @@ async def asr(
     output: Literal["txt", "vtt", "srt", "tsv", "json"] = Query(default="txt"),
 ):
     result = asr_model.transcribe(
-        load_audio(audio_file.file, encode),
+        read_audio(audio_file, encode),
         task,
         language,
         initial_prompt,
@@ -114,7 +121,7 @@ async def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
 ):
-    detected_lang_code, confidence = asr_model.language_detection(load_audio(audio_file.file, encode))
+    detected_lang_code, confidence = asr_model.language_detection(read_audio(audio_file, encode))
     return {
         "detected_language": tokenizer.LANGUAGES[detected_lang_code],
         "language_code": detected_lang_code,

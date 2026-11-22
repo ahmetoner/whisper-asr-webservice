@@ -26,3 +26,9 @@ def test_load_audio_decodes_containers(tmp_path, pcm_bytes, extension):
 
 def test_load_audio_raw_pcm(pcm_bytes):
     assert len(load_audio(io.BytesIO(pcm_bytes), encode=False)) == 16000
+
+
+@requires_ffmpeg
+def test_load_audio_rejects_non_audio():
+    with pytest.raises(ValueError, match="Failed to load audio"):
+        load_audio(io.BytesIO(b"definitely not audio" * 100))

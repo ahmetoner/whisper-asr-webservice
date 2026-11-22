@@ -21,3 +21,15 @@ def test_detect_language(client, pcm_bytes):
     response = client.post("/detect-language?encode=false", files={"audio_file": ("tone.pcm", pcm_bytes)})
     assert response.status_code == 200
     assert response.json() == {"detected_language": "english", "language_code": "en", "confidence": 0.99}
+
+
+def test_asr_rejects_odd_length_raw_audio(client, fake_model):
+    response = client.post("/asr?encode=false", files={"audio_file": ("x.pcm", b"abc")})
+    assert response.status_code == 400
+    assert fake_model.calls == []
+
+
+def test_asr_rejects_empty_upload(client, fake_model):
+    response = client.post("/asr?encode=false", files={"audio_file": ("x.pcm", b"")})
+    assert response.status_code == 400
+    assert fake_model.calls == []
