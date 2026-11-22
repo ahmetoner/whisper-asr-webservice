@@ -10,7 +10,7 @@ requires_ffmpeg = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffm
 
 
 @requires_ffmpeg
-@pytest.mark.parametrize("extension", ["m4a", "mov", "mp3"])
+@pytest.mark.parametrize("extension", ["m4a", "mov", "flac"])
 def test_load_audio_decodes_containers(tmp_path, pcm_bytes, extension):
     source = tmp_path / "tone.pcm"
     source.write_bytes(pcm_bytes * 20)
