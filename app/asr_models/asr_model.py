@@ -18,9 +18,6 @@ class ASRModel(ABC):
     model_lock = Lock()
     last_activity_time = time.time()
 
-    def __init__(self):
-        pass
-
     @abstractmethod
     def load_model(self):
         """
@@ -69,8 +66,10 @@ class ASRModel(ABC):
         """
         Unloads the model from memory and clears any cached GPU memory.
         """
-        del self.model
-        torch.cuda.empty_cache()
-        gc.collect()
+        if self.model is None:
+            return
         self.model = None
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         print("Model unloaded due to timeout")

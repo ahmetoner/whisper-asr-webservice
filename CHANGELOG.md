@@ -27,6 +27,7 @@ Unreleased
 ### Fixed
 
 - WhisperX crash loop at startup (`Weights only load failed`) caused by lightning 2.6 with pyannote-audio 3.x
+- Model failing to reload after `MODEL_IDLE_TIMEOUT` unloaded it, especially with WhisperX
 
 ### Security
 

@@ -35,12 +35,6 @@ class FasterWhisperASR(ASRModel):
             options: Union[dict, None],
             output,
     ):
-        self.last_activity_time = time.time()
-
-        with self.model_lock:
-            if self.model is None:
-                self.load_model()
-
         options_dict = {"task": task}
         if language:
             options_dict["language"] = language
@@ -51,6 +45,9 @@ class FasterWhisperASR(ASRModel):
         if word_timestamps:
             options_dict["word_timestamps"] = True
         with self.model_lock:
+            self.last_activity_time = time.time()
+            if self.model is None:
+                self.load_model()
             segments = []
             text = ""
             segment_generator, info = self.model.transcribe(audio, beam_size=5, **options_dict)
@@ -58,6 +55,7 @@ class FasterWhisperASR(ASRModel):
                 segments.append(segment)
                 text = text + segment.text
             result = {"language": options_dict.get("language", info.language), "segments": segments, "text": text}
+            self.last_activity_time = time.time()
 
         output_file = StringIO()
         self.write_result(result, output_file, output)
@@ -67,16 +65,14 @@ class FasterWhisperASR(ASRModel):
 
     def language_detection(self, audio):
 
-        self.last_activity_time = time.time()
-
-        with self.model_lock:
-            if self.model is None: self.load_model()
-
         # load audio and pad/trim it to fit 30 seconds
         audio = whisper.pad_or_trim(audio)
 
         # detect the spoken language
         with self.model_lock:
+            self.last_activity_time = time.time()
+            if self.model is None:
+                self.load_model()
             segments, info = self.model.transcribe(audio, beam_size=5)
             detected_lang_code = info.language
             detected_language_confidence = info.language_probability

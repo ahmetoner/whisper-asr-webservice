@@ -33,12 +33,6 @@ class OpenAIWhisperASR(ASRModel):
         options: Union[dict, None],
         output,
     ):
-        self.last_activity_time = time.time()
-
-        with self.model_lock:
-            if self.model is None:
-                self.load_model()
-
         options_dict = {"task": task}
         if language:
             options_dict["language"] = language
@@ -47,7 +41,11 @@ class OpenAIWhisperASR(ASRModel):
         if word_timestamps:
             options_dict["word_timestamps"] = word_timestamps
         with self.model_lock:
+            self.last_activity_time = time.time()
+            if self.model is None:
+                self.load_model()
             result = self.model.transcribe(audio, **options_dict)
+            self.last_activity_time = time.time()
 
         output_file = StringIO()
         self.write_result(result, output_file, output)
@@ -57,20 +55,18 @@ class OpenAIWhisperASR(ASRModel):
 
     def language_detection(self, audio):
 
-        self.last_activity_time = time.time()
-
-        with self.model_lock:
-            if self.model is None:
-                self.load_model()
-
         # load audio and pad/trim it to fit 30 seconds
         audio = whisper.pad_or_trim(audio)
 
-        # make log-Mel spectrogram and move to the same device as the model
-        mel = whisper.log_mel_spectrogram(audio, self.model.dims.n_mels).to(self.model.device)
-
-        # detect the spoken language
         with self.model_lock:
+            self.last_activity_time = time.time()
+            if self.model is None:
+                self.load_model()
+
+            # make log-Mel spectrogram and move to the same device as the model
+            mel = whisper.log_mel_spectrogram(audio, self.model.dims.n_mels).to(self.model.device)
+
+            # detect the spoken language
             _, probs = self.model.detect_language(mel)
         detected_lang_code = max(probs, key=probs.get)
 

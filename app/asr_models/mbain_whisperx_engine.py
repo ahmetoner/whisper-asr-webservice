@@ -13,28 +13,27 @@ from app.config import CONFIG
 
 
 class WhisperXASR(ASRModel):
-    def __init__(self):
-        super().__init__()
-        self.model = {
-            'whisperx': None,
-            'diarize_model': None,
-            'align_model': {}
-        }
 
     def load_model(self):
         asr_options = {"without_timestamps": False}
-        self.model['whisperx'] = whisperx.load_model(
-            CONFIG.MODEL_NAME,
-            device=CONFIG.DEVICE,
-            compute_type=CONFIG.MODEL_QUANTIZATION,
-            asr_options=asr_options
-        )
+        model = {
+            'whisperx': whisperx.load_model(
+                CONFIG.MODEL_NAME,
+                device=CONFIG.DEVICE,
+                compute_type=CONFIG.MODEL_QUANTIZATION,
+                asr_options=asr_options
+            ),
+            'diarize_model': None,
+            'align_model': {},
+        }
 
         if CONFIG.HF_TOKEN != "":
-            self.model['diarize_model'] = DiarizationPipeline(
+            model['diarize_model'] = DiarizationPipeline(
                 token=CONFIG.HF_TOKEN,
                 device=CONFIG.DEVICE
             )
+
+        self.model = model
 
         Thread(target=self.monitor_idleness, daemon=True).start()
 
@@ -49,41 +48,39 @@ class WhisperXASR(ASRModel):
         options: Union[dict, None],
         output,
     ):
-        self.last_activity_time = time.time()
-        with self.model_lock:
-            if self.model is None:
-                self.load_model()
-
         options_dict = {"task": task}
         if language:
             options_dict["language"] = language
         if initial_prompt:
             options_dict["initial_prompt"] = initial_prompt
         with self.model_lock:
+            self.last_activity_time = time.time()
+            if self.model is None:
+                self.load_model()
+
             result = self.model['whisperx'].transcribe(audio, **options_dict)
             language = result["language"]
 
-        # Load the required model and cache it
-        # If we transcribe models in many different languages, this may lead to OOM propblems
-        if result["language"] in self.model['align_model']:
-            model_x, metadata = self.model['align_model'][result["language"]]
-        else:
-            self.model['align_model'][result["language"]] = whisperx.load_align_model(
-                language_code=result["language"], device=CONFIG.DEVICE
+            # Load the required model and cache it
+            # If we transcribe models in many different languages, this may lead to OOM propblems
+            if language not in self.model['align_model']:
+                self.model['align_model'][language] = whisperx.load_align_model(
+                    language_code=language, device=CONFIG.DEVICE
+                )
+            model_x, metadata = self.model['align_model'][language]
+
+            # Align whisper output
+            result = whisperx.align(
+                result["segments"], model_x, metadata, audio, CONFIG.DEVICE, return_char_alignments=False
             )
-            model_x, metadata = self.model['align_model'][result["language"]]
 
-        # Align whisper output
-        result = whisperx.align(
-            result["segments"], model_x, metadata, audio, CONFIG.DEVICE, return_char_alignments=False
-        )
-
-        if options.get("diarize", False) and CONFIG.HF_TOKEN != "":
-            min_speakers = options.get("min_speakers", None)
-            max_speakers = options.get("max_speakers", None)
-            # add min/max number of speakers if known
-            diarize_segments = self.model['diarize_model'](audio, min_speakers, max_speakers)
-            result = whisperx.assign_word_speakers(diarize_segments, result)
+            if options.get("diarize", False) and self.model['diarize_model'] is not None:
+                min_speakers = options.get("min_speakers", None)
+                max_speakers = options.get("max_speakers", None)
+                # add min/max number of speakers if known
+                diarize_segments = self.model['diarize_model'](audio, min_speakers, max_speakers)
+                result = whisperx.assign_word_speakers(diarize_segments, result)
+            self.last_activity_time = time.time()
         result["language"] = language
 
         output_file = StringIO()
@@ -94,6 +91,7 @@ class WhisperXASR(ASRModel):
 
     def language_detection(self, audio):
         with self.model_lock:
+            self.last_activity_time = time.time()
             if self.model is None:
                 self.load_model()
             if audio.shape[0] < N_SAMPLES:
