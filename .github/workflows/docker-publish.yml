@@ -1,7 +1,7 @@
 name: Publish Docker Image
 on:
   push:
-    tags:        
+    tags:
       - '*'
     branches:
       - debug
@@ -10,43 +10,92 @@ env:
   DOCKER_USER: ${{secrets.DOCKER_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
   REPO_NAME: ${{secrets.REPO_NAME}}
+  TRIVY: docker run --rm -v ${{ github.workspace }}:/src -w /src -v /home/runner/.docker/config.json:/root/.docker/config.json:ro aquasec/trivy:0.76.2
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         include:
           - docker_file: Dockerfile
-            platforms: linux/arm64,linux/amd64
+            platform: linux/amd64
+            runner: ubuntu-latest
+          - docker_file: Dockerfile
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
           - docker_file: Dockerfile.gpu
             tag_extension: -gpu
-            platforms: linux/amd64
+            platform: linux/amd64
+            runner: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
     - name: Free up disk space
       run: |
         sudo rm -rf /usr/share/dotnet
         sudo rm -rf /opt/ghc
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v4
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v4
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Build and Publish the Docker debug image
-      if: github.ref == 'refs/heads/debug'
+    - name: Set image tag
       run: |
-        DOCKER_IMAGE_DEBUG=$DOCKER_USER/$REPO_NAME:debug${{ matrix.tag_extension }}
-        docker buildx build . --no-cache --platform=${{ matrix.platforms }} -t "${DOCKER_IMAGE_DEBUG}" -f ${{ matrix.docker_file }} --push
-    - name: Build and Publish the Docker image
-      if: github.ref != 'refs/heads/debug'
+        if [ "$GITHUB_REF" = "refs/heads/debug" ]; then TAG=debug; else TAG=$GITHUB_REF_NAME; fi
+        ARCH=${{ matrix.platform }}; ARCH=${ARCH#linux/}
+        echo "VERSION=$TAG" >> "$GITHUB_ENV"
+        echo "IMAGE=$DOCKER_USER/$REPO_NAME:$TAG${{ matrix.tag_extension }}-$ARCH" >> "$GITHUB_ENV"
+        echo "CACHE=$DOCKER_USER/$REPO_NAME:buildcache${{ matrix.tag_extension }}-$ARCH" >> "$GITHUB_ENV"
+    - name: Build and push the Docker image
       run: |
-        DOCKER_IMAGE_LATEST=$DOCKER_USER/$REPO_NAME:latest${{ matrix.tag_extension }}
-        DOCKER_IMAGE_VERSION=$DOCKER_USER/$REPO_NAME:$GITHUB_REF_NAME${{ matrix.tag_extension }}
-        docker buildx build . --no-cache --platform=${{ matrix.platforms }} -t "${DOCKER_IMAGE_LATEST}" -t "${DOCKER_IMAGE_VERSION}" -f ${{ matrix.docker_file }} --push
+        if [ "$GITHUB_REF_TYPE" = tag ]; then CACHE_FROM="--no-cache"; else CACHE_FROM="--cache-from type=registry,ref=$CACHE"; fi
+        docker buildx build . --pull $CACHE_FROM --cache-to "type=registry,ref=$CACHE,mode=max" \
+          --label "org.opencontainers.image.version=$VERSION" \
+          --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+          --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+          --platform=${{ matrix.platform }} -t "$IMAGE" -f ${{ matrix.docker_file }} --push
+    # Fails on fixable HIGH/CRITICAL vulnerabilities; MEDIUM ones only produce a warning. Accepted findings are in .trivyignore.
+    - name: Trivy scan (HIGH, CRITICAL)
+      run: $TRIVY image --platform ${{ matrix.platform }} --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 "$IMAGE"
+    - name: Trivy scan (MEDIUM)
+      run: |
+        status=0
+        $TRIVY image --platform ${{ matrix.platform }} --scanners vuln --severity MEDIUM --ignore-unfixed --exit-code 2 "$IMAGE" || status=$?
+        if [ "$status" = 2 ]; then echo "::warning::Trivy found MEDIUM vulnerabilities in $IMAGE, see the scan output"; elif [ "$status" != 0 ]; then exit "$status"; fi
+
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+    - name: Login to DockerHub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Publish the multi-platform tags
+      run: |
+        if [ "$GITHUB_REF" = "refs/heads/debug" ]; then TAG=debug; else TAG=$GITHUB_REF_NAME; fi
+        if [ "$GITHUB_REF_TYPE" = tag ]; then TAGS="$TAG latest"; else TAGS="$TAG"; fi
+        BASE=$DOCKER_USER/$REPO_NAME
+        for t in $TAGS; do
+          docker buildx imagetools create -t "$BASE:$t" "$BASE:$TAG-amd64" "$BASE:$TAG-arm64"
+          docker buildx imagetools create -t "$BASE:$t-gpu" "$BASE:$TAG-gpu-amd64"
+        done
+
+  release:
+    needs: merge
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Create GitHub release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag

@@ -1,0 +1,3 @@
+# Without re-resolving, --extras cpu/cuda installs every torch build in the lock file
+[installer]
+re-resolve = true

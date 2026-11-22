@@ -2,7 +2,7 @@ site_name: Whisper ASR Webservice
 site_url: https://ahmetoner.github.io/whisper-asr-webservice
 site_dir: public
 
-site_description: "OpenAI Whisper ASR Webservice API"
+site_description: "Self-hosted speech recognition API based on OpenAI Whisper"
 repo_url: "https://github.com/ahmetoner/whisper-asr-webservice"
 repo_name: "ahmetoner/whisper-asr-webservice"
 copyright: Copyright &copy; 2025
@@ -15,8 +15,8 @@ validation:
 
 nav:
   - Overview: index.md
-  - Installation & Usage: run.md
-  - API Endpoints: endpoints.md
+  - Installation: run.md
+  - API: endpoints.md
   - Configuration: environmental-variables.md
   - Development: build.md
   - Changelog: changelog.md
@@ -78,8 +78,8 @@ markdown_extensions:
   - admonition
   - footnotes
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.magiclink
   - pymdownx.snippets:
       check_paths: true

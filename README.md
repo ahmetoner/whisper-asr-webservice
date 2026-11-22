@@ -1,97 +1,104 @@
-![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)
-![Build](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/docker-publish.yml.svg)
-![Licence](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)
+# Whisper ASR Webservice
 
-# Whisper ASR Box
+[![Release](https://img.shields.io/github/v/release/ahmetoner/whisper-asr-webservice.svg)](https://github.com/ahmetoner/whisper-asr-webservice/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/onerahmet/openai-whisper-asr-webservice.svg)](https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice)
+[![Test](https://img.shields.io/github/actions/workflow/status/ahmetoner/whisper-asr-webservice/test.yml?label=test)](https://github.com/ahmetoner/whisper-asr-webservice/actions/workflows/test.yml)
+[![License](https://img.shields.io/github/license/ahmetoner/whisper-asr-webservice.svg)](LICENCE)
 
-Whisper ASR Box is a general-purpose speech recognition toolkit. Whisper Models are trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
-
-🎉 **Join our Discord Community!** Connect with other users, get help, and stay updated on the latest features: [https://discord.gg/4Q5YVrePzZ](https://discord.gg/4Q5YVrePzZ)
+A self-hosted REST API for speech recognition, translation and language identification based on
+[OpenAI Whisper](https://github.com/openai/whisper). It runs as a Docker container on CPU or NVIDIA GPU.
 
 ## Features
 
-Current release (v1.10.0) supports following whisper models:
+- Three engines: OpenAI Whisper, Faster Whisper and WhisperX
+- Transcription in every language Whisper supports, and translation into English
+- Language detection with a confidence score
+- Output as plain text, JSON, WebVTT, SRT or TSV
+- Word-level timestamps, voice activity detection (VAD) and speaker diarization
+- Accepts any audio or video file FFmpeg can decode
+- Optional API key authentication
+- Unloads the model when idle to free memory
+- Interactive API documentation (Swagger UI)
 
-- [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
-- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.2.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.2.1)
-- [whisperX](https://github.com/m-bain/whisperX)@[v3.4.5](https://github.com/m-bain/whisperX/releases/tag/v3.4.5)
+## Quick Start
 
-## Quick Usage
-
-### CPU
+CPU (amd64 and arm64):
 
 ```shell
 docker run -d -p 9000:9000 \
+  -e ASR_ENGINE=faster_whisper \
   -e ASR_MODEL=base \
-  -e ASR_ENGINE=openai_whisper \
   onerahmet/openai-whisper-asr-webservice:latest
 ```
 
-### GPU
+NVIDIA GPU (amd64, requires the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)):
 
 ```shell
 docker run -d --gpus all -p 9000:9000 \
+  -e ASR_ENGINE=faster_whisper \
   -e ASR_MODEL=base \
-  -e ASR_ENGINE=openai_whisper \
   onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
 
-#### Cache
-
-To reduce container startup time by avoiding repeated downloads, you can persist the cache directory:
+Open <http://localhost:9000/docs> to use the API from your browser, or send a request directly:
 
 ```shell
-docker run -d -p 9000:9000 \
-  -v $PWD/cache:/root/.cache/ \
-  onerahmet/openai-whisper-asr-webservice:latest
+curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
 ```
 
-## Key Features
+## Engines
 
-- Multiple ASR engines support (OpenAI Whisper, Faster Whisper, WhisperX)
-- Multiple output formats (text, JSON, VTT, SRT, TSV)
-- Word-level timestamps support
-- Voice activity detection (VAD) filtering
-- Speaker diarization (with WhisperX)
-- FFmpeg integration for broad audio/video format support
-- GPU acceleration support
-- Configurable model loading/unloading
-- REST API with Swagger documentation
+| Engine                                                       | `ASR_ENGINE`               | Notes                                                    |
+|--------------------------------------------------------------|----------------------------|----------------------------------------------------------|
+| [OpenAI Whisper](https://github.com/openai/whisper)          | `openai_whisper` (default) | Reference implementation                                 |
+| [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper`           | Faster and lighter on memory; VAD and batched inference  |
+| [WhisperX](https://github.com/m-bain/whisperX)               | `whisperx`                 | Word alignment and speaker diarization                   |
 
-## Environment Variables
+## Request Flow
 
-Key configuration options:
+![Request flow](docs/assets/images/request-flow.svg)
 
-- `ASR_ENGINE`: Engine selection (openai_whisper, faster_whisper, whisperx)
-- `ASR_MODEL`: Model selection (tiny, base, small, medium, large-v3, etc.)
-- `ASR_MODEL_PATH`: Custom path to store/load models
-- `ASR_DEVICE`: Device selection (cuda, cpu)
-- `MODEL_IDLE_TIMEOUT`: Timeout for model unloading
+## Configuration
+
+The most common settings are listed below. See the [configuration reference](https://ahmetoner.github.io/whisper-asr-webservice/environmental-variables/) for all of them.
+
+| Variable             | Default            | Description                                                 |
+|----------------------|--------------------|-------------------------------------------------------------|
+| `ASR_ENGINE`         | `openai_whisper`   | `openai_whisper`, `faster_whisper` or `whisperx`            |
+| `ASR_MODEL`          | `base`             | Model name, e.g. `tiny`, `small`, `large-v3`, `turbo`       |
+| `ASR_DEVICE`         | `cuda` if present  | `cuda` or `cpu`                                             |
+| `MODEL_IDLE_TIMEOUT` | `0`                | Seconds of inactivity before the model is unloaded          |
+| `API_KEY`            | unset              | Require this key in the `X-API-Key` header                  |
+| `HF_TOKEN`           | unset              | Hugging Face token, required for WhisperX diarization       |
+
+To avoid downloading the model on every start, mount a volume at `/root/.cache`:
+
+```shell
+docker run -d -p 9000:9000 -v $PWD/cache:/root/.cache onerahmet/openai-whisper-asr-webservice:latest
+```
 
 ## Documentation
 
-For complete documentation, visit:
-[https://ahmetoner.github.io/whisper-asr-webservice](https://ahmetoner.github.io/whisper-asr-webservice)
+Full documentation is available at <https://ahmetoner.github.io/whisper-asr-webservice>.
 
 ## Development
 
+Requires Python 3.12 or 3.13 and [Poetry](https://python-poetry.org) 2.x.
+
 ```shell
-# Install poetry v2.X
-pip3 install poetry
-
-# Install dependencies for cpu
-poetry install --extras cpu
-
-# Install dependencies for cuda
-poetry install --extras cuda
-
-# Run service
+poetry install --extras cpu       # or --extras cuda
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
+poetry run pytest
 ```
 
-After starting the service, visit `http://localhost:9000` or `http://0.0.0.0:9000` in your browser to access the Swagger UI documentation and try out the API endpoints.
+See the [development guide](https://ahmetoner.github.io/whisper-asr-webservice/build/) for building Docker images and the documentation.
 
-## Credits
+## Support
 
-- This software uses libraries from the [FFmpeg](http://ffmpeg.org) project under the [LGPLv2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+Report bugs and request features on [GitHub Issues](https://github.com/ahmetoner/whisper-asr-webservice/issues).
+For questions and discussion, join the [Discord server](https://discord.gg/4Q5YVrePzZ).
+
+## License
+
+Released under the [MIT License](LICENCE). The Docker images include [FFmpeg](https://ffmpeg.org), licensed under the
+[LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).

@@ -1,87 +1,96 @@
-## Development Environment
+# Development
 
-Install poetry v2.X with following command:
+## Requirements
+
+- Python 3.12 or 3.13
+- [Poetry](https://python-poetry.org) 2.x
+- [FFmpeg](https://ffmpeg.org) on the `PATH`
+- For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
+
+## Request Flow
+
+![Request flow](assets/images/request-flow.svg)
+
+The diagram source is [`request-flow.excalidraw`](assets/images/request-flow.excalidraw), which can be opened and
+edited at [excalidraw.com](https://excalidraw.com).
+
+## Project Structure
+
+| Path                                 | Responsibility                                                       |
+|--------------------------------------|----------------------------------------------------------------------|
+| `app/webservice.py`                  | FastAPI application, endpoints, API key check and CLI entry point    |
+| `app/config.py`                      | Reads the environment variables                                      |
+| `app/utils.py`                       | Audio decoding with FFmpeg and the output format writers             |
+| `app/factory/asr_model_factory.py`   | Creates the engine selected by `ASR_ENGINE`                          |
+| `app/asr_models/asr_model.py`        | Engine base class: model lock, lazy loading and idle unloading       |
+| `app/asr_models/*_engine.py`         | `openai_whisper`, `faster_whisper` and `whisperx` implementations    |
+| `tests/`                             | API and audio decoding tests                                         |
+
+## Install
 
 ```shell
-pip3 install poetry
+poetry install --extras cpu   # CPU build of PyTorch
+poetry install --extras cuda  # PyTorch for CUDA 12.8
 ```
 
-### Installation
-
-Install dependencies for cpu
-
-```shell
-poetry install --extras cpu
-```
-
-Install dependencies for cuda
-
-```shell
-poetry install --extras cuda
-```
-
-!!! Note
-    By default, this will install the CPU version of PyTorch. For GPU support, you'll need to install the appropriate CUDA version of PyTorch separately:
-    ```shell
-    # For CUDA support (example for CUDA 11.8):
-    pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu121
-    ```
-
-### Run
-
-Starting the Webservice:
+## Run
 
 ```shell
 poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
 ```
 
-### Build
+Configure the service with the [environment variables](environmental-variables.md), for example
+`ASR_ENGINE=faster_whisper ASR_MODEL=tiny poetry run whisper-asr-webservice`.
 
-=== ":octicons-file-code-16: `Docker`"
+## Test and Lint
 
-    With `Dockerfile`:
+```shell
+poetry run pytest
+poetry run ruff check app tests
+```
 
-    === ":octicons-file-code-16: `CPU`"
-    
-        ```shell
-        # Build Image
-        docker build -t whisper-asr-webservice .
-        
-        # Run Container
-        docker run -d -p 9000:9000 whisper-asr-webservice
-        # or with specific model
-        docker run -d -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice
-        ```
-    
-    === ":octicons-file-code-16: `GPU`"
-    
-        ```shell
-        # Build Image
-        docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
-        
-        # Run Container
-        docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
-        # or with specific model
-        docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base whisper-asr-webservice-gpu
-        ```
+The tests replace the ASR engine with a stub, so they run without downloading models. Audio decoding tests are skipped
+when FFmpeg is not installed.
 
-    With `docker-compose`:
-    
-    === ":octicons-file-code-16: `CPU`"
-    
-        ```shell
-        docker-compose up --build
-        ```
-    
-    === ":octicons-file-code-16: `GPU`"
-    
-        ```shell
-        docker-compose -f docker-compose.gpu.yml up --build
-        ```
-=== ":octicons-file-code-16: `Poetry`"
+## Build Docker Images
 
-    Build .whl package
-    
+=== "CPU"
+
     ```shell
-    poetry build
+    docker build -t whisper-asr-webservice .
+    docker run -d -p 9000:9000 whisper-asr-webservice
     ```
+
+=== "GPU"
+
+    ```shell
+    docker build -f Dockerfile.gpu -t whisper-asr-webservice-gpu .
+    docker run -d --gpus all -p 9000:9000 whisper-asr-webservice-gpu
+    ```
+
+=== "Docker Compose"
+
+    ```shell
+    docker compose up --build                            # CPU
+    docker compose -f docker-compose.gpu.yml up --build  # GPU
+    ```
+
+    The Compose files mount `./app` into the container, so code changes take effect after a restart without a rebuild.
+
+## Documentation
+
+```shell
+poetry run mkdocs serve
+```
+
+The site is served at <http://localhost:8000> and reloads on changes.
+
+## Releases
+
+Pushing a version tag publishes the Docker images, creates a GitHub release and deploys this documentation.
+Pushing to the `debug` branch publishes the `debug` and `debug-gpu` images for testing.
+
+Each architecture is built on a native GitHub runner and scanned with Trivy before the multi-platform tags are
+published, so a failed scan never updates a published tag. The per-architecture images stay available as
+`<tag>-amd64`, `<tag>-arm64` and `<tag>-gpu-amd64`. Builds of the `debug` branch reuse the layer cache stored in the
+`buildcache-*` tags; version tags are always built from scratch.

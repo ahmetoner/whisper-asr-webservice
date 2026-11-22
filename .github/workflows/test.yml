@@ -1,0 +1,52 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+      - debug
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Free disk space before setup-python, as it removes the tool cache that setup-python installs into
+      - name: Free up disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost "$AGENT_TOOLSDIRECTORY"
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Cache Poetry downloads
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/pypoetry/artifacts
+            ~/.cache/pypoetry/cache
+          key: poetry-downloads-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Install dependencies
+        run: |
+          pip install poetry==2.5.2
+          poetry install --extras cpu
+      - name: Lint
+        run: poetry run ruff check app tests
+      - name: Test
+        run: poetry run pytest -q
+
+  # Fails on fixable HIGH/CRITICAL vulnerabilities and misconfigurations; MEDIUM ones only produce a warning.
+  # Accepted findings are listed in .trivyignore.
+  security:
+    runs-on: ubuntu-latest
+    env:
+      TRIVY: docker run --rm -v ${{ github.workspace }}:/src -w /src aquasec/trivy:0.76.2
+    steps:
+      - uses: actions/checkout@v5
+      - name: Trivy scan (HIGH, CRITICAL)
+        run: $TRIVY fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .
+      - name: Trivy scan (MEDIUM)
+        run: |
+          status=0
+          $TRIVY fs --scanners vuln,misconfig --severity MEDIUM --ignore-unfixed --exit-code 2 . || status=$?
+          if [ "$status" = 2 ]; then echo "::warning::Trivy found MEDIUM vulnerabilities, see the scan output"; elif [ "$status" != 0 ]; then exit "$status"; fi

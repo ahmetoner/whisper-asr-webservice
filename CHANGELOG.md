@@ -4,6 +4,223 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+- API test suite and a CI workflow running ruff and pytest
+- `ASR_BEAM_SIZE`, `ASR_BATCH_SIZE` and `ASR_VAD_FILTER` environment variables
+- `MODEL_UNLOAD_AFTER_REQUEST` environment variable to unload the model as soon as each request finishes
+- `MAX_UPLOAD_SIZE_MB` and `MAX_PENDING_REQUESTS` limits that reject oversized uploads (413) and excess requests (503); both are off by default
+- `/health` endpoint for container health checks, public even when `API_KEY` is set
+- Docker images define a `HEALTHCHECK` that uses the `/health` endpoint
+- Docker images carry OCI labels: title, description, version, revision, creation time, license, documentation and source URLs
+- Logging with timestamps and a `LOG_LEVEL` setting: startup configuration, model loading and every request with its duration at `INFO`, and decoding times and engine options at `DEBUG`
+- Optional API key authentication with the `API_KEY` environment variable
+- GitHub release is created automatically when a version tag's Docker images are published successfully
+- Docker images can run as a non-root user (`--user`) with `XDG_CACHE_HOME` pointing to a writable cache directory; `ASR_MODEL_PATH` now defaults to `$XDG_CACHE_HOME/whisper`
+- Request flow diagram in the README and the development guide
+- Trivy vulnerability scans on pull requests and before publishing images: fixable HIGH/CRITICAL findings fail the pipeline, MEDIUM findings produce a warning
+- Per-architecture Docker image tags (`<version>-amd64`, `<version>-arm64`, `<version>-gpu-amd64`); arm64 images are built on native runners instead of under emulation
+
+### Changed
+
+- The service starts accepting connections immediately and loads the model in the background; `/health` returns 503 with `{"status": "loading"}` until the model is ready, and requests sent meanwhile wait for it
+- Upgraded
+  - Python requirement to >=3.12,<3.14
+  - Poetry to v2.5.2
+  - PyTorch to v2.8.0 (CUDA builds now use CUDA 12.8, adding RTX 50xx / Blackwell `sm_120` support)
+  - whisperx to v3.8.6 and pyannote-audio to v4.1.1
+  - fastapi to v0.165.0
+  - uvicorn to v0.54.0
+  - python-multipart to v0.0.34
+  - tqdm to v4.70.1
+  - llvmlite to v0.50.0
+  - numba to v0.68.1
+  - GitHub Actions to their latest major versions
+- WhisperX diarization now uses `pyannote/speaker-diarization-community-1`; accept its conditions on Hugging Face
+- Only the selected ASR engine is imported at startup, reducing startup time and memory use
+- Docker images use the FFmpeg n9.1 build layer
+- Refreshed locked dependencies to pick up security fixes (aiohttp, certifi, filelock, lightning, nltk, pillow, urllib3 and more)
+- CPU Docker image is based on `python:3.12-slim-bookworm`
+- Docker images include the FFmpeg license (LGPL v2.1+) at `/usr/local/share/doc/ffmpeg`
+- Docker images no longer include development dependencies, and dependencies are installed in their own layer so rebuilds after code changes are faster
+- Docker images are built in a separate stage and no longer contain Poetry, its dependencies or download caches, making them several GB smaller
+- Rewrote the README and documentation, adding the API reference, a complete configuration table and the development guide
+
+### Fixed
+
+- Model being unloaded right after a request that took longer than `MODEL_IDLE_TIMEOUT`
+- WhisperX crash loop at startup (`Weights only load failed`) caused by lightning 2.6 with pyannote-audio 3.x
+- Model failing to reload after `MODEL_IDLE_TIMEOUT` unloaded it, especially with WhisperX
+- `initial_prompt` causing HTTP 500 with the WhisperX engine
+- WhisperX diarization ignoring `min_speakers` and `max_speakers`
+- `/detect-language` returning the confidence of the wrong language with the openai_whisper engine
+- Empty transcripts for M4A/MP4/MOV files that store their index at the end of the file
+- Undecodable, empty or malformed raw (`encode=false`) uploads now return HTTP 400
+- `/asr` responses now use a `Content-Type` matching the requested `output` format
+- Swagger UI showing a text field instead of a file picker for `audio_file` in Docker images
+- Server becoming unresponsive, including `/docs`, while a transcription is running
+- Missing contact URL in the OpenAPI metadata
+
+### Security
+
+- CPU Docker image base switched to `python:3.12-slim-bookworm`, reducing OS package findings reported by Trivy from 21 critical / 688 high to 2 critical / 99 high
+- CPU Docker image applies Debian security updates at build time
+- Upgraded the system pip in the CPU Docker image, which bundles urllib3 and certifi, fixing
+  - GHSA-6q48-6c7w-9gw2
+  - CVE-2025-50181
+  - CVE-2025-66418
+  - CVE-2025-66471
+  - CVE-2026-21441
+  - CVE-2026-44431
+  - CVE-2026-97687
+  - CVE-2026-97689
+- Upgraded the FFmpeg build layer from n7.1 to n9.1, which includes upstream FFmpeg security fixes
+- Upgraded torch to v2.8.0, fixing
+  - CVE-2025-3730
+- Upgraded aiohttp to v3.14.5, fixing
+  - CVE-2026-111063
+  - CVE-2026-111064
+  - CVE-2026-111065
+  - CVE-2026-111066
+  - CVE-2026-111748
+  - CVE-2026-111749
+  - CVE-2026-111750
+  - CVE-2026-123817
+  - CVE-2026-128124
+  - CVE-2026-128125
+  - CVE-2026-128126
+  - CVE-2026-128127
+  - CVE-2026-128128
+  - CVE-2026-128129
+  - CVE-2026-128130
+  - CVE-2026-128131
+  - CVE-2026-128132
+- Upgraded certifi to v2026.11.20, fixing
+  - GHSA-6q48-6c7w-9gw2
+- Upgraded filelock to v4.3.0, fixing
+  - CVE-2026-112907
+  - CVE-2026-112908
+  - CVE-2026-112909
+  - CVE-2026-112910
+  - CVE-2026-112911
+  - CVE-2026-112913
+  - CVE-2026-112915
+  - CVE-2026-112935
+  - CVE-2026-112936
+  - CVE-2026-112938
+  - CVE-2026-112939
+  - CVE-2026-112940
+- Upgraded lightning to v2.6.6, fixing
+  - CVE-2026-58659
+- Upgraded mako to v1.4.3, fixing
+  - CVE-2026-102991
+- Upgraded multidict to v7.2.1, fixing
+  - CVE-2026-104874
+- Upgraded nltk to v3.10.4, fixing
+  - CVE-2026-12876
+  - CVE-2026-71513
+  - CVE-2026-71514
+  - CVE-2026-78680
+  - CVE-2026-78681
+  - CVE-2026-78682
+  - CVE-2026-79657
+  - CVE-2026-79674
+  - CVE-2026-79675
+  - CVE-2026-79676
+  - CVE-2026-80206
+  - CVE-2026-81722
+  - CVE-2026-81723
+  - CVE-2026-81724
+  - CVE-2026-81725
+  - CVE-2026-81726
+  - CVE-2026-81727
+  - CVE-2026-126295
+  - CVE-2026-126296
+  - CVE-2026-126297
+  - CVE-2026-126298
+  - CVE-2026-126299
+  - CVE-2026-126300
+  - CVE-2026-126301
+  - CVE-2026-126302
+  - CVE-2026-126303
+  - CVE-2026-126304
+  - CVE-2026-128134
+  - CVE-2026-128135
+  - CVE-2026-128136
+  - CVE-2026-128137
+  - CVE-2026-128139
+  - CVE-2026-128140
+  - CVE-2026-129221
+  - CVE-2026-129222
+  - CVE-2026-129223
+  - CVE-2026-129224
+  - CVE-2026-129225
+  - CVE-2026-129226
+  - CVE-2026-129227
+  - CVE-2026-129228
+  - CVE-2026-129229
+  - CVE-2026-129230
+  - CVE-2026-129231
+  - CVE-2026-129232
+  - CVE-2026-129233
+  - CVE-2026-129234
+  - GHSA-j456-xh4h-cpf2
+- Upgraded pillow to v13.0.0, fixing
+  - CVE-2026-96636
+  - CVE-2026-96637
+  - CVE-2026-96638
+  - CVE-2026-96639
+  - CVE-2026-96640
+  - CVE-2026-96641
+  - CVE-2026-96642
+  - CVE-2026-96643
+  - CVE-2026-96644
+  - CVE-2026-96778
+  - CVE-2026-112390
+  - CVE-2026-112391
+  - CVE-2026-112392
+  - CVE-2026-112393
+  - CVE-2026-112394
+  - CVE-2026-112395
+  - CVE-2026-112396
+  - CVE-2026-112397
+  - CVE-2026-112398
+  - CVE-2026-112399
+  - CVE-2026-112400
+  - CVE-2026-112401
+  - CVE-2026-112402
+  - CVE-2026-112403
+  - CVE-2026-112404
+  - CVE-2026-112405
+  - CVE-2026-112406
+  - CVE-2026-112891
+  - CVE-2026-112892
+  - CVE-2026-112893
+  - CVE-2026-112894
+  - CVE-2026-112895
+  - CVE-2026-112896
+  - CVE-2026-112897
+  - CVE-2026-112898
+  - CVE-2026-112899
+  - CVE-2026-112900
+  - CVE-2026-112901
+  - CVE-2026-112902
+  - CVE-2026-114501
+  - CVE-2026-128066
+  - CVE-2026-128067
+  - GHSA-78g4-xqwv-q3g8
+- Upgraded setuptools to v84.2.1, fixing
+  - GHSA-xmj3-9gf7-h52w
+- Upgraded urllib3 to v2.8.0, fixing
+  - CVE-2026-97687
+  - CVE-2026-97688
+  - CVE-2026-97689
+- Upgraded openssl to v3.0.13-0ubuntu3.16 in the GPU Docker image, fixing
+  - CVE-2026-45447
+  - CVE-2026-84782
+- Upgraded apt to v2.8.4ubuntu0.1 in the GPU Docker image, fixing
+  - CVE-2026-109518
+
 [1.10.0] (2026-08-09)
 ---------------------
 

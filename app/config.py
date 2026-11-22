@@ -13,8 +13,6 @@ class CONFIG:
 
     # Retrieve Huggingface Token
     HF_TOKEN = os.getenv("HF_TOKEN", "")
-    if ASR_ENGINE == "whisperx" and HF_TOKEN == "":
-        print("You must set the HF_TOKEN environment variable to download the diarization model used by WhisperX.")
 
     # Determine the computation device (GPU or CPU)
     DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
@@ -23,7 +21,12 @@ class CONFIG:
     MODEL_NAME = os.getenv("ASR_MODEL", "base")
 
     # Path to the model directory
-    MODEL_PATH = os.getenv("ASR_MODEL_PATH", os.path.join(os.path.expanduser("~"), ".cache", "whisper"))
+    # Defaults to $XDG_CACHE_HOME/whisper (~/.cache/whisper), next to the Hugging Face and torch caches
+    CACHE_HOME = os.getenv("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache")
+    MODEL_PATH = os.getenv("ASR_MODEL_PATH", os.path.join(CACHE_HOME, "whisper"))
+
+    # WhisperX downloads NLTK sentence tokenizer data on first use; keep it with the other caches instead of ~/nltk_data
+    NLTK_DATA = os.environ.setdefault("NLTK_DATA", os.path.join(CACHE_HOME, "nltk_data")).split(os.pathsep)[0]
 
     # Model quantization level. Defines the precision for model weights:
     #   'float32' - 32-bit floating-point precision (higher precision, slower inference)
@@ -37,6 +40,17 @@ class CONFIG:
     # Idle timeout in seconds. If set to a non-zero value, the model will be unloaded
     # after being idle for this many seconds. A value of 0 means the model will never be unloaded.
     MODEL_IDLE_TIMEOUT = int(os.getenv("MODEL_IDLE_TIMEOUT", 0))
+    MODEL_UNLOAD_AFTER_REQUEST = os.getenv("MODEL_UNLOAD_AFTER_REQUEST", "false").lower() == "true"
+
+    # Optional decoding settings. When unset, each engine keeps its own default.
+    BEAM_SIZE = int(os.getenv("ASR_BEAM_SIZE")) if os.getenv("ASR_BEAM_SIZE") else None
+    BATCH_SIZE = int(os.getenv("ASR_BATCH_SIZE")) if os.getenv("ASR_BATCH_SIZE") else None
+
+    # Default value of the vad_filter request parameter (faster_whisper)
+    VAD_FILTER = os.getenv("ASR_VAD_FILTER", "false").lower() == "true"
+
+    # Optional API key. When set, requests must send it in the X-API-Key header.
+    API_KEY = os.getenv("API_KEY", "")
 
     # Default sample rate for audio input. 16 kHz is commonly used in speech-to-text tasks.
     SAMPLE_RATE = int(os.getenv("SAMPLE_RATE", 16000))
@@ -45,3 +59,10 @@ class CONFIG:
     SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH", 1000))
     SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))
     SUBTITLE_HIGHLIGHT_WORDS = os.getenv("SUBTITLE_HIGHLIGHT_WORDS", "false").lower() == "true"
+
+    MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", 0))
+    MAX_PENDING_REQUESTS = int(os.getenv("MAX_PENDING_REQUESTS", 0))
+
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+    if LOG_LEVEL not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
+        raise ValueError("Invalid LOG_LEVEL. Choose 'DEBUG', 'INFO', 'WARNING' or 'ERROR'.")

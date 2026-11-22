@@ -1,4 +1,4 @@
-# Licence
+# License
 
 ```
 --8<-- "LICENCE"

@@ -1,36 +1,67 @@
-Whisper is a general-purpose speech recognition model. It is trained on a large dataset of diverse audio and is also a multitask model that can perform multilingual speech recognition as well as speech translation and language identification.
+# Whisper ASR Webservice
 
-!!! tip "Join our Discord Community!"
-    🎉 **Connect with other users, get help, and stay updated on the latest features!**  
-    [Join our Discord Server](https://discord.gg/4Q5YVrePzZ){target=_blank}
+Whisper ASR Webservice is a self-hosted REST API for speech recognition, translation and language identification
+based on [OpenAI Whisper](https://github.com/openai/whisper). It runs as a Docker container on CPU or NVIDIA GPU.
 
 ## Features
 
-Current release (v1.10.0) supports following whisper models:
+- Three engines: OpenAI Whisper, Faster Whisper and WhisperX
+- Transcription in every language Whisper supports, and translation into English
+- Language detection with a confidence score
+- Output as plain text, JSON, WebVTT, SRT or TSV
+- Word-level timestamps, voice activity detection (VAD) and speaker diarization
+- Accepts any audio or video file FFmpeg can decode
+- Optional API key authentication
+- Unloads the model when idle to free memory
+- Interactive API documentation (Swagger UI)
 
-- [openai/whisper](https://github.com/openai/whisper)@[v20250625](https://github.com/openai/whisper/releases/tag/v20250625)
-- [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)@[v1.2.1](https://github.com/SYSTRAN/faster-whisper/releases/tag/v1.2.1)
-- [whisperX](https://github.com/m-bain/whisperX)@[v3.4.5](https://github.com/m-bain/whisperX/releases/tag/v3.4.5)
+## Quick Start
 
-## Quick Usage
-
-=== ":octicons-file-code-16: `CPU`"
-
-    ```shell
-    docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
-    ```
-
-=== ":octicons-file-code-16: `GPU`"
+=== "CPU"
 
     ```shell
-    docker run -d --gpus all -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest-gpu
+    docker run -d -p 9000:9000 \
+      -e ASR_ENGINE=faster_whisper \
+      -e ASR_MODEL=base \
+      onerahmet/openai-whisper-asr-webservice:latest
     ```
 
-for more information:
+=== "GPU"
 
-- [Documentation/Run](https://ahmetoner.github.io/whisper-asr-webservice/run)
-- [Docker Hub](https://hub.docker.com/r/onerahmet/openai-whisper-asr-webservice)
+    ```shell
+    docker run -d --gpus all -p 9000:9000 \
+      -e ASR_ENGINE=faster_whisper \
+      -e ASR_MODEL=base \
+      onerahmet/openai-whisper-asr-webservice:latest-gpu
+    ```
 
-## Credits
+Open <http://localhost:9000/docs> to use the API from your browser, or send a request directly:
 
-- This software uses libraries from the [FFmpeg](http://ffmpeg.org) project under the [LGPLv2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+```shell
+curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
+```
+
+## Engines
+
+| Engine                                                       | `ASR_ENGINE`               | Notes                                                    |
+|--------------------------------------------------------------|----------------------------|----------------------------------------------------------|
+| [OpenAI Whisper](https://github.com/openai/whisper)          | `openai_whisper` (default) | Reference implementation                                 |
+| [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper`           | Faster and lighter on memory; VAD and batched inference  |
+| [WhisperX](https://github.com/m-bain/whisperX)               | `whisperx`                 | Word alignment and speaker diarization                   |
+
+## Next Steps
+
+- [Installation](run.md): Docker images, GPU setup and model caching
+- [API](endpoints.md): endpoints, parameters and response formats
+- [Configuration](environmental-variables.md): all environment variables
+- [Development](build.md): running from source, tests and building images
+
+## Support
+
+Report bugs and request features on [GitHub Issues](https://github.com/ahmetoner/whisper-asr-webservice/issues).
+For questions and discussion, join the [Discord server](https://discord.gg/4Q5YVrePzZ).
+
+## License
+
+Released under the [MIT License](licence.md). The Docker images include [FFmpeg](https://ffmpeg.org), licensed under
+the [LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
