@@ -29,6 +29,7 @@ Unreleased
 - Only the selected ASR engine is imported at startup, reducing startup time and memory use
 - Docker images use the FFmpeg n9.1 build layer
 - Refreshed locked dependencies to pick up security fixes (aiohttp, certifi, filelock, lightning, nltk, pillow, urllib3 and more)
+- CPU Docker image is based on `python:3.12-slim-bookworm`
 
 ### Fixed
 
@@ -46,6 +47,17 @@ Unreleased
 
 ### Security
 
+- CPU Docker image base switched to `python:3.12-slim-bookworm`, reducing OS package findings reported by Trivy from 21 critical / 688 high to 2 critical / 99 high
+- CPU Docker image applies Debian security updates at build time
+- Upgraded the system pip in the CPU Docker image, which bundles urllib3 and certifi, fixing
+  - GHSA-6q48-6c7w-9gw2
+  - CVE-2025-50181
+  - CVE-2025-66418
+  - CVE-2025-66471
+  - CVE-2026-21441
+  - CVE-2026-44431
+  - CVE-2026-97687
+  - CVE-2026-97689
 - Upgraded the FFmpeg build layer from n7.1 to n9.1, which includes upstream FFmpeg security fixes
 - Upgraded torch to v2.8.0, fixing
   - CVE-2025-3730

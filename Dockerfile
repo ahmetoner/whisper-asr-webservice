@@ -2,9 +2,16 @@ FROM onerahmet/ffmpeg:n9.1 AS ffmpeg
 
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
-FROM python:3.12-bookworm
+FROM python:3.12-slim-bookworm
 
 LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
+
+# Apply Debian security updates and upgrade the base image's pip, whose bundled urllib3 and certifi are outdated
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -qq update \
+    && apt-get -qq upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir -U pip
 
 ENV POETRY_VENV=/app/.venv
 
