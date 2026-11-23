@@ -52,6 +52,9 @@ class CONFIG:
     VAD_THRESHOLD = float(os.getenv("ASR_VAD_THRESHOLD")) if os.getenv("ASR_VAD_THRESHOLD") else None
     VAD_MIN_SILENCE_MS = int(os.getenv("ASR_VAD_MIN_SILENCE_MS")) if os.getenv("ASR_VAD_MIN_SILENCE_MS") else None
     VAD_SPEECH_PAD_MS = int(os.getenv("ASR_VAD_SPEECH_PAD_MS")) if os.getenv("ASR_VAD_SPEECH_PAD_MS") else None
+    CONDITION_ON_PREVIOUS_TEXT = (
+        os.getenv("ASR_CONDITION_ON_PREVIOUS_TEXT").lower() == "true" if os.getenv("ASR_CONDITION_ON_PREVIOUS_TEXT") else None
+    )
     PROMPT_RESET_ON_TEMPERATURE = (
         float(os.getenv("ASR_PROMPT_RESET_ON_TEMPERATURE")) if os.getenv("ASR_PROMPT_RESET_ON_TEMPERATURE") else None
     )

@@ -39,6 +39,8 @@ class OpenAIWhisperASR(ASRModel):
             options_dict["beam_size"] = CONFIG.BEAM_SIZE
         if options.get("temperature") is not None:
             options_dict["temperature"] = options["temperature"]
+        if CONFIG.CONDITION_ON_PREVIOUS_TEXT is not None:
+            options_dict["condition_on_previous_text"] = CONFIG.CONDITION_ON_PREVIOUS_TEXT
         logger.debug("Transcribing with %s", options_dict)
         return self.model.transcribe(audio, **options_dict)
 

@@ -23,6 +23,8 @@ class WhisperXASR(ASRModel):
             asr_options["beam_size"] = CONFIG.BEAM_SIZE
         if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
             asr_options["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        if CONFIG.CONDITION_ON_PREVIOUS_TEXT is not None:
+            asr_options["condition_on_previous_text"] = CONFIG.CONDITION_ON_PREVIOUS_TEXT
         vad_options = None
         if CONFIG.VAD_THRESHOLD is not None:
             vad_options = {"vad_onset": CONFIG.VAD_THRESHOLD, "vad_offset": CONFIG.VAD_THRESHOLD}

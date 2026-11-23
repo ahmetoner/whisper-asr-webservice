@@ -12,6 +12,7 @@ Unreleased
 - `ROOT_PATH` to serve the service behind a reverse proxy under a path prefix, including the documentation and Swagger UI
 - `ASR_VAD_THRESHOLD`, `ASR_VAD_MIN_SILENCE_MS` and `ASR_VAD_SPEECH_PAD_MS` to tune voice activity detection; the threshold also applies to WhisperX, which drops the start or end of some non-English audio with its default
 - `ASR_PROMPT_RESET_ON_TEMPERATURE` to keep punctuation and capitalization on long recordings
+- `ASR_CONDITION_ON_PREVIOUS_TEXT` to stop Whisper from skipping speech at the end of a file, such as an outro after the main content
 - `vad_filter` for `/detect-language`, so the language is detected from speech instead of leading silence
 - `ASR_CPU_THREADS` to use more CPU cores; `faster_whisper` and `whisperx` use 4 threads by default
 

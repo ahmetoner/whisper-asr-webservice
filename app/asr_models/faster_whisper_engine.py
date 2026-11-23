@@ -44,6 +44,8 @@ class FasterWhisperASR(ASRModel):
             options_dict["temperature"] = options["temperature"]
         if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
             options_dict["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        if CONFIG.CONDITION_ON_PREVIOUS_TEXT is not None:
+            options_dict["condition_on_previous_text"] = CONFIG.CONDITION_ON_PREVIOUS_TEXT
         vad_parameters = {**self._vad_parameters(), **(options.get("vad") or {})}
         if vad_parameters and (vad_filter or CONFIG.BATCH_SIZE):
             options_dict["vad_parameters"] = vad_parameters

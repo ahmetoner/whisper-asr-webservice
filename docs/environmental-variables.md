@@ -17,6 +17,7 @@ The service is configured with environment variables. All of them are optional.
 | `ASR_VAD_THRESHOLD`        | engine default                  | Speech probability threshold of the VAD, see [Voice Activity Detection](#voice-activity-detection) |
 | `ASR_VAD_MIN_SILENCE_MS`   | engine default                  | Silence length that ends a speech segment (`faster_whisper`)   |
 | `ASR_VAD_SPEECH_PAD_MS`    | engine default                  | Padding added around speech segments (`faster_whisper`)        |
+| `ASR_CONDITION_ON_PREVIOUS_TEXT` | engine default            | Use the previous text as context for the next window, see [Decoding](#decoding) |
 | `ASR_PROMPT_RESET_ON_TEMPERATURE` | engine default           | Reset the prompt above this fallback temperature (`faster_whisper`, `whisperx`) |
 | `MODEL_IDLE_TIMEOUT`       | `0`                             | Seconds of inactivity before the model is unloaded; `0` keeps it loaded |
 | `MODEL_UNLOAD_AFTER_REQUEST` | `false`                       | Unload the model after every request, see [Model Unloading](#model-unloading) |
@@ -66,9 +67,12 @@ before changing it.
 With `faster_whisper`, setting `ASR_BATCH_SIZE` enables batched inference, which is significantly faster on GPU.
 Batched inference always applies voice activity detection to split the audio.
 
-On long recordings, the transcript can lose punctuation and capitalization over time. Lowering
-`ASR_PROMPT_RESET_ON_TEMPERATURE` (default `0.5`), for example to `0.3`, resets the context more often and usually
-helps.
+Whisper transcribes in 30-second windows and passes the text of the previous window to the next one as context. This
+keeps the style consistent, but it can also make the model stop too early, for example skipping speech at the end
+of a file after the main content, or lose punctuation and capitalization over time. `ASR_CONDITION_ON_PREVIOUS_TEXT=false`
+turns the context off (WhisperX already does this by default). A softer option is lowering
+`ASR_PROMPT_RESET_ON_TEMPERATURE` (default `0.5`), for example to `0.3`, which resets the context only when decoding
+becomes uncertain.
 
 ## Voice Activity Detection
 

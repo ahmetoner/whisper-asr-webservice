@@ -134,3 +134,23 @@ def test_cpu_threads_setting(monkeypatch):
     monkeypatch.setattr(CONFIG, "CPU_THREADS", 12)
     fw.FasterWhisperASR()._load_model()
     assert captured["cpu_threads"] == 12
+
+
+def test_condition_on_previous_text_setting(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    class Info:
+        language, language_probability = "en", 0.9
+
+    captured = {}
+
+    class Model:
+        def transcribe(self, audio, **kwargs):
+            captured.update(kwargs)
+            return iter([]), Info()
+
+    monkeypatch.setattr(CONFIG, "CONDITION_ON_PREVIOUS_TEXT", False)
+    engine = fw.FasterWhisperASR()
+    engine.model = Model()
+    engine.transcribe(AUDIO, "transcribe", None, None, None, None, {})
+    assert captured["condition_on_previous_text"] is False
