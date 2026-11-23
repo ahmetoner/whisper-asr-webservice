@@ -32,11 +32,10 @@ docker run -d -p 9000:9000 \
   onerahmet/openai-whisper-asr-webservice:latest
 ```
 
-NVIDIA GPU (amd64, requires the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)):
+NVIDIA GPU (amd64 and arm64, requires the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)):
 
 ```shell
 docker run -d --gpus all -p 9000:9000 \
-  -e ASR_ENGINE=faster_whisper \
   -e ASR_MODEL=base \
   onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```

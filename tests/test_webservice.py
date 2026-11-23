@@ -194,3 +194,27 @@ print(response.headers["location"], client.get("/docs").text.count("/whisper/ope
 def test_detect_language_passes_vad_filter(client, fake_model, pcm_bytes):
     client.post("/detect-language?encode=false&vad_filter=true", files={"audio_file": ("tone.pcm", pcm_bytes)})
     assert fake_model.calls[-1] == {"detect_vad_filter": True}
+
+
+def run_config_with_gpu_without_ctranslate2_cuda(**env):
+    code = (
+        "import torch, ctranslate2\n"
+        "torch.cuda.is_available = lambda: True\n"
+        "def no_cuda(device): raise ValueError('This CTranslate2 package was not compiled with CUDA support')\n"
+        "ctranslate2.get_supported_compute_types = no_cuda\n"
+        "from app.config import CONFIG\n"
+        "print(CONFIG.ASR_ENGINE, CONFIG.DEVICE)\n"
+    )
+    environment = {k: v for k, v in os.environ.items() if k not in ("ASR_ENGINE", "ASR_DEVICE")} | env
+    return subprocess.run([sys.executable, "-c", code], env=environment, capture_output=True, text=True)
+
+
+def test_gpu_without_ctranslate2_cuda_defaults_to_openai_whisper():
+    assert run_config_with_gpu_without_ctranslate2_cuda().stdout.strip() == "openai_whisper cuda"
+    assert run_config_with_gpu_without_ctranslate2_cuda(ASR_DEVICE="cpu", ASR_ENGINE="faster_whisper").stdout.strip() == "faster_whisper cpu"
+
+
+def test_gpu_without_ctranslate2_cuda_rejects_ctranslate2_engines_on_the_gpu():
+    result = run_config_with_gpu_without_ctranslate2_cuda(ASR_ENGINE="whisperx")
+    assert result.returncode != 0
+    assert "Use ASR_ENGINE=openai_whisper to run on the GPU, or ASR_DEVICE=cpu" in result.stderr

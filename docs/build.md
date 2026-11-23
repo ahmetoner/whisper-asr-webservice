@@ -29,7 +29,7 @@ edited at [excalidraw.com](https://excalidraw.com).
 
 ```shell
 uv sync                                # CPU build of PyTorch
-uv sync --no-group cpu --group cuda    # PyTorch for CUDA 12.8
+uv sync --no-group cpu --group cuda    # PyTorch for CUDA 12.8 (CUDA 12.9 on ARM64)
 ```
 
 `uv run` installs the default CPU build again before running a command, so after installing the CUDA build run
@@ -93,5 +93,5 @@ Pushing to the `debug` branch publishes the `debug` and `debug-gpu` images for t
 
 Each architecture is built on a native GitHub runner and scanned with Trivy before the multi-platform tags are
 published, so a failed scan never updates a published tag. The per-architecture images stay available as
-`<tag>-amd64`, `<tag>-arm64` and `<tag>-gpu-amd64`. Builds of the `debug` branch reuse the layer cache stored in the
+`<tag>-amd64`, `<tag>-arm64`, `<tag>-gpu-amd64` and `<tag>-gpu-arm64`. Builds of the `debug` branch reuse the layer cache stored in the
 `buildcache-*` tags; version tags are always built from scratch.

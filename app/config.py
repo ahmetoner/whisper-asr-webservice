@@ -3,19 +3,38 @@ import os
 import torch
 
 
+def _ctranslate2_has_cuda() -> bool:
+    import ctranslate2
+
+    try:
+        ctranslate2.get_supported_compute_types("cuda")
+        return True
+    except ValueError:
+        return False
+
+
+# CTranslate2, used by faster_whisper and whisperx, has no CUDA support in its ARM64 build
+CTRANSLATE2_GPU_UNSUPPORTED = torch.cuda.is_available() and not _ctranslate2_has_cuda()
+
+
 class CONFIG:
     """
     Configuration class for ASR models.
     Reads environment variables for runtime configuration, with sensible defaults.
     """
     # Determine the ASR engine ('faster_whisper', 'openai_whisper' or 'whisperx')
-    ASR_ENGINE = os.getenv("ASR_ENGINE", "faster_whisper")
+    ASR_ENGINE = os.getenv("ASR_ENGINE") or ("openai_whisper" if CTRANSLATE2_GPU_UNSUPPORTED else "faster_whisper")
 
     # Retrieve Huggingface Token
     HF_TOKEN = os.getenv("HF_TOKEN", "")
 
     # Determine the computation device (GPU or CPU)
     DEVICE = os.getenv("ASR_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+    if ASR_ENGINE in ("faster_whisper", "whisperx") and DEVICE == "cuda" and CTRANSLATE2_GPU_UNSUPPORTED:
+        raise ValueError(
+            f"{ASR_ENGINE} cannot use the GPU on this platform because CTranslate2 has no CUDA support for it. "
+            "Use ASR_ENGINE=openai_whisper to run on the GPU, or ASR_DEVICE=cpu."
+        )
 
     # Model name to use (e.g., "base", "small", etc.)
     MODEL_NAME = os.getenv("ASR_MODEL", "base")

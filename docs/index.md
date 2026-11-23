@@ -31,7 +31,6 @@ based on [OpenAI Whisper](https://github.com/openai/whisper). It runs as a Docke
 
     ```shell
     docker run -d --gpus all -p 9000:9000 \
-      -e ASR_ENGINE=faster_whisper \
       -e ASR_MODEL=base \
       onerahmet/openai-whisper-asr-webservice:latest-gpu
     ```

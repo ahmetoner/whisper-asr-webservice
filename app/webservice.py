@@ -21,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from whisper import tokenizer
 
 from app import openai_api, service
-from app.config import CONFIG
+from app.config import CONFIG, CTRANSLATE2_GPU_UNSUPPORTED
 from app.results import format_result
 
 logging.basicConfig(
@@ -53,6 +53,8 @@ logger.debug(
     CONFIG.MODEL_UNLOAD_AFTER_REQUEST,
     "set" if CONFIG.API_KEY else "not set",
 )
+if CTRANSLATE2_GPU_UNSUPPORTED and not os.getenv("ASR_ENGINE"):
+    logger.info("Using the openai_whisper engine, the only one that supports the GPU on this platform")
 if CONFIG.ASR_ENGINE == "whisperx" and not CONFIG.HF_TOKEN:
     logger.warning("HF_TOKEN is not set, so WhisperX speaker diarization is disabled")
 

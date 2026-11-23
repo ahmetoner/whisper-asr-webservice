@@ -15,6 +15,7 @@ Unreleased
 - `ASR_CONDITION_ON_PREVIOUS_TEXT` to stop Whisper from skipping speech at the end of a file, such as an outro after the main content
 - `vad_filter` for `/detect-language`, so the language is detected from speech instead of leading silence
 - `ASR_CPU_THREADS` to use more CPU cores; `faster_whisper` and `whisperx` use 4 threads by default
+- GPU Docker image for ARM64, e.g. NVIDIA DGX and Grace, with PyTorch built for CUDA 12.9; only the `openai_whisper` engine can use the GPU there, so it is the default on these systems
 
 ### Breaking
 

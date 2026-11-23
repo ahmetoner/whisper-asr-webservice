@@ -2,8 +2,10 @@ version = 1
 revision = 5
 requires-python = ">=3.12, <3.14"
 resolution-markers = [
-    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
@@ -18,10 +20,8 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version >= '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version >= '3.13' and sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
@@ -32,6 +32,11 @@ resolution-markers = [
     "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+]
+required-markers = [
+    "platform_machine == 'x86_64' and sys_platform == 'linux'",
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine == 'arm64' and sys_platform == 'darwin'",
 ]
 conflicts = [[
     { package = "whisper-asr-webservice", group = "cpu" },
@@ -171,10 +176,10 @@ version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/90/fa/5c2be1f96dc179f83cdd3bb267edbd1f47d08f756785c016d5c2163901a7/asteroid-filterbanks-0.4.0.tar.gz", hash = "sha256:415f89d1dcf2b13b35f03f7a9370968ac4e6fa6800633c522dac992b283409b9", size = 24599, upload-time = "2021-04-09T20:03:07.456Z" }
@@ -859,10 +864,10 @@ name = "julius"
 version = "0.2.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1d/c6/5c2aea2b11ead1680bb5b17c996def31f8ccade471cada37cdb93855e06f/julius-0.2.8.tar.gz", hash = "sha256:d691e651200930affea4f6c849c26e95fec846087281ae3d1a7757eac90253d5", size = 48081, upload-time = "2026-06-03T16:05:34.52Z" }
 wheels = [
@@ -923,10 +928,10 @@ dependencies = [
     { name = "packaging" },
     { name = "pytorch-lightning" },
     { name = "pyyaml" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torchmetrics" },
     { name = "tqdm" },
     { name = "typing-extensions" },
@@ -1373,7 +1378,7 @@ name = "nvidia-cudnn-cu12"
 version = "9.10.2.21"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fa/41/e79269ce215c857c935fd86bcfe91a451a584dfc27f1e068f568b9ad1ab7/nvidia_cudnn_cu12-9.10.2.21-py3-none-manylinux_2_27_aarch64.whl", hash = "sha256:c9132cc3f8958447b4910a1720036d9eff5928cc3179b0a51fb6d167c6cc87d8", size = 705026878, upload-time = "2025-06-06T21:52:51.348Z" },
@@ -1386,7 +1391,7 @@ name = "nvidia-cufft-cu12"
 version = "11.3.3.83"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/bc/7771846d3a0272026c416fbb7e5f4c1f146d6d80704534d0b187dd6f4800/nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:848ef7224d6305cdb2a4df928759dca7b1201874787083b6e7550dd6765ce69a", size = 193109211, upload-time = "2025-03-07T01:44:56.873Z" },
@@ -1418,9 +1423,9 @@ name = "nvidia-cusolver-cu12"
 version = "11.7.3.90"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "nvidia-cusparse-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cusparse-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c8/32/f7cd6ce8a7690544d084ea21c26e910a97e077c9b7f07bf5de623ee19981/nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_aarch64.whl", hash = "sha256:db9ed69dbef9715071232caa9b69c52ac7de3a95773c2db65bdba85916e4e5c0", size = 267229841, upload-time = "2025-03-07T01:46:54.356Z" },
@@ -1433,7 +1438,7 @@ name = "nvidia-cusparse-cu12"
 version = "12.5.8.93"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/f7/cd777c4109681367721b00a106f491e0d0d15cfa1fd59672ce580ce42a97/nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:9b6c161cb130be1a07a27ea6923df8141f3c295852f4b260c65f18f3e0a091dc", size = 288117129, upload-time = "2025-03-07T01:47:40.407Z" },
@@ -1543,12 +1548,12 @@ dependencies = [
     { name = "numba" },
     { name = "numpy" },
     { name = "tiktoken" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "tqdm" },
-    { name = "triton", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'linux2'" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'linux2'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/35/8e/d36f8880bcf18ec026a55807d02fe4c7357da9f25aebd92f85178000c0dc/openai_whisper-20250625.tar.gz", hash = "sha256:37a91a3921809d9f44748ffc73c0a55c9f366c85a3ef5c2ae0cc09540432eb96", size = 803191, upload-time = "2025-06-26T01:06:13.34Z" }
 
@@ -1911,15 +1916,16 @@ dependencies = [
     { name = "pytorch-metric-learning" },
     { name = "rich" },
     { name = "safetensors" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch-audiomentations" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torchcodec", version = "0.7.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
     { name = "torchcodec", version = "0.17.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
     { name = "torchmetrics" },
@@ -2172,10 +2178,10 @@ dependencies = [
     { name = "lightning-utilities" },
     { name = "packaging" },
     { name = "pyyaml" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torchmetrics" },
     { name = "tqdm" },
     { name = "typing-extensions" },
@@ -2192,10 +2198,10 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "scikit-learn" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "tqdm" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9b/80/6e61b1a91debf4c1b47d441f9a9d7fe2aabcdd9575ed70b2811474eb95c3/pytorch-metric-learning-2.9.0.tar.gz", hash = "sha256:27a626caf5e2876a0fd666605a78cb67ef7597e25d7a68c18053dd503830701f", size = 84530, upload-time = "2025-08-17T17:11:19.501Z" }
@@ -2566,45 +2572,36 @@ wheels = [
 [[package]]
 name = "torch"
 version = "2.8.0"
-source = { registry = "https://download.pytorch.org/whl/cpu" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'darwin'",
-    "python_full_version < '3.13' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "filelock", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "fsspec", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "jinja2", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "networkx", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "setuptools", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "sympy", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "typing-extensions", marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-]
-wheels = [
-    { url = "https://download-r2.pytorch.org/whl/cpu/torch-2.8.0-cp312-none-macosx_11_0_arm64.whl", hash = "sha256:a47b7986bee3f61ad217d8a8ce24605809ab425baf349f97de758815edd2ef54", upload-time = "2025-10-01T23:35:50Z" },
-    { url = "https://download-r2.pytorch.org/whl/cpu/torch-2.8.0-cp313-cp313t-macosx_14_0_arm64.whl", hash = "sha256:fbe2e149c5174ef90d29a5f84a554dfaf28e003cb4f61fa2c8c024c17ec7ca58", upload-time = "2025-10-01T23:35:52Z" },
-    { url = "https://download-r2.pytorch.org/whl/cpu/torch-2.8.0-cp313-none-macosx_11_0_arm64.whl", hash = "sha256:057efd30a6778d2ee5e2374cd63a63f63311aa6f33321e627c655df60abdd390", upload-time = "2025-10-01T23:35:55Z" },
-]
-
-[[package]]
-name = "torch"
-version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
-    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
 ]
 dependencies = [
-    { name = "filelock", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "fsspec", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "jinja2", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "networkx", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "filelock", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "fsspec", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "jinja2", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "networkx", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cuda-cupti-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cuda-nvrtc-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -2619,10 +2616,10 @@ dependencies = [
     { name = "nvidia-nccl-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-nvtx-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "setuptools", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "sympy", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "triton", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "typing-extensions", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "setuptools", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "sympy", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "typing-extensions", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/49/0c/2fd4df0d83a495bb5e54dca4474c4ec5f9c62db185421563deeb5dabf609/torch-2.8.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:e2fab4153768d433f8ed9279c8133a114a034a61e77a3a104dcdf54388838705", size = 101906089, upload-time = "2025-08-06T14:53:52.631Z" },
@@ -2646,23 +2643,17 @@ source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "filelock", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "fsspec", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "jinja2", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "networkx", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "setuptools", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "sympy", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "typing-extensions", marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "filelock", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "fsspec", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "jinja2", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "networkx", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "setuptools", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "sympy", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "typing-extensions", marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp312-cp312-linux_s390x.whl", hash = "sha256:0e34e276722ab7dd0dffa9e12fe2135a9b34a0e300c456ed7ad6430229404eb5", upload-time = "2025-10-01T23:33:41Z" },
@@ -2685,22 +2676,14 @@ name = "torch"
 version = "2.8.0+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
-    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "filelock", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "fsspec", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "jinja2", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "networkx", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "filelock", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "fsspec", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "jinja2", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "networkx", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cuda-cupti-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-cuda-nvrtc-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -2715,10 +2698,10 @@ dependencies = [
     { name = "nvidia-nccl-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "nvidia-nvtx-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "setuptools", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "sympy", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "triton", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "typing-extensions", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "setuptools", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "sympy", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "typing-extensions", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cu128/torch-2.8.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:4354fc05bb79b208d6995a04ca1ceef6a9547b1c4334435574353d381c55087c", upload-time = "2025-10-01T23:51:02Z" },
@@ -2730,20 +2713,51 @@ wheels = [
 ]
 
 [[package]]
+name = "torch"
+version = "2.8.0+cu129"
+source = { registry = "https://download.pytorch.org/whl/cu129" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+]
+dependencies = [
+    { name = "filelock", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "fsspec", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "jinja2", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "networkx", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "setuptools", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "sympy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "typing-extensions", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+]
+wheels = [
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:692fe6e513b667f789a543fa9b1baba58e77a46d5c8629764ca0c00a56823e1f", upload-time = "2025-10-02T00:08:10Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:02c7258e917f3043c978b53acf6f02b818db0d0d85db0e58ae578af333b9b4e2", upload-time = "2025-10-02T00:10:15Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp312-cp312-win_amd64.whl", hash = "sha256:2bc729898e422b9f3da54349eed98f2f0b5dd415434508ee2ab2a13fb021815d", upload-time = "2025-10-02T00:11:01Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:ad2d64316635e7ab06f6c973a252526d59a92a2045825c102f876914a72304d0", upload-time = "2025-10-02T00:13:03Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:563740167be2189b71530b503f0c8a8d7a8267dd49d4de6f9c5f1d23fbe237df", upload-time = "2025-10-02T00:15:14Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313-win_amd64.whl", hash = "sha256:2cef066f9759ff4d7868a8c3695aa60d9a878598acb3685bb1ef2fdac29dcd68", upload-time = "2025-10-02T00:16:01Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:2982bf34249cbb38f1090e71ad7097a214a21023ccdc0413961986ab7d0396e6", upload-time = "2025-10-02T00:18:14Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313t-manylinux_2_28_x86_64.whl", hash = "sha256:6344260959ebcfa6dae458e1c4365195bcfdf00f4f1f1ad438cbaf50756829ed", upload-time = "2025-10-02T00:20:23Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torch-2.8.0%2Bcu129-cp313-cp313t-win_amd64.whl", hash = "sha256:9c0cd89e54ce44ce3208c5cf4163773b9cda0067e4b48cfcac56a4e04af52040", upload-time = "2025-10-02T00:21:11Z" },
+]
+
+[[package]]
 name = "torch-audiomentations"
 version = "0.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "julius" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch-pitch-shift" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/31/8d/2f8fd7e34c75f5ee8de4310c3bd3f22270acd44d1f809e2fe7c12fbf35f8/torch_audiomentations-0.12.0.tar.gz", hash = "sha256:b02d4c5eb86376986a53eb405cca5e34f370ea9284411237508e720c529f7888", size = 52094, upload-time = "2025-01-15T09:07:01.071Z" }
 wheels = [
@@ -2757,14 +2771,15 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
     { name = "primepy" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/79/a6/722a832bca75d5079f6731e005b3d0c2eec7c6c6863d030620952d143d57/torch_pitch_shift-1.2.5.tar.gz", hash = "sha256:6e1c7531f08d0f407a4c55e5ff8385a41355c5c5d27ab7fa08632e51defbd0ed", size = 4725, upload-time = "2024-09-25T19:10:12.922Z" }
 wheels = [
@@ -2776,13 +2791,10 @@ name = "torchaudio"
 version = "2.8.0"
 source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'darwin'",
-    "python_full_version < '3.13' and sys_platform == 'darwin'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
@@ -2797,19 +2809,50 @@ wheels = [
 [[package]]
 name = "torchaudio"
 version = "2.8.0"
-source = { registry = "https://pypi.org/simple" }
+source = { registry = "https://download.pytorch.org/whl/cu129" }
 resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+]
+wheels = [
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchaudio-2.8.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:67d4f6cbfcb795157850db6a3735301b929cdfe2b56032dc3365105b49a4ee84", upload-time = "2025-08-05T20:12:08Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchaudio-2.8.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:2086c64c321d949e9c3abcdf4da6405f1f5317c34980612cb1d9978bae7d7b6e", upload-time = "2025-08-05T20:12:08Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchaudio-2.8.0-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:fea5c90031ec7de069fa80228d8210d29595cc18c00f5e9954274f4e3f157e07", upload-time = "2025-08-05T20:12:08Z" },
+]
+
+[[package]]
+name = "torchaudio"
+version = "2.8.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+]
+dependencies = [
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ac/cc/c2e2a3eb6ee956f73c68541e439916f8146170ea9cc61e72adea5c995312/torchaudio-2.8.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:ddef94bf181e6447cbb05f38beaca8f6c5bb8d2b9ddced1aa3452025b9fc70d3", size = 1856736, upload-time = "2025-08-06T14:58:36.3Z" },
@@ -2833,15 +2876,9 @@ source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cpu/torchaudio-2.8.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:9377faee65a290578280ac7f4884c3586253dac2ca28c60f458ff6efe86a6b05", upload-time = "2025-08-05T20:12:02Z" },
@@ -2857,19 +2894,11 @@ name = "torchaudio"
 version = "2.8.0+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
-    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cu128/torchaudio-2.8.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:145b8a0c21cfcaa1705c67173c5d439087e0e120d5da9bc344746f937901d243", upload-time = "2025-08-05T20:12:07Z" },
@@ -2885,8 +2914,10 @@ name = "torchcodec"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
@@ -2899,10 +2930,8 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version >= '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version >= '3.13' and sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
@@ -2940,10 +2969,10 @@ dependencies = [
     { name = "lightning-utilities" },
     { name = "numpy" },
     { name = "packaging" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/81/34/39b8b749333db56c0585d7a11fa62a283c087bb1dfc897d69fb8cedbefb1/torchmetrics-1.9.0.tar.gz", hash = "sha256:a488609948600df52d3db4fcdab02e62aab2a85ef34da67037dc3e65b8512faa", size = 581765, upload-time = "2026-03-09T17:41:22.443Z" }
 wheels = [
@@ -2955,15 +2984,12 @@ name = "torchvision"
 version = "0.23.0"
 source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'darwin'",
-    "python_full_version < '3.13' and sys_platform == 'darwin'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "pillow", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "pillow", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
@@ -2978,21 +3004,54 @@ wheels = [
 [[package]]
 name = "torchvision"
 version = "0.23.0"
-source = { registry = "https://pypi.org/simple" }
+source = { registry = "https://download.pytorch.org/whl/cu129" }
 resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "pillow", marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "pillow", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+]
+wheels = [
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchvision-0.23.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:630f602db2c594c9cbc89b964d5fb4873adf4193805df65339b24cd3f4cf57f7", upload-time = "2025-08-05T20:11:53Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchvision-0.23.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:20f7e25a24f91d93d09398b80929dec805c4ee2f5527fad8eecd6e43dc5fd5d0", upload-time = "2025-08-05T20:11:53Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu129/torchvision-0.23.0-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:cb70cc000e6a398270044c3406a89ee8ab6157a4e81b5d40c5904e1d0e22e2f8", upload-time = "2025-08-05T20:11:54Z" },
+]
+
+[[package]]
+name = "torchvision"
+version = "0.23.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+]
+dependencies = [
+    { name = "numpy", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "pillow", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/1d/0ea0b34bde92a86d42620f29baa6dcbb5c2fc85990316df5cb8f7abb8ea2/torchvision-0.23.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:e0e2c04a91403e8dd3af9756c6a024a1d9c0ed9c0d592a8314ded8f4fe30d440", size = 1856885, upload-time = "2025-08-06T14:58:06.503Z" },
@@ -3016,17 +3075,11 @@ source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "pillow", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "pillow", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cpu/torchvision-0.23.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:ae459d4509d3b837b978dc6c66106601f916b6d2cda75c137e3f5f48324ce1da", upload-time = "2025-08-05T20:11:47Z" },
@@ -3042,21 +3095,13 @@ name = "torchvision"
 version = "0.23.0+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
-    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.13' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "pillow", marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "numpy", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "pillow", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cu128/torchvision-0.23.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:9cb3c13997afcb44057ca10d943c6c4cba3068afde0f370965abce9c89fcffa9", upload-time = "2025-08-05T20:11:52Z" },
@@ -3103,7 +3148,39 @@ wheels = [
 [[package]]
 name = "triton"
 version = "3.4.0"
+source = { registry = "https://download.pytorch.org/whl/cu129" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+]
+dependencies = [
+    { name = "setuptools", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+]
+wheels = [
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:00ea4a1c15f079bbf49ff02c312210fdb8ff05b1503ea30812610e2a3b171f3b", upload-time = "2026-01-22T22:47:17Z" },
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8550672b1184f05187f4140db32e33e61b592046fd3e1eb907e3b7db5321b750", upload-time = "2026-01-22T22:47:24Z" },
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:5acb528f01dc14362c4a88fa4dcfa227d132f6e61f272a6874e84d6485037ca4", upload-time = "2026-01-22T22:47:30Z" },
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:0e582bfd8147afd0e17f410b39ee161df933a2aca9f653e1178daae98f87f601", upload-time = "2026-01-22T22:47:36Z" },
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp313-cp313t-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:40b5d803a83b5e70895424a51c3a1a23dcc0f158a79f682aaa2c940903e747b9", upload-time = "2026-01-22T22:47:43Z" },
+    { url = "https://download-r2.pytorch.org/whl/triton-3.4.0-cp313-cp313t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:5f2f15de16fefacac008378919687c0ada6a867dcc0fe70a5d5a11240ae8b814", upload-time = "2026-01-22T22:47:48Z" },
+]
+
+[[package]]
+name = "triton"
+version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+]
 dependencies = [
     { name = "setuptools" },
 ]
@@ -3332,20 +3409,8 @@ dependencies = [
     { name = "numpy" },
     { name = "openai-whisper" },
     { name = "python-multipart" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
     { name = "torchcodec", version = "0.7.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
     { name = "torchcodec", version = "0.17.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
-    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
     { name = "tqdm" },
     { name = "uvicorn", extra = ["standard"] },
     { name = "whisperx" },
@@ -3353,17 +3418,26 @@ dependencies = [
 
 [package.dev-dependencies]
 cpu = [
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 cuda = [
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" } },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" } },
-    { name = "torchvision", version = "0.23.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" } },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
 ]
 dev = [
     { name = "black" },
@@ -3385,11 +3459,8 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "openai-whisper", specifier = ">=20250625" },
     { name = "python-multipart", specifier = ">=0.0.34" },
-    { name = "torch", specifier = "==2.8.0" },
-    { name = "torchaudio", specifier = "==2.8.0" },
     { name = "torchcodec", marker = "platform_machine != 'aarch64' or sys_platform != 'linux'", specifier = ">=0.7.0,<0.8.0" },
     { name = "torchcodec", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = ">=0.11.0" },
-    { name = "torchvision", specifier = "==0.23.0" },
     { name = "tqdm", specifier = ">=4.70.1" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
     { name = "whisperx", specifier = ">=3.8.6" },
@@ -3405,12 +3476,16 @@ cpu = [
     { name = "torchvision", marker = "sys_platform == 'linux'", specifier = "==0.23.0", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "whisper-asr-webservice", group = "cpu" } },
 ]
 cuda = [
-    { name = "torch", marker = "sys_platform != 'linux'", specifier = "==2.8.0" },
-    { name = "torch", marker = "sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
-    { name = "torchaudio", marker = "sys_platform != 'linux'", specifier = "==2.8.0" },
-    { name = "torchaudio", marker = "sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
-    { name = "torchvision", marker = "sys_platform != 'linux'", specifier = "==0.23.0" },
-    { name = "torchvision", marker = "sys_platform == 'linux'", specifier = "==0.23.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torch", marker = "platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux'", specifier = "==2.8.0" },
+    { name = "torch", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu129", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torch", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torchaudio", marker = "platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux'", specifier = "==2.8.0" },
+    { name = "torchaudio", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu129", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torchaudio", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torchvision", marker = "platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux'", specifier = "==0.23.0" },
+    { name = "torchvision", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = "==0.23.0", index = "https://download.pytorch.org/whl/cu129", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "torchvision", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'", specifier = "==0.23.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
+    { name = "triton", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = "==3.4.0", index = "https://download.pytorch.org/whl/cu129", conflict = { package = "whisper-asr-webservice", group = "cuda" } },
 ]
 dev = [
     { name = "black", specifier = ">=26.10.1,<27.0.0" },
@@ -3435,21 +3510,23 @@ dependencies = [
     { name = "omegaconf" },
     { name = "pandas" },
     { name = "pyannote-audio" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchaudio", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torchcodec", version = "0.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'darwin' or sys_platform == 'win32'" },
-    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform == 'darwin' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "torchvision", version = "0.23.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'group-22-whisper-asr-webservice-cuda'" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "torchvision", version = "0.23.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "transformers" },
-    { name = "triton", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "triton", version = "3.4.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a0/51/4ffeb1dce4f9fa95e1688d6ee6c6f412f67f786a5f4856e906503b8502c9/whisperx-3.8.6.tar.gz", hash = "sha256:d647aecaa6c2f413bb924d722d925878ef300c99093ca49cd6cb7840bdbffe0e", size = 16490881, upload-time = "2026-05-25T12:36:06.72Z" }
 wheels = [

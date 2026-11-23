@@ -27,6 +27,10 @@ jobs:
             tag_extension: -gpu
             platform: linux/amd64
             runner: ubuntu-latest
+          - docker_file: Dockerfile.gpu
+            tag_extension: -gpu
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -85,7 +89,7 @@ jobs:
         BASE=$DOCKER_USER/$REPO_NAME
         for t in $TAGS; do
           docker buildx imagetools create -t "$BASE:$t" "$BASE:$TAG-amd64" "$BASE:$TAG-arm64"
-          docker buildx imagetools create -t "$BASE:$t-gpu" "$BASE:$TAG-gpu-amd64"
+          docker buildx imagetools create -t "$BASE:$t-gpu" "$BASE:$TAG-gpu-amd64" "$BASE:$TAG-gpu-arm64"
         done
 
   release:

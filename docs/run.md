@@ -6,9 +6,9 @@ The service is published on [Docker Hub](https://hub.docker.com/r/onerahmet/open
 | Tag             | Platforms                    | Description                    |
 |-----------------|------------------------------|--------------------------------|
 | `latest`        | `linux/amd64`, `linux/arm64` | Latest release, CPU            |
-| `latest-gpu`    | `linux/amd64`                | Latest release, NVIDIA GPU     |
+| `latest-gpu`    | `linux/amd64`, `linux/arm64` | Latest release, NVIDIA GPU     |
 | `<version>`     | `linux/amd64`, `linux/arm64` | A specific release, CPU        |
-| `<version>-gpu` | `linux/amd64`                | A specific release, NVIDIA GPU |
+| `<version>-gpu` | `linux/amd64`, `linux/arm64` | A specific release, NVIDIA GPU |
 
 Pin a version tag (for example `v1.11.0`) in production so that upgrades happen only when you choose. All releases are
 listed on the [releases page](https://github.com/ahmetoner/whisper-asr-webservice/releases).
@@ -29,7 +29,6 @@ CPU.
 
 ```shell
 docker run -d --gpus all -p 9000:9000 \
-  -e ASR_ENGINE=faster_whisper \
   -e ASR_MODEL=base \
   onerahmet/openai-whisper-asr-webservice:latest-gpu
 ```
@@ -38,6 +37,12 @@ Requirements:
 
 - An NVIDIA driver that supports CUDA 12.8 or newer
 - The [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+The GPU image also runs on ARM64 systems such as NVIDIA DGX and Grace, but only the `openai_whisper` engine can use the
+GPU there: `faster_whisper` and `whisperx` are built on CTranslate2, which has no CUDA support for ARM64. The ARM64
+image uses PyTorch built for CUDA 12.9, the only CUDA version PyTorch publishes for ARM64. On these
+systems the image uses `openai_whisper` by default, so leave out `ASR_ENGINE` or set it to `openai_whisper`. NVIDIA
+Jetson devices are not supported.
 
 ## Docker Compose
 

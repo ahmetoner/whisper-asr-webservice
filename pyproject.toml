@@ -15,9 +15,6 @@ dependencies = [
     "tqdm (>=4.70.1)",
     "llvmlite (>=0.50.0)",
     "numba (>=0.68.1)",
-    "torch (==2.8.0)",
-    "torchaudio (==2.8.0)",
-    "torchvision (==0.23.0)",
     # pyannote-audio (whisperx diarization) requires torchcodec, but torchcodec 0.7 (the release matching
     # torch 2.8) ships no linux/aarch64 wheels. The service always hands pyannote in-memory waveforms, so
     # torchcodec's decoders are never used; on linux/aarch64 any installable release is sufficient.
@@ -47,9 +44,10 @@ cpu = [
     "torchvision (==0.23.0)",
 ]
 cuda = [
-    "torch (==2.8.0)",
-    "torchaudio (==2.8.0)",
-    "torchvision (==0.23.0)",
+    "torch (==2.8.0) ; sys_platform == 'linux'",
+    "torchaudio (==2.8.0) ; sys_platform == 'linux'",
+    "torchvision (==0.23.0) ; sys_platform == 'linux'",
+    "triton (==3.4.0) ; sys_platform == 'linux' and platform_machine == 'aarch64'",
 ]
 dev = [
     "pytest (>=9.2.0,<10.0.0)",
@@ -65,19 +63,30 @@ dev = [
 required-version = ">=0.13.7"
 default-groups = ["cpu", "dev"]
 conflicts = [[{ group = "cpu" }, { group = "cuda" }]]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'linux' and platform_machine == 'aarch64'",
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
 
 [tool.uv.sources]
 torch = [
     { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
-    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
 ]
 torchaudio = [
     { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
-    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
 ]
 torchvision = [
     { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
-    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
+]
+triton = [
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
 ]
 
 [[tool.uv.index]]
@@ -88,6 +97,12 @@ explicit = true
 [[tool.uv.index]]
 name = "pytorch-cuda"
 url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+# PyTorch publishes its ARM64 CUDA builds only for CUDA 12.9
+[[tool.uv.index]]
+name = "pytorch-cuda-arm64"
+url = "https://download.pytorch.org/whl/cu129"
 explicit = true
 
 [build-system]
