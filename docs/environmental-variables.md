@@ -57,15 +57,16 @@ for faster inference.
 | `int8`    | fastest | lower    | Default on CPU            |
 
 On a CPU, `faster_whisper` and `whisperx` use 4 threads by default. `ASR_CPU_THREADS` changes this, but more threads
-are not always faster: depending on the CPU they can make transcription much slower, so measure with your own audio
-before changing it.
+are not always faster, for example on CPUs that mix performance and efficiency cores, so measure with your own audio
+before changing it. On a CPU, `ASR_BATCH_SIZE` usually speeds up long files more than extra threads.
 
 ## Decoding
 
 `ASR_BEAM_SIZE` and `ASR_BATCH_SIZE` tune decoding. When they are not set, each engine uses its own default.
 
-With `faster_whisper`, setting `ASR_BATCH_SIZE` enables batched inference, which is significantly faster on GPU.
-Batched inference always applies voice activity detection to split the audio.
+With `faster_whisper`, setting `ASR_BATCH_SIZE` (for example `8`) enables batched inference, which transcribes long
+files considerably faster on both GPU and CPU. Batched inference always applies voice activity detection to split the
+audio and does not use the previous text as context.
 
 Whisper transcribes in 30-second windows and passes the text of the previous window to the next one as context. This
 keeps the style consistent, but it can also make the model stop too early, for example skipping speech at the end

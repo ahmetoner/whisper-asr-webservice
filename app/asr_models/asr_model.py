@@ -2,6 +2,7 @@ import gc
 import logging
 import time
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from threading import Lock, Thread
 from typing import Union
@@ -21,6 +22,8 @@ class ASRModel(ABC):
         self.model = None
         self.model_lock = Lock()
         self.last_activity_time = time.time()
+        # CTranslate2 inference slows down once the thread that created the model exits, so this thread never exits
+        self._loader = ThreadPoolExecutor(max_workers=1, thread_name_prefix="model-loader")
 
     @abstractmethod
     def _load_model(self):
@@ -49,7 +52,7 @@ class ASRModel(ABC):
             CONFIG.ASR_ENGINE, CONFIG.MODEL_NAME, CONFIG.DEVICE,
         )
         start = time.time()
-        self.model = self._load_model()
+        self.model = self._loader.submit(self._load_model).result()
         logger.info("Model loaded in %.1fs", time.time() - start)
         self.last_activity_time = time.time()
         if CONFIG.MODEL_IDLE_TIMEOUT > 0:

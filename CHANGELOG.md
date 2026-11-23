@@ -40,6 +40,7 @@ See the [upgrade guide](https://ahmetoner.github.io/whisper-asr-webservice/migra
 - WhisperX subtitles missing the spaces between words, and merging many segments into one subtitle
 - `word_timestamps` missing from the Swagger UI with the `openai_whisper` engine, which supports it
 - `poetry install` without extras failing on macOS and arm64 because it picked the CUDA build of PyTorch
+- Transcription with more than 4 CPU threads being several times slower because the model was loaded in a thread that exits
 
 [1.11.0] (2026-11-22)
 ---------------------

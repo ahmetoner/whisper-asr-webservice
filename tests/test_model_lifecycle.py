@@ -154,3 +154,22 @@ def test_condition_on_previous_text_setting(monkeypatch):
     engine.model = Model()
     engine.transcribe(AUDIO, "transcribe", None, None, None, None, {})
     assert captured["condition_on_previous_text"] is False
+
+
+def test_models_are_always_loaded_in_the_same_long_lived_thread():
+    import threading
+
+    threads = []
+
+    class Model(FakeASRModel):
+        def _load_model(self):
+            threads.append(threading.current_thread())
+            return "loaded"
+
+    model = Model()
+    model.load_model()
+    model.release_model()
+    reload = threading.Thread(target=model.load_model)
+    reload.start()
+    reload.join()
+    assert threads[0] is threads[1] and threads[0].is_alive()
