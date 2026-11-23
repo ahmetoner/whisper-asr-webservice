@@ -26,7 +26,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock poetry.toml ./
 RUN /opt/poetry/bin/poetry config virtualenvs.in-project true \
     && /opt/poetry/bin/poetry config virtualenvs.options.no-pip true \
-    && /opt/poetry/bin/poetry install --extras cpu --without dev --no-root
+    && /opt/poetry/bin/poetry install --without dev --no-root
 
 COPY README.md ./
 COPY app ./app

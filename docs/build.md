@@ -28,7 +28,7 @@ edited at [excalidraw.com](https://excalidraw.com).
 ## Install
 
 ```shell
-poetry install --extras cpu   # CPU build of PyTorch
+poetry install                # CPU build of PyTorch
 poetry install --extras cuda  # PyTorch for CUDA 12.8
 ```
 

@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry==2.5.2
-          poetry install --extras cpu
+          poetry install
       - name: Lint
         run: poetry run ruff check app tests
       - name: Test

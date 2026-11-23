@@ -39,6 +39,11 @@ segments into longer subtitles. To split subtitles into lines, set `SUBTITLE_MAX
 Audio is now decoded inside the service with PyAV, so the Docker images no longer contain the `ffmpeg` command and
 running from source no longer needs FFmpeg installed. Supported formats are unchanged.
 
+## Running from Source
+
+`poetry install` installs the CPU build of PyTorch, so `--extras cpu` is no longer needed (it still works). Use
+`poetry install --extras cuda` for NVIDIA GPUs.
+
 ## New Integrations
 
 New integrations should use the [OpenAI-compatible API](openai.md): it works with the OpenAI SDKs and with

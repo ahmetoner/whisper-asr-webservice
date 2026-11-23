@@ -5212,6 +5212,7 @@ description = "Tensors and Dynamic neural networks in Python with strong GPU acc
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
+markers = "platform_machine != \"x86_64\" or sys_platform == \"darwin\""
 files = [
     {file = "torch-2.8.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:0be92c08b44009d4131d1ff7a8060d10bafdb7ddcb7359ef8d8c5169007ea905"},
     {file = "torch-2.8.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:89aa9ee820bb39d4d72b794345cccef106b574508dd17dbec457949678c76011"},
@@ -5427,6 +5428,7 @@ description = "An audio package for PyTorch"
 optional = false
 python-versions = "*"
 groups = ["main"]
+markers = "platform_machine != \"x86_64\" or sys_platform == \"darwin\""
 files = [
     {file = "torchaudio-2.8.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c2f44cf279f673cfcdd8f576c349eee8bedf8caab351a5dd78b32970cc34a212"},
     {file = "torchaudio-2.8.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:d3c1b85b26a09832d139f6d6da6b66caeb51d2e16e08f8587665c44a9e1aa8f9"},
@@ -5526,7 +5528,7 @@ description = "A video decoder for PyTorch"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "sys_platform != \"linux\" or platform_machine != \"aarch64\""
+markers = "platform_machine != \"aarch64\" or sys_platform != \"linux\""
 files = [
     {file = "torchcodec-0.7.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:6ae0b7acbc0c1a755ae817a8843715131f24be7807ddc46092d8b49a0fc970eb"},
     {file = "torchcodec-0.7.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:a0071096724e8ded6a171457ce4680f646499b4a4d285cdb46e130983f965ce4"},
@@ -5555,7 +5557,7 @@ description = "A video decoder for PyTorch"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "sys_platform == \"linux\" and platform_machine == \"aarch64\""
+markers = "platform_machine == \"aarch64\" and sys_platform == \"linux\""
 files = [
     {file = "torchcodec-0.17.0-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:645ea2b33596d3f1463a8a70a907fd793e6c40ad81404732b277d5eb449f8860"},
     {file = "torchcodec-0.17.0-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:0ab2f00d849ba7b24e1ddcc4ed575d988fe4ed54f39c6a55575a1a47674eff9c"},
@@ -5622,6 +5624,7 @@ description = "image and video datasets and models for torch deep learning"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
+markers = "platform_machine != \"x86_64\" or sys_platform == \"darwin\""
 files = [
     {file = "torchvision-0.23.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:7266871daca00ad46d1c073e55d972179d12a58fa5c9adec9a3db9bbed71284a"},
     {file = "torchvision-0.23.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:31c583ba27426a3a04eca8c05450524105c1564db41be6632f7536ef405a6de2"},
@@ -5835,7 +5838,7 @@ description = "A language and compiler for custom Deep Learning operations"
 optional = false
 python-versions = "<3.14,>=3.9"
 groups = ["main"]
-markers = "(platform_machine == \"x86_64\" or sys_platform == \"linux2\") and (platform_system == \"Linux\" or sys_platform == \"linux2\" or sys_platform == \"linux\")"
+markers = "(platform_machine == \"x86_64\" or sys_platform == \"linux2\") and (platform_system == \"Linux\" or sys_platform == \"linux\" or sys_platform == \"linux2\")"
 files = [
     {file = "triton-3.4.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7ff2785de9bc02f500e085420273bb5cc9c9bb767584a4aa28d6e360cec70128"},
     {file = "triton-3.4.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7b70f5e6a41e52e48cfc087436c8a28c17ff98db369447bcaff3b887a3ab4467"},
@@ -5860,7 +5863,7 @@ description = "A language and compiler for custom Deep Learning operations"
 optional = false
 python-versions = "<3.16,>=3.11"
 groups = ["main"]
-markers = "platform_machine == \"x86_64\" and (sys_platform == \"linux2\" or sys_platform == \"linux\")"
+markers = "platform_machine == \"x86_64\" and (sys_platform == \"linux\" or sys_platform == \"linux2\")"
 files = [
     {file = "triton-3.9.0-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:feaaec13578ca84301d561d034cb08b3ae293d7f0b7ab6b8ddbb2d6796363716"},
     {file = "triton-3.9.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1622118a038b0c6e16fa4a0305da62c8b3c15904ee1cc4d4e65846a25969e41e"},
@@ -5974,7 +5977,7 @@ description = "Fast implementation of asyncio event loop on top of libuv"
 optional = false
 python-versions = ">=3.8.1"
 groups = ["main"]
-markers = "sys_platform != \"win32\" and sys_platform != \"cygwin\" and platform_python_implementation != \"PyPy\""
+markers = "platform_python_implementation != \"PyPy\" and sys_platform != \"win32\" and sys_platform != \"cygwin\""
 files = [
     {file = "uvloop-0.23.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ce17bc317d089f361b33521654c13e30eacfd3d2034fd34e613ca9c51c969686"},
     {file = "uvloop-0.23.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:53c2c5d7e2024e46776c2d90e6c637d01102126b61aaf5faa5edaf05f8b5722a"},
@@ -6496,10 +6499,10 @@ multidict = ">=4.0"
 propcache = ">=0.2.1"
 
 [extras]
-cpu = ["torch", "torchaudio", "torchvision"]
+cpu = []
 cuda = ["torch", "torchaudio", "torchvision"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "6e801061ff919669e011918beb72a9b72839a5f80414d8cac792b824b93b120b"
+content-hash = "1097377dde824c2a69d0bc5b713cd1e07a89c4cf343255c348f6e4d0d4489c82"
