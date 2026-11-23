@@ -55,9 +55,9 @@ class CONFIG:
     # Default sample rate for audio input. 16 kHz is commonly used in speech-to-text tasks.
     SAMPLE_RATE = int(os.getenv("SAMPLE_RATE", 16000))
 
-    # Subtitle output options for whisperx
-    SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH", 1000))
-    SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT", 2))
+    # Subtitle output options
+    SUBTITLE_MAX_LINE_WIDTH = int(os.getenv("SUBTITLE_MAX_LINE_WIDTH")) if os.getenv("SUBTITLE_MAX_LINE_WIDTH") else None
+    SUBTITLE_MAX_LINE_COUNT = int(os.getenv("SUBTITLE_MAX_LINE_COUNT")) if os.getenv("SUBTITLE_MAX_LINE_COUNT") else None
     SUBTITLE_HIGHLIGHT_WORDS = os.getenv("SUBTITLE_HIGHLIGHT_WORDS", "false").lower() == "true"
 
     MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", 0))

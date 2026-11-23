@@ -1,9 +1,8 @@
 import logging
-from typing import BinaryIO, Union
+from typing import Union
 
 import torch
 import whisper
-from whisper.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
@@ -52,16 +51,3 @@ class OpenAIWhisperASR(ASRModel):
         _, probs = self.model.detect_language(mel)
         detected_lang_code = max(probs, key=probs.get)
         return detected_lang_code, probs[detected_lang_code]
-
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        options = {"max_line_width": 1000, "max_line_count": 10, "highlight_words": False}
-        if output == "srt":
-            WriteSRT(ResultWriter).write_result(result, file=file, options=options)
-        elif output == "vtt":
-            WriteVTT(ResultWriter).write_result(result, file=file, options=options)
-        elif output == "tsv":
-            WriteTSV(ResultWriter).write_result(result, file=file, options=options)
-        elif output == "json":
-            WriteJSON(ResultWriter).write_result(result, file=file, options=options)
-        else:
-            WriteTXT(ResultWriter).write_result(result, file=file, options=options)

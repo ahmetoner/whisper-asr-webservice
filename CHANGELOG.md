@@ -7,11 +7,19 @@ Unreleased
 ### Breaking
 
 - Docker images no longer include the `ffmpeg` binary; audio is decoded in-process with PyAV
+- `/asr?output=json` returns the same structure for every engine, following OpenAI's `verbose_json` format; `language` is now a name such as `english`
+- `SUBTITLE_MAX_LINE_WIDTH` and `SUBTITLE_MAX_LINE_COUNT` are unset by default, so subtitles contain one cue per segment
 
 ### Changed
 
 - Audio is decoded in-process with PyAV instead of an `ffmpeg` subprocess, so running from source no longer requires FFmpeg
 - Removed the `ffmpeg-python` dependency and the FFmpeg build layer from the Docker images
+- All engines share one set of output writers, and the `SUBTITLE_*` settings apply to every engine
+- `/detect-language` no longer rounds the WhisperX confidence to two decimals
+
+### Fixed
+
+- WhisperX subtitles missing the spaces between words, and merging many segments into one subtitle
 
 [1.11.0] (2026-11-22)
 ---------------------

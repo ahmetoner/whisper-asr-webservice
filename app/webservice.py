@@ -13,13 +13,14 @@ import click
 import uvicorn
 from fastapi import Depends, FastAPI, File, HTTPException, Query, Security, UploadFile, applications
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.security import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 from whisper import tokenizer
 
 from app.config import CONFIG
 from app.factory.asr_model_factory import ASRModelFactory
+from app.results import format_result
 from app.utils import load_audio
 
 logging.basicConfig(
@@ -203,14 +204,13 @@ def asr(
         vad_filter,
         word_timestamps,
         {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
-        output,
     )
     logger.info(
         "Transcribed %r (%.1fs of audio, task %s, language %s, output %s) in %.1fs",
         audio_file.filename, len(audio) / CONFIG.SAMPLE_RATE, task, language or "auto", output, time.time() - start,
     )
-    return StreamingResponse(
-        result,
+    return Response(
+        format_result(result, output),
         media_type=MEDIA_TYPES[output],
         headers={
             "Asr-Engine": CONFIG.ASR_ENGINE,

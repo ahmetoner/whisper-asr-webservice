@@ -154,3 +154,12 @@ print(client.post("/asr?encode=false", files=files).status_code)
     env = os.environ | {"MAX_UPLOAD_SIZE_MB": "1"}
     result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
     assert result.stdout.strip().splitlines()[-1] == "413"
+
+
+def test_asr_json_output_has_the_same_layout_for_every_engine(client, pcm_bytes):
+    output = client.post("/asr?encode=false&output=json", files={"audio_file": ("tone.pcm", pcm_bytes)}).json()
+    assert output["task"] == "transcribe"
+    assert output["language"] == "english"
+    assert output["duration"] == 1.0
+    assert output["text"] == "hello world"
+    assert output["segments"][0]["start"] == 0.0 and output["segments"][0]["text"] == " hello world"

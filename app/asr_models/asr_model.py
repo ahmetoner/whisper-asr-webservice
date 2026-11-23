@@ -3,19 +3,19 @@ import logging
 import time
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from io import StringIO
 from threading import Lock, Thread
-from typing import BinaryIO, Union
+from typing import Union
 
 import torch
 
 from app.config import CONFIG
+from app.results import build_result
 
 logger = logging.getLogger(__name__)
 
 
 class ASRModel(ABC):
-    """Base class for the ASR engines; it owns loading, locking, idle tracking and unloading of the model."""
+    """Base class for the ASR engines; it owns loading, locking, idle tracking, unloading and the result format."""
 
     def __init__(self):
         self.model = None
@@ -37,15 +37,11 @@ class ASRModel(ABC):
         word_timestamps: Union[bool, None],
         options: Union[dict, None],
     ) -> dict:
-        """Transcribes the audio with the loaded model and returns the result."""
+        """Transcribes the audio with the loaded model and returns its raw "segments" and the "language" code."""
 
     @abstractmethod
     def _detect_language(self, audio) -> tuple[str, float]:
         """Detects the language with the loaded model and returns its code and probability."""
-
-    @abstractmethod
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        """Writes the result in the requested output format."""
 
     def load_model(self):
         logger.info(
@@ -82,15 +78,10 @@ class ASRModel(ABC):
         vad_filter: Union[bool, None],
         word_timestamps: Union[bool, None],
         options: Union[dict, None],
-        output,
-    ):
+    ) -> dict:
         with self.loaded_model():
-            result = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
-
-        output_file = StringIO()
-        self.write_result(result, output_file, output)
-        output_file.seek(0)
-        return output_file
+            raw = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
+        return build_result(raw["segments"], raw["language"], len(audio) / CONFIG.SAMPLE_RATE, task)
 
     def language_detection(self, audio):
         with self.loaded_model():

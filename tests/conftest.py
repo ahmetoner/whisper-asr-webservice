@@ -18,13 +18,10 @@ class FakeASRModel(ASRModel):
 
     def _transcribe(self, audio, task, language, initial_prompt, vad_filter, word_timestamps, options):
         self.calls.append({"audio": audio, "task": task, "language": language, **options})
-        return {"text": "hello world\n"}
+        return {"segments": [{"start": 0.0, "end": 1.0, "text": " hello world"}], "language": "en"}
 
     def _detect_language(self, audio):
         return "en", 0.99
-
-    def write_result(self, result, file, output):
-        file.write(result["text"])
 
 
 FAKE_MODEL = FakeASRModel()

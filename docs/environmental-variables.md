@@ -17,9 +17,9 @@ The service is configured with environment variables. All of them are optional.
 | `MODEL_UNLOAD_AFTER_REQUEST` | `false`                       | Unload the model after every request, see [Model Unloading](#model-unloading) |
 | `API_KEY`                  | unset                           | Require this key in the `X-API-Key` request header             |
 | `HF_TOKEN`                 | unset                           | Hugging Face token for WhisperX diarization                    |
-| `SUBTITLE_MAX_LINE_WIDTH`  | `1000`                          | Maximum characters per subtitle line (`whisperx`)              |
-| `SUBTITLE_MAX_LINE_COUNT`  | `2`                             | Maximum lines per subtitle (`whisperx`)                        |
-| `SUBTITLE_HIGHLIGHT_WORDS` | `false`                         | Highlight the current word in subtitles (`whisperx`)           |
+| `SUBTITLE_MAX_LINE_WIDTH`  | unset                           | Maximum characters per subtitle line, see [Subtitles](#subtitles) |
+| `SUBTITLE_MAX_LINE_COUNT`  | unset                           | Maximum lines per subtitle, see [Subtitles](#subtitles)        |
+| `SUBTITLE_HIGHLIGHT_WORDS` | `false`                         | Underline the current word in subtitles, see [Subtitles](#subtitles) |
 | `SAMPLE_RATE`              | `16000`                         | Sample rate audio is converted to. Whisper expects 16 kHz      |
 | `MAX_UPLOAD_SIZE_MB`       | `0`                             | Largest accepted upload in MB; `0` means no limit, see [Limits](#limits) |
 | `MAX_PENDING_REQUESTS`     | `0`                             | Requests processed or waiting at once; `0` means no limit      |
@@ -66,6 +66,13 @@ frees CPU or GPU memory. It is loaded again on the next request, which then take
 With `MODEL_UNLOAD_AFTER_REQUEST=true`, the model is unloaded as soon as each request finishes, so it only uses memory
 while a request is processed. Every request then includes the model loading time. This suits occasional use on a
 machine that needs its memory for other work.
+
+## Subtitles
+
+By default, the `srt` and `vtt` outputs contain one subtitle per segment. Set both `SUBTITLE_MAX_LINE_WIDTH` and
+`SUBTITLE_MAX_LINE_COUNT` to split them into lines of at most that many characters instead, and
+`SUBTITLE_HIGHLIGHT_WORDS=true` to underline each word as it is spoken. Both need word timestamps, so enable
+`word_timestamps` or use the WhisperX engine, which always provides them.
 
 ## Limits
 

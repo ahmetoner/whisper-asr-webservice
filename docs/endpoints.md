@@ -59,12 +59,19 @@ curl -F "audio_file=@call.m4a" "http://localhost:9000/asr?output=json&diarize=tr
 | `srt`    | `application/x-subrip`       | SubRip subtitles                                    |
 | `tsv`    | `text/tab-separated-values`  | Segment start, end (in milliseconds) and text       |
 
-The JSON output contains:
+The JSON output has the same structure for every engine and follows OpenAI's `verbose_json` format:
 
+- `task`: `transcribe` or `translate`
+- `language`: the detected or requested language, as a lowercase name such as `english`
+- `duration`: the length of the audio in seconds
 - `text`: the full transcript
-- `segments`: one entry per segment, with start and end times, text and engine-specific metadata such as word
-  timestamps and, when diarization is enabled, the speaker label
-- `language`: the detected or requested language code
+- `segments`: one entry per segment with `id`, `seek`, `start`, `end`, `text`, `tokens`, `temperature`,
+  `avg_logprob`, `compression_ratio` and `no_speech_prob`, plus `speaker` when diarization is enabled. WhisperX does
+  not report the decoding statistics, so they are `0` with that engine.
+- `words`: word timestamps with `word`, `start`, `end` and `probability`, included when `word_timestamps` is enabled
+  or with the WhisperX engine
+
+With diarization, the text outputs prefix every segment with its speaker, e.g. `[SPEAKER_00]: Hello`.
 
 The response includes an `Asr-Engine` header with the engine that produced it.
 

@@ -1,12 +1,11 @@
 import logging
 import os
 from dataclasses import replace
-from typing import BinaryIO, Union
+from typing import Union
 
 import whisperx
 from whisperx.audio import N_SAMPLES
 from whisperx.diarize import DiarizationPipeline
-from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
@@ -94,24 +93,6 @@ class WhisperXASR(ASRModel):
             logger.warning("Audio is shorter than 30s, language detection may be inaccurate")
         results = self.model['whisperx'].model.detect_language(audio)
         language = results[0]
-        language_probability = round(float(results[1]), 2)
+        language_probability = float(results[1])
         logger.debug("Detected language %s (%s) in the first 30s of audio", language, language_probability)
         return language, language_probability
-
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        default_options = {
-            "max_line_width": CONFIG.SUBTITLE_MAX_LINE_WIDTH,
-            "max_line_count": CONFIG.SUBTITLE_MAX_LINE_COUNT,
-            "highlight_words": CONFIG.SUBTITLE_HIGHLIGHT_WORDS
-        }
-
-        if output == "srt":
-            WriteSRT(SubtitlesWriter).write_result(result, file=file, options=default_options)
-        elif output == "vtt":
-            WriteVTT(SubtitlesWriter).write_result(result, file=file, options=default_options)
-        elif output == "tsv":
-            WriteTSV(ResultWriter).write_result(result, file=file, options=default_options)
-        elif output == "json":
-            WriteJSON(ResultWriter).write_result(result, file=file, options=default_options)
-        else:
-            WriteTXT(ResultWriter).write_result(result, file=file, options=default_options)
