@@ -160,7 +160,7 @@ async def health():
 @app.post("/asr", tags=["Endpoints"], dependencies=[Security(verify_api_key), Depends(limit_pending_requests)])
 def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
+    encode: bool = Query(default=True, description="Decode the file; set to false to send raw 16 kHz mono 16-bit PCM"),
     task: Literal["transcribe", "translate"] = Query(default="transcribe"),
     language: Annotated[Optional[LanguageCode], Query()] = None,
     initial_prompt: Union[str, None] = Query(default=None),
@@ -224,7 +224,7 @@ def asr(
 )
 def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
+    encode: bool = Query(default=True, description="Decode the file; set to false to send raw 16 kHz mono 16-bit PCM"),
 ):
     start = time.time()
     detected_lang_code, confidence = asr_model.language_detection(read_audio(audio_file, encode))

@@ -4,7 +4,6 @@
 
 - Python 3.12 or 3.13
 - [Poetry](https://python-poetry.org) 2.x
-- [FFmpeg](https://ffmpeg.org) on the `PATH`
 - For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
 
 ## Request Flow
@@ -20,7 +19,7 @@ edited at [excalidraw.com](https://excalidraw.com).
 |--------------------------------------|----------------------------------------------------------------------|
 | `app/webservice.py`                  | FastAPI application, endpoints, API key check and CLI entry point    |
 | `app/config.py`                      | Reads the environment variables                                      |
-| `app/utils.py`                       | Audio decoding with FFmpeg and the output format writers             |
+| `app/utils.py`                       | Audio decoding with PyAV and the output format writers               |
 | `app/factory/asr_model_factory.py`   | Creates the engine selected by `ASR_ENGINE`                          |
 | `app/asr_models/asr_model.py`        | Engine base class: model lock, lazy loading and idle unloading       |
 | `app/asr_models/*_engine.py`         | `openai_whisper`, `faster_whisper` and `whisperx` implementations    |
@@ -49,8 +48,7 @@ poetry run pytest
 poetry run ruff check app tests
 ```
 
-The tests replace the ASR engine with a stub, so they run without downloading models. Audio decoding tests are skipped
-when FFmpeg is not installed.
+The tests replace the ASR engine with a stub, so they run without downloading models.
 
 ## Build Docker Images
 

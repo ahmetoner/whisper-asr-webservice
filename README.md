@@ -15,7 +15,7 @@ A self-hosted REST API for speech recognition, translation and language identifi
 - Language detection with a confidence score
 - Output as plain text, JSON, WebVTT, SRT or TSV
 - Word-level timestamps, voice activity detection (VAD) and speaker diarization
-- Accepts any audio or video file FFmpeg can decode
+- Accepts any audio or video file FFmpeg can decode, decoded in-process with PyAV
 - Optional API key authentication
 - Unloads the model when idle to free memory
 - Interactive API documentation (Swagger UI)
@@ -100,5 +100,5 @@ For questions and discussion, join the [Discord server](https://discord.gg/4Q5YV
 
 ## License
 
-Released under the [MIT License](LICENCE). The Docker images include [FFmpeg](https://ffmpeg.org), licensed under the
-[LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
+Released under the [MIT License](LICENCE). Audio is decoded with [PyAV](https://pyav.org), which bundles
+[FFmpeg](https://ffmpeg.org) libraries licensed under the [LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.html).

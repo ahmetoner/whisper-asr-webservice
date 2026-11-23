@@ -23,7 +23,7 @@ Transcribes the uploaded file in its original language, or translates it into En
 | `language`        | string  | auto-detected  | Language code of the audio, e.g. `en`, `de`, `tr`                           |
 | `output`          | string  | `txt`          | `txt`, `json`, `vtt`, `srt` or `tsv`                                        |
 | `initial_prompt`  | string  | none           | Text that guides the style or vocabulary of the transcript                  |
-| `encode`          | boolean | `true`         | Decode the file with FFmpeg. Set to `false` to send raw PCM (see below)     |
+| `encode`          | boolean | `true`         | Decode the file. Set to `false` to send raw PCM (see below)                 |
 | `word_timestamps` | boolean | `false`        | Include word-level timestamps. `openai_whisper` and `faster_whisper`        |
 | `vad_filter`      | boolean | `false`        | Skip parts of the audio without speech. `faster_whisper` only               |
 | `diarize`         | boolean | `false`        | Label segments by speaker. `whisperx` only, requires `HF_TOKEN`             |
@@ -71,9 +71,10 @@ The response includes an `Asr-Engine` header with the engine that produced it.
 ### Input
 
 With `encode=true` (the default), any audio or video format supported by FFmpeg is accepted, including MP3, WAV,
-FLAC, OGG, Opus, M4A, MP4, MOV, MKV and WebM. Audio is converted to 16 kHz mono before transcription.
+FLAC, OGG, Opus, M4A, MP4, MOV, MKV and WebM. The file is decoded in-process with PyAV and converted to 16 kHz mono
+before transcription.
 
-With `encode=false`, the file must be raw 16-bit little-endian mono PCM at 16 kHz. This skips FFmpeg and is useful
+With `encode=false`, the file must be raw 16-bit little-endian mono PCM at 16 kHz. This skips decoding and is useful
 when the client already has decoded audio.
 
 ## Language Detection
@@ -85,7 +86,7 @@ Detects the language spoken in the first 30 seconds of the file.
 | Name         | Type    | Default  | Description                                   |
 |--------------|---------|----------|-----------------------------------------------|
 | `audio_file` | file    | required | Audio or video file                           |
-| `encode`     | boolean | `true`   | Decode the file with FFmpeg                   |
+| `encode`     | boolean | `true`   | Decode the file                               |
 
 ```shell
 curl -F "audio_file=@audio.mp3" "http://localhost:9000/detect-language"

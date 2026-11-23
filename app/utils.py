@@ -1,13 +1,11 @@
 import json
 import logging
 import os
-import shutil
-import tempfile
 import time
 from dataclasses import asdict
 from typing import BinaryIO, TextIO
 
-import ffmpeg
+import av
 import numpy as np
 from faster_whisper.utils import format_timestamp
 
@@ -102,42 +100,17 @@ class WriteJSON(ResultWriter):
 
 def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     """
-    Open an audio file object and read as mono waveform, resampling as necessary.
-    Modified from https://github.com/openai/whisper/blob/main/whisper/audio.py to accept a file object
-    Parameters
-    ----------
-    file: BinaryIO
-        The audio file like object
-    encode: Boolean
-        If true, encode audio stream to WAV before sending to whisper
-    sr: int
-        The sample rate to resample the audio if necessary
-    Returns
-    -------
-    A NumPy array containing the audio waveform, in float32 dtype.
-    Raises
-    ------
-    ValueError if the input cannot be decoded as audio.
+    Reads an audio or video file object as a mono float32 waveform at the given sample rate.
+    With encode=False the input must already be 16-bit little-endian mono PCM at that rate.
+    Raises ValueError if the input cannot be decoded as audio.
     """
     start = time.time()
     if encode:
-        # Write the upload to a temporary file instead of piping it: containers such as MP4/M4A/MOV
-        # can keep their index at the end of the file, which ffmpeg can only read from a seekable input.
-        with tempfile.NamedTemporaryFile() as tmp:
-            shutil.copyfileobj(file, tmp)
-            tmp.flush()
-            try:
-                # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
-                # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
-                out, _ = (
-                    ffmpeg.input(tmp.name, threads=0)
-                    .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
-                    .run(cmd="ffmpeg", capture_stdout=True, capture_stderr=True)
-                )
-            except ffmpeg.Error as e:
-                error = e.stderr.decode(errors="replace").strip().splitlines()
-                raise ValueError(f"Failed to load audio: {error[-1] if error else 'unknown error'}") from e
-            logger.debug("Decoded %d bytes with FFmpeg in %.2fs", tmp.tell(), time.time() - start)
+        try:
+            out = _decode(file, sr)
+        except av.error.FFmpegError as e:
+            raise ValueError(f"Failed to load audio: {e.strerror or e}") from e
+        logger.debug("Decoded %d samples with PyAV in %.2fs", len(out) // 2, time.time() - start)
     else:
         out = file.read()
         if len(out) % 2:
@@ -147,4 +120,23 @@ def load_audio(file: BinaryIO, encode=True, sr: int = CONFIG.SAMPLE_RATE):
     if not out:
         raise ValueError("The uploaded file contains no audio")
 
-    return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
+    return np.frombuffer(out, np.int16).astype(np.float32) / 32768.0
+
+
+def _decode(file: BinaryIO, sr: int) -> bytes:
+    resampler = av.AudioResampler(format="s16", layout="mono", rate=sr)
+    out = bytearray()
+    with av.open(file, mode="r") as container:
+        if not container.streams.audio:
+            raise ValueError("The uploaded file contains no audio")
+        for packet in container.demux(container.streams.audio[0]):
+            try:
+                frames = packet.decode()
+            except av.error.InvalidDataError:
+                continue
+            for frame in frames:
+                for resampled in resampler.resample(frame):
+                    out += resampled.to_ndarray().tobytes()
+        for resampled in resampler.resample(None):
+            out += resampled.to_ndarray().tobytes()
+    return bytes(out)

@@ -4,6 +4,15 @@ Changelog
 Unreleased
 ----------
 
+### Breaking
+
+- Docker images no longer include the `ffmpeg` binary; audio is decoded in-process with PyAV
+
+### Changed
+
+- Audio is decoded in-process with PyAV instead of an `ffmpeg` subprocess, so running from source no longer requires FFmpeg
+- Removed the `ffmpeg-python` dependency and the FFmpeg build layer from the Docker images
+
 [1.11.0] (2026-11-22)
 ---------------------
 

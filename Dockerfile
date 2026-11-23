@@ -1,5 +1,3 @@
-FROM onerahmet/ffmpeg:n9.1 AS ffmpeg
-
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
 FROM python:3.12-slim-bookworm AS base
@@ -43,8 +41,6 @@ WORKDIR /app
 
 COPY --from=build /app/.venv /app/.venv
 COPY . .
-COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=ffmpeg /usr/local/share/doc/ffmpeg /usr/local/share/doc/ffmpeg
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 

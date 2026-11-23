@@ -24,8 +24,6 @@ jobs:
             ~/.cache/pypoetry/artifacts
             ~/.cache/pypoetry/cache
           key: poetry-downloads-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Install dependencies
         run: |
           pip install poetry==2.5.2

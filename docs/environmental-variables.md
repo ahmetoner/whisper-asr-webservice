@@ -82,7 +82,7 @@ Both limits are off by default.
 ## Logging
 
 At `INFO`, the service logs its configuration at startup, model loading and unloading, and one line per request with
-the file name, audio length and processing time. Set `LOG_LEVEL=DEBUG` to also log all settings, FFmpeg decoding
+the file name, audio length and processing time. Set `LOG_LEVEL=DEBUG` to also log all settings, audio decoding
 times, the options passed to the engine and the detected language, plus the health check requests that are hidden
 otherwise.
 
