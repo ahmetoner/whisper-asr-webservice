@@ -13,6 +13,10 @@ The service is configured with environment variables. All of them are optional.
 | `ASR_BEAM_SIZE`            | engine default                  | Beam size used for decoding                                    |
 | `ASR_BATCH_SIZE`           | engine default                  | Batch size for batched inference (`faster_whisper`, `whisperx`) |
 | `ASR_VAD_FILTER`           | `false`                         | Default value of the `vad_filter` request parameter            |
+| `ASR_VAD_THRESHOLD`        | engine default                  | Speech probability threshold of the VAD, see [Voice Activity Detection](#voice-activity-detection) |
+| `ASR_VAD_MIN_SILENCE_MS`   | engine default                  | Silence length that ends a speech segment (`faster_whisper`)   |
+| `ASR_VAD_SPEECH_PAD_MS`    | engine default                  | Padding added around speech segments (`faster_whisper`)        |
+| `ASR_PROMPT_RESET_ON_TEMPERATURE` | engine default           | Reset the prompt above this fallback temperature (`faster_whisper`, `whisperx`) |
 | `MODEL_IDLE_TIMEOUT`       | `0`                             | Seconds of inactivity before the model is unloaded; `0` keeps it loaded |
 | `MODEL_UNLOAD_AFTER_REQUEST` | `false`                       | Unload the model after every request, see [Model Unloading](#model-unloading) |
 | `API_KEY`                  | unset                           | Require this key in the `X-API-Key` request header             |
@@ -57,8 +61,26 @@ for faster inference.
 With `faster_whisper`, setting `ASR_BATCH_SIZE` enables batched inference, which is significantly faster on GPU.
 Batched inference always applies voice activity detection to split the audio.
 
-`ASR_VAD_FILTER=true` enables voice activity detection by default for `faster_whisper`. Clients can still override it
-per request with the `vad_filter` parameter.
+On long recordings, the transcript can lose punctuation and capitalization over time. Lowering
+`ASR_PROMPT_RESET_ON_TEMPERATURE` (default `0.5`), for example to `0.3`, resets the context more often and usually
+helps.
+
+## Voice Activity Detection
+
+Voice activity detection (VAD) skips the parts of the audio without speech. `ASR_VAD_FILTER=true` enables it by default
+for `faster_whisper`; clients can still override it per request with the `vad_filter` parameter, which
+`/detect-language` also accepts so the language is detected from speech instead of leading silence or music.
+
+The VAD settings tune where speech starts and ends:
+
+- `ASR_VAD_THRESHOLD`: speech probability above which audio counts as speech (default `0.5`). Lower it if quiet
+  speech is skipped. With `whisperx`, it sets both the onset and offset of WhisperX's VAD, which is always on; values
+  around `0.1` help when WhisperX drops the start or end of non-English audio.
+- `ASR_VAD_MIN_SILENCE_MS`: how long a silence must be to end a speech segment.
+- `ASR_VAD_SPEECH_PAD_MS`: padding added around each speech segment.
+
+OpenAI API clients can set the same values per request with `chunking_strategy`, see
+[OpenAI API](openai.md#request-fields).
 
 ## Model Unloading
 

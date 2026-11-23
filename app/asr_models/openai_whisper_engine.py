@@ -40,7 +40,7 @@ class OpenAIWhisperASR(ASRModel):
         logger.debug("Transcribing with %s", options_dict)
         return self.model.transcribe(audio, **options_dict)
 
-    def _detect_language(self, audio):
+    def _detect_language(self, audio, vad_filter=False):
         # load audio and pad/trim it to fit 30 seconds
         audio = whisper.pad_or_trim(audio)
 

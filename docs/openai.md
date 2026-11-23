@@ -65,7 +65,7 @@ When `API_KEY` is not set, any API key is accepted; the OpenAI libraries require
 | `timestamp_granularities[]`  | `segment` (default) and `word`, with `response_format=verbose_json`                           |
 | `temperature`                | Sampling temperature between 0 and 1                                                         |
 | `stream`                     | Server-sent events, see [Streaming](#streaming)                                              |
-| `chunking_strategy`          | `auto` or a `server_vad` object enables voice activity detection (`faster_whisper`)          |
+| `chunking_strategy`          | `auto` or a `server_vad` object enables voice activity detection (`faster_whisper`); its `threshold`, `silence_duration_ms` and `prefix_padding_ms` set the [VAD settings](environmental-variables.md#voice-activity-detection) for the request |
 | `include[]`, `known_speaker_names[]`, `known_speaker_references[]` | Accepted and ignored                                  |
 
 `/v1/audio/translations` accepts `file`, `model`, `prompt`, `response_format` (without `diarized_json`) and

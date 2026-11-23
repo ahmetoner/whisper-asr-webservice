@@ -28,7 +28,8 @@ class FakeASRModel(ASRModel):
         })
         return {"segments": [{"start": 0.0, "end": 1.0, "text": " hello world"}], "language": "en"}
 
-    def _detect_language(self, audio):
+    def _detect_language(self, audio, vad_filter=False):
+        self.calls.append({"detect_vad_filter": vad_filter})
         return "en", 0.99
 
 

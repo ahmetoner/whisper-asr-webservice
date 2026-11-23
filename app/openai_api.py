@@ -53,6 +53,28 @@ def _prompt(prompt: Optional[str], keywords: Optional[list[str]]) -> Optional[st
     return " ".join(parts) or None
 
 
+VAD_FIELDS = {"threshold": "threshold", "silence_duration_ms": "min_silence_duration_ms", "prefix_padding_ms": "speech_pad_ms"}
+
+
+def _vad_options(chunking_strategy: Optional[str], fields: dict) -> Optional[dict]:
+    """Maps OpenAI's chunking_strategy ("auto", a server_vad object as JSON or as form fields) to VAD settings."""
+    value = chunking_strategy
+    if value is not None and value != "auto":
+        try:
+            value = json.loads(value)
+        except ValueError:
+            value = None
+        if value != "auto" and not (isinstance(value, dict) and value.get("type") == "server_vad"):
+            raise openai_error(400, 'chunking_strategy must be "auto" or a server_vad object', param="chunking_strategy")
+    if fields.get("type") is not None:
+        value = fields
+    if value is None:
+        return None
+    if value == "auto":
+        return {}
+    return {target: value[source] for source, target in VAD_FIELDS.items() if value.get(source) is not None}
+
+
 def _usage(duration: float) -> dict:
     return {"type": "duration", "seconds": math.ceil(duration)}
 
@@ -123,7 +145,7 @@ def _stream(audio, task, language, prompt, vad_filter, word_timestamps, options,
     logger.info("Streamed %r (%.1fs of audio, task %s) in %.1fs", filename, duration, task, time.time() - start)
 
 
-def _run(file, task, language, prompt, temperature, response_format, granularities, stream, chunking_strategy):
+def _run(file, task, language, prompt, temperature, response_format, granularities, stream, vad):
     diarize = response_format == "diarized_json"
     if diarize and not (CONFIG.ASR_ENGINE == "whisperx" and CONFIG.HF_TOKEN):
         raise openai_error(
@@ -131,9 +153,9 @@ def _run(file, task, language, prompt, temperature, response_format, granulariti
         )
     start = time.time()
     audio = service.read_audio(file)
-    vad_filter = CONFIG.VAD_FILTER or chunking_strategy is not None
+    vad_filter = CONFIG.VAD_FILTER or vad is not None
     word_timestamps = response_format == "verbose_json" and "word" in granularities
-    options = {"diarize": diarize, "min_speakers": None, "max_speakers": None, "temperature": temperature}
+    options = {"diarize": diarize, "min_speakers": None, "max_speakers": None, "temperature": temperature, "vad": vad}
     if stream:
         return StreamingResponse(
             _stream(audio, task, language, prompt, vad_filter, word_timestamps, options, diarize, file.filename),
@@ -162,6 +184,10 @@ def create_transcription(
     ] = ["segment"],  # noqa: B006
     stream: Annotated[bool, Form()] = False,
     chunking_strategy: Annotated[Optional[str], Form()] = None,
+    chunking_type: Annotated[Optional[str], Form(alias="chunking_strategy[type]")] = None,
+    chunking_threshold: Annotated[Optional[float], Form(alias="chunking_strategy[threshold]")] = None,
+    chunking_silence: Annotated[Optional[int], Form(alias="chunking_strategy[silence_duration_ms]")] = None,
+    chunking_padding: Annotated[Optional[int], Form(alias="chunking_strategy[prefix_padding_ms]")] = None,
     include: Annotated[Optional[list[str]], Form(alias="include[]")] = None,
     known_speaker_names: Annotated[Optional[list[str]], Form(alias="known_speaker_names[]")] = None,
     known_speaker_references: Annotated[Optional[list[str]], Form(alias="known_speaker_references[]")] = None,
@@ -175,7 +201,15 @@ def create_transcription(
         response_format,
         timestamp_granularities,
         stream,
-        chunking_strategy,
+        _vad_options(
+            chunking_strategy,
+            {
+                "type": chunking_type,
+                "threshold": chunking_threshold,
+                "silence_duration_ms": chunking_silence,
+                "prefix_padding_ms": chunking_padding,
+            },
+        ),
     )
 
 

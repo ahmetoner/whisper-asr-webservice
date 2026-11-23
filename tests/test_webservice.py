@@ -189,3 +189,8 @@ response = client.get("/", follow_redirects=False)
 print(response.headers["location"], client.get("/docs").text.count("/whisper/openapi.json"))
 """
     assert run_with_env(code, ROOT_PATH="/whisper") == "/whisper/docs 1"
+
+
+def test_detect_language_passes_vad_filter(client, fake_model, pcm_bytes):
+    client.post("/detect-language?encode=false&vad_filter=true", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert fake_model.calls[-1] == {"detect_vad_filter": True}

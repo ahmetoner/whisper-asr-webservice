@@ -97,9 +97,25 @@ def test_languages_hint(client, fake_model, languages, expected):
     assert fake_model.calls[-1]["language"] == expected
 
 
-def test_chunking_strategy_enables_vad(client, fake_model):
-    transcribe(client, {"chunking_strategy": "auto"})
+@pytest.mark.parametrize(
+    "data,vad",
+    [
+        ({"chunking_strategy": "auto"}, {}),
+        ({"chunking_strategy": '{"type": "server_vad", "threshold": 0.6, "silence_duration_ms": 900}'},
+         {"threshold": 0.6, "min_silence_duration_ms": 900}),
+        ({"chunking_strategy[type]": "server_vad", "chunking_strategy[prefix_padding_ms]": "200"}, {"speech_pad_ms": 200}),
+    ],
+)
+def test_chunking_strategy_enables_vad(client, fake_model, data, vad):
+    transcribe(client, data)
     assert fake_model.calls[-1]["vad_filter"] is True
+    assert fake_model.calls[-1]["vad"] == vad
+
+
+def test_invalid_chunking_strategy(client):
+    response = transcribe(client, {"chunking_strategy": "sometimes"})
+    assert response.status_code == 400
+    assert response.json()["error"]["param"] == "chunking_strategy"
 
 
 def test_translation(client, fake_model):

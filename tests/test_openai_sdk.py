@@ -70,6 +70,12 @@ def test_sdk_streaming(client, audio):
     assert events[-1].text == "hello world"
 
 
+def test_sdk_chunking_strategy(client, audio, fake_model):
+    chunking = {"type": "server_vad", "threshold": 0.6, "silence_duration_ms": 900, "prefix_padding_ms": 200}
+    client.audio.transcriptions.create(model="whisper-1", file=audio, chunking_strategy=chunking)
+    assert fake_model.calls[-1]["vad"] == {"threshold": 0.6, "min_silence_duration_ms": 900, "speech_pad_ms": 200}
+
+
 def test_sdk_models(client):
     assert [model.id for model in client.models.list()][0] == "whisper-1"
     with pytest.raises(openai.NotFoundError):

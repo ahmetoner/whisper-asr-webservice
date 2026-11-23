@@ -106,3 +106,21 @@ def test_model_is_unloaded_after_each_request_when_configured(monkeypatch):
     assert model.model is None
     assert model.language_detection(None) == ("en", 0.99)
     assert model.model is None
+
+
+def test_faster_whisper_language_detection_uses_vad_settings(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    seen = {}
+
+    class Model:
+        def detect_language(self, audio, vad_filter, vad_parameters):
+            seen.update(vad_filter=vad_filter, vad_parameters=vad_parameters)
+            return "en", 0.9, []
+
+    monkeypatch.setattr(CONFIG, "VAD_THRESHOLD", 0.6)
+    engine = fw.FasterWhisperASR()
+    engine.model = Model()
+    assert engine._detect_language(AUDIO, True) == ("en", 0.9)
+    assert seen["vad_filter"] is True
+    assert isinstance(seen["vad_parameters"], fw.VadOptions) and seen["vad_parameters"].threshold == 0.6

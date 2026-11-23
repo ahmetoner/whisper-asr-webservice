@@ -1,8 +1,8 @@
 import logging
 from typing import Union
 
-import whisper
 from faster_whisper import BatchedInferencePipeline, WhisperModel
+from faster_whisper.vad import VadOptions
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
@@ -41,6 +41,11 @@ class FasterWhisperASR(ASRModel):
             options_dict["word_timestamps"] = True
         if options.get("temperature") is not None:
             options_dict["temperature"] = options["temperature"]
+        if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
+            options_dict["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        vad_parameters = {**self._vad_parameters(), **(options.get("vad") or {})}
+        if vad_parameters and (vad_filter or CONFIG.BATCH_SIZE):
+            options_dict["vad_parameters"] = vad_parameters
         beam_size = CONFIG.BEAM_SIZE or 5
         logger.debug("Transcribing with beam_size=%s batch_size=%s %s", beam_size, CONFIG.BATCH_SIZE, options_dict)
         if CONFIG.BATCH_SIZE:
@@ -52,8 +57,18 @@ class FasterWhisperASR(ASRModel):
         logger.debug("Detected language %s (%.2f)", info.language, info.language_probability)
         return {"language": options_dict.get("language", info.language), "segments": segment_generator}
 
-    def _detect_language(self, audio):
-        # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.pad_or_trim(audio)
-        _, info = self.model.transcribe(audio, beam_size=5)
-        return info.language, info.language_probability
+    def _detect_language(self, audio, vad_filter=False):
+        parameters = self._vad_parameters()
+        language, probability, _ = self.model.detect_language(
+            audio, vad_filter=vad_filter, vad_parameters=VadOptions(**parameters) if parameters else None
+        )
+        return language, probability
+
+    @staticmethod
+    def _vad_parameters():
+        settings = {
+            "threshold": CONFIG.VAD_THRESHOLD,
+            "min_silence_duration_ms": CONFIG.VAD_MIN_SILENCE_MS,
+            "speech_pad_ms": CONFIG.VAD_SPEECH_PAD_MS,
+        }
+        return {key: value for key, value in settings.items() if value is not None}

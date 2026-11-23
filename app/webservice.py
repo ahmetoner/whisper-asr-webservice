@@ -244,9 +244,17 @@ def asr(
 def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
     encode: bool = Query(default=True, description="Decode the file; set to false to send raw 16 kHz mono 16-bit PCM"),
+    vad_filter: Annotated[
+        bool,
+        Query(
+            description="Skip parts of the audio without speech before detecting the language",
+            include_in_schema=CONFIG.ASR_ENGINE == "faster_whisper",
+        ),
+    ] = CONFIG.VAD_FILTER,
 ):
     start = time.time()
-    detected_lang_code, confidence = service.asr_model.language_detection(service.read_audio(audio_file, encode))
+    audio = service.read_audio(audio_file, encode)
+    detected_lang_code, confidence = service.asr_model.language_detection(audio, vad_filter)
     logger.info(
         "Detected language %s (%.2f) in %r in %.1fs", detected_lang_code, confidence, audio_file.filename, time.time() - start
     )

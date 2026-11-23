@@ -10,6 +10,9 @@ Unreleased
 - `Authorization: Bearer` authentication with `API_KEY`, next to the `X-API-Key` header
 - `CORS_ALLOW_ORIGINS` to allow browser-based applications on other origins to call the API
 - `ROOT_PATH` to serve the service behind a reverse proxy under a path prefix, including the documentation and Swagger UI
+- `ASR_VAD_THRESHOLD`, `ASR_VAD_MIN_SILENCE_MS` and `ASR_VAD_SPEECH_PAD_MS` to tune voice activity detection; the threshold also applies to WhisperX, which drops the start or end of some non-English audio with its default
+- `ASR_PROMPT_RESET_ON_TEMPERATURE` to keep punctuation and capitalization on long recordings
+- `vad_filter` for `/detect-language`, so the language is detected from speech instead of leading silence
 
 ### Breaking
 

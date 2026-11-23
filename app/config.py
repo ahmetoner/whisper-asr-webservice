@@ -46,7 +46,13 @@ class CONFIG:
     BEAM_SIZE = int(os.getenv("ASR_BEAM_SIZE")) if os.getenv("ASR_BEAM_SIZE") else None
     BATCH_SIZE = int(os.getenv("ASR_BATCH_SIZE")) if os.getenv("ASR_BATCH_SIZE") else None
 
-    # Default value of the vad_filter request parameter (faster_whisper)
+    # Voice activity detection: default of the vad_filter request parameter and the VAD settings
+    VAD_THRESHOLD = float(os.getenv("ASR_VAD_THRESHOLD")) if os.getenv("ASR_VAD_THRESHOLD") else None
+    VAD_MIN_SILENCE_MS = int(os.getenv("ASR_VAD_MIN_SILENCE_MS")) if os.getenv("ASR_VAD_MIN_SILENCE_MS") else None
+    VAD_SPEECH_PAD_MS = int(os.getenv("ASR_VAD_SPEECH_PAD_MS")) if os.getenv("ASR_VAD_SPEECH_PAD_MS") else None
+    PROMPT_RESET_ON_TEMPERATURE = (
+        float(os.getenv("ASR_PROMPT_RESET_ON_TEMPERATURE")) if os.getenv("ASR_PROMPT_RESET_ON_TEMPERATURE") else None
+    )
     VAD_FILTER = os.getenv("ASR_VAD_FILTER", "false").lower() == "true"
 
     # Optional API key. When set, requests must send it in the X-API-Key header.

@@ -89,12 +89,13 @@ when the client already has decoded audio.
 
 `POST /detect-language`
 
-Detects the language spoken in the first 30 seconds of the file.
+Detects the language spoken in the first 30 seconds of the file, or of its speech with `vad_filter=true`.
 
 | Name         | Type    | Default  | Description                                   |
 |--------------|---------|----------|-----------------------------------------------|
 | `audio_file` | file    | required | Audio or video file                           |
 | `encode`     | boolean | `true`   | Decode the file                               |
+| `vad_filter` | boolean | `false`  | Detect from speech, skipping silence. `faster_whisper` only |
 
 ```shell
 curl -F "audio_file=@audio.mp3" "http://localhost:9000/detect-language"

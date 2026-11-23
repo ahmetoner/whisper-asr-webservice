@@ -40,7 +40,7 @@ class ASRModel(ABC):
         """Transcribes the audio with the loaded model and returns its raw "segments" and the "language" code."""
 
     @abstractmethod
-    def _detect_language(self, audio) -> tuple[str, float]:
+    def _detect_language(self, audio, vad_filter: bool = False) -> tuple[str, float]:
         """Detects the language with the loaded model and returns its code and probability."""
 
     def load_model(self):
@@ -101,9 +101,9 @@ class ASRModel(ABC):
             for index, segment in enumerate(raw["segments"]):
                 yield raw["language"], normalize_segment(segment, index, raw["language"])
 
-    def language_detection(self, audio):
+    def language_detection(self, audio, vad_filter: bool = False):
         with self.loaded_model():
-            return self._detect_language(audio)
+            return self._detect_language(audio, vad_filter)
 
     def monitor_idleness(self):
         """

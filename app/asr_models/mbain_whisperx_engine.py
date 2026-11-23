@@ -21,12 +21,18 @@ class WhisperXASR(ASRModel):
         asr_options = {"without_timestamps": False}
         if CONFIG.BEAM_SIZE:
             asr_options["beam_size"] = CONFIG.BEAM_SIZE
+        if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
+            asr_options["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        vad_options = None
+        if CONFIG.VAD_THRESHOLD is not None:
+            vad_options = {"vad_onset": CONFIG.VAD_THRESHOLD, "vad_offset": CONFIG.VAD_THRESHOLD}
         model = {
             'whisperx': whisperx.load_model(
                 CONFIG.MODEL_NAME,
                 device=CONFIG.DEVICE,
                 compute_type=CONFIG.MODEL_QUANTIZATION,
-                asr_options=asr_options
+                asr_options=asr_options,
+                vad_options=vad_options,
             ),
             'diarize_model': None,
             'align_model': {},
@@ -93,7 +99,7 @@ class WhisperXASR(ASRModel):
         result["language"] = language
         return result
 
-    def _detect_language(self, audio):
+    def _detect_language(self, audio, vad_filter=False):
         if audio.shape[0] < N_SAMPLES:
             logger.warning("Audio is shorter than 30s, language detection may be inaccurate")
         results = self.model['whisperx'].model.detect_language(audio)
