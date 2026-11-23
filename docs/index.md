@@ -56,6 +56,7 @@ curl http://localhost:9000/v1/audio/transcriptions -F model=whisper-1 -F file=@a
 - [OpenAI API](openai.md): the OpenAI-compatible endpoints and SDK examples
 - [Legacy API](endpoints.md): the original endpoints, parameters and response formats
 - [Configuration](environmental-variables.md): all environment variables
+- [Upgrading to v2](migration.md): what changed for existing setups
 - [Development](build.md): running from source, tests and building images
 
 ## Support

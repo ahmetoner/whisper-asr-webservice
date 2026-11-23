@@ -19,6 +19,7 @@ nav:
   - OpenAI API: openai.md
   - Legacy API: endpoints.md
   - Configuration: environmental-variables.md
+  - Upgrading to v2: migration.md
   - Development: build.md
   - Changelog: changelog.md
   - License: licence.md
