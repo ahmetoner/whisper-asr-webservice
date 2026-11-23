@@ -16,7 +16,8 @@ validation:
 nav:
   - Overview: index.md
   - Installation: run.md
-  - API: endpoints.md
+  - OpenAI API: openai.md
+  - Legacy API: endpoints.md
   - Configuration: environmental-variables.md
   - Development: build.md
   - Changelog: changelog.md

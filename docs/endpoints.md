@@ -1,7 +1,8 @@
-# API
+# Legacy API
 
-The service exposes two endpoints. Both accept a file upload as `multipart/form-data` in the `audio_file` field.
-Interactive documentation is available at `/docs`, and the OpenAPI schema at `/openapi.json`.
+These are the service's original endpoints. They remain supported for existing integrations; new integrations should
+use the [OpenAI-compatible API](openai.md). Both accept a file upload as `multipart/form-data` in the `audio_file`
+field. Interactive documentation is available at `/docs`, and the OpenAPI schema at `/openapi.json`.
 
 | Method | Path               | Description                                 |
 |--------|--------------------|---------------------------------------------|
@@ -120,8 +121,9 @@ curl http://localhost:9000/health
 
 ## Authentication
 
-When the `API_KEY` environment variable is set, both endpoints require the key in the `X-API-Key` header. The
-documentation pages stay public, and the Swagger UI provides an **Authorize** button to enter the key.
+When the `API_KEY` environment variable is set, both endpoints require the key in the `X-API-Key` header or as
+`Authorization: Bearer <key>`. The documentation pages stay public, and the Swagger UI provides an **Authorize** button
+to enter the key.
 
 ```shell
 curl -H "X-API-Key: your-secret-key" -F "audio_file=@audio.mp3" "http://localhost:9000/asr"

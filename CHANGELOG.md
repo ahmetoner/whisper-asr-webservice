@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+- OpenAI-compatible API: `/v1/audio/transcriptions`, `/v1/audio/translations` and `/v1/models`, with every response format including `verbose_json` and `diarized_json`, word timestamps, streaming and OpenAI's error format, so the OpenAI SDKs and applications built for OpenAI work by changing the base URL
+- `Authorization: Bearer` authentication with `API_KEY`, next to the `X-API-Key` header
+
 ### Breaking
 
 - Docker images no longer include the `ffmpeg` binary; audio is decoded in-process with PyAV
@@ -15,6 +20,7 @@ Unreleased
 - Audio is decoded in-process with PyAV instead of an `ffmpeg` subprocess, so running from source no longer requires FFmpeg
 - Removed the `ffmpeg-python` dependency and the FFmpeg build layer from the Docker images
 - All engines share one set of output writers, and the `SUBTITLE_*` settings apply to every engine
+- `/asr` and `/detect-language` are documented as the legacy API
 - `/detect-language` no longer rounds the WhisperX confidence to two decimals
 
 ### Fixed

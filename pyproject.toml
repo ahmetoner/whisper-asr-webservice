@@ -90,6 +90,7 @@ ruff = ">=0.17.6,<1.0.0"
 black = ">=26.10.1,<27.0.0"
 mkdocs-material = ">=9.8.2,<10.0.0"
 pymdown-extensions = ">=13.1.2,<14.0.0"
+openai = "^3.58.0"
 
 [build-system]
 requires = ["poetry-core>=2.0"]

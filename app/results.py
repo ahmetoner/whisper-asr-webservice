@@ -33,32 +33,37 @@ def _normalize_words(words, language: str, segment_start: float) -> list[dict]:
     return normalized
 
 
-def build_result(segments, language: str, duration: float, task: str) -> dict:
-    """Turns the raw segments of any engine into one structure with OpenAI's segment and word fields."""
-    normalized = []
-    for index, segment in enumerate(segments):
-        segment = _as_dict(segment)
-        item = {
-            "id": segment.get("id", index),
-            "seek": segment.get("seek", 0),
-            "start": segment["start"],
-            "end": segment["end"],
-            "text": segment["text"],
-            "tokens": segment.get("tokens", []),
-            "temperature": segment.get("temperature", 0.0),
-            "avg_logprob": segment.get("avg_logprob", 0.0),
-            "compression_ratio": segment.get("compression_ratio", 0.0),
-            "no_speech_prob": segment.get("no_speech_prob", 0.0),
-        }
-        words = _normalize_words(segment.get("words"), language, item["start"])
-        if words:
-            item["words"] = words
-        if segment.get("speaker"):
-            item["speaker"] = segment["speaker"]
-        normalized.append(item)
+def normalize_segment(segment, index: int, language: str) -> dict:
+    """Turns a raw segment of any engine into OpenAI's segment fields, with optional words and speaker."""
+    segment = _as_dict(segment)
+    item = {
+        "id": segment.get("id", index),
+        "seek": segment.get("seek", 0),
+        "start": segment["start"],
+        "end": segment["end"],
+        "text": segment["text"],
+        "tokens": segment.get("tokens", []),
+        "temperature": segment.get("temperature", 0.0),
+        "avg_logprob": segment.get("avg_logprob", 0.0),
+        "compression_ratio": segment.get("compression_ratio", 0.0),
+        "no_speech_prob": segment.get("no_speech_prob", 0.0),
+    }
+    words = _normalize_words(segment.get("words"), language, item["start"])
+    if words:
+        item["words"] = words
+    if segment.get("speaker"):
+        item["speaker"] = segment["speaker"]
+    return item
 
+
+def join_text(texts, language: str) -> str:
     separator = "" if language in LANGUAGES_WITHOUT_SPACES else " "
-    text = separator.join(segment["text"].strip() for segment in normalized)
+    return separator.join(text.strip() for text in texts)
+
+
+def build_result(segments, language: str, duration: float, task: str) -> dict:
+    normalized = [normalize_segment(segment, index, language) for index, segment in enumerate(segments)]
+    text = join_text((segment["text"] for segment in normalized), language)
     return {"task": task, "language": language, "duration": duration, "text": text, "segments": normalized}
 
 
@@ -75,6 +80,31 @@ def verbose_json(result: dict) -> dict:
     if words:
         output["words"] = words
     return output
+
+
+def speaker_labels(segments) -> dict:
+    """Maps the engine's speaker IDs to OpenAI's labels A, B, C... in order of appearance."""
+    labels = {}
+    for segment in segments:
+        if segment.get("speaker") and segment["speaker"] not in labels:
+            labels[segment["speaker"]] = chr(ord("A") + len(labels))
+    return labels
+
+
+def diarized_json(result: dict) -> dict:
+    labels = speaker_labels(result["segments"])
+    segments = [
+        {
+            "type": "transcript.text.segment",
+            "id": f"seg_{index:03d}",
+            "start": segment["start"],
+            "end": segment["end"],
+            "text": segment["text"].strip(),
+            "speaker": labels.get(segment.get("speaker"), "unknown"),
+        }
+        for index, segment in enumerate(result["segments"], start=1)
+    ]
+    return {"task": result["task"], "duration": result["duration"], "text": result["text"], "segments": segments}
 
 
 def _prepare_for_writers(result: dict) -> dict:

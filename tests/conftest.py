@@ -17,7 +17,15 @@ class FakeASRModel(ASRModel):
         return "loaded"
 
     def _transcribe(self, audio, task, language, initial_prompt, vad_filter, word_timestamps, options):
-        self.calls.append({"audio": audio, "task": task, "language": language, **options})
+        self.calls.append({
+            "audio": audio,
+            "task": task,
+            "language": language,
+            "initial_prompt": initial_prompt,
+            "vad_filter": vad_filter,
+            "word_timestamps": word_timestamps,
+            **options,
+        })
         return {"segments": [{"start": 0.0, "end": 1.0, "text": " hello world"}], "language": "en"}
 
     def _detect_language(self, audio):
@@ -27,9 +35,9 @@ class FakeASRModel(ASRModel):
 FAKE_MODEL = FakeASRModel()
 ASRModelFactory.create_asr_model = staticmethod(lambda: FAKE_MODEL)
 
-from app import webservice  # noqa: E402  (must be imported after the factory is patched)
+from app import service, webservice  # noqa: E402  (must be imported after the factory is patched)
 
-webservice.load_initial_model()
+service.load_initial_model()
 
 
 @pytest.fixture

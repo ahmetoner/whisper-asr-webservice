@@ -35,10 +35,10 @@ class OpenAIWhisperASR(ASRModel):
             options_dict["word_timestamps"] = word_timestamps
         if CONFIG.BEAM_SIZE:
             options_dict["beam_size"] = CONFIG.BEAM_SIZE
+        if options.get("temperature") is not None:
+            options_dict["temperature"] = options["temperature"]
         logger.debug("Transcribing with %s", options_dict)
-        result = self.model.transcribe(audio, **options_dict)
-        logger.debug("Got %d segments in language %s", len(result["segments"]), result["language"])
-        return result
+        return self.model.transcribe(audio, **options_dict)
 
     def _detect_language(self, audio):
         # load audio and pad/trim it to fit 30 seconds

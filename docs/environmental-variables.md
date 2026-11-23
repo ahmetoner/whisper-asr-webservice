@@ -99,8 +99,8 @@ docker run -d -p 9000:9000 -e LOG_LEVEL=DEBUG onerahmet/openai-whisper-asr-webse
 
 ## Authentication
 
-When `API_KEY` is set, `/asr` and `/detect-language` return `401 Unauthorized` unless the request includes the key in
-the `X-API-Key` header. The documentation pages remain public. See [API](endpoints.md#authentication).
+When `API_KEY` is set, all API endpoints return `401 Unauthorized` unless the request includes the key, either as
+`Authorization: Bearer <key>` or in the `X-API-Key` header. The documentation pages and `/health` remain public.
 
 ## Speaker Diarization
 

@@ -10,6 +10,7 @@ A self-hosted REST API for speech recognition, translation and language identifi
 
 ## Features
 
+- OpenAI-compatible API: works with the OpenAI SDKs and any application that lets you set the OpenAI base URL
 - Three engines: OpenAI Whisper, Faster Whisper and WhisperX
 - Transcription in every language Whisper supports, and translation into English
 - Language detection with a confidence score
@@ -43,7 +44,16 @@ docker run -d --gpus all -p 9000:9000 \
 Open <http://localhost:9000/docs> to use the API from your browser, or send a request directly:
 
 ```shell
-curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
+curl http://localhost:9000/v1/audio/transcriptions -F model=whisper-1 -F file=@audio.mp3
+```
+
+Or use any OpenAI SDK by setting its base URL:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:9000/v1", api_key="unused")
+print(client.audio.transcriptions.create(model="whisper-1", file=open("audio.mp3", "rb")).text)
 ```
 
 ## Engines

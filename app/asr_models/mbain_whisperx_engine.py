@@ -52,11 +52,16 @@ class WhisperXASR(ASRModel):
         if language:
             options_dict["language"] = language
 
-        # whisperx takes the initial prompt from the pipeline options, not as a transcribe() argument
+        # whisperx takes the initial prompt and temperature from the pipeline options, not as transcribe() arguments
         pipeline = self.model['whisperx']
         default_options = pipeline.options
+        changes = {}
         if initial_prompt:
-            pipeline.options = replace(default_options, initial_prompt=initial_prompt)
+            changes["initial_prompt"] = initial_prompt
+        if options.get("temperature") is not None:
+            changes["temperatures"] = [options["temperature"]]
+        if changes:
+            pipeline.options = replace(default_options, **changes)
         logger.debug("Transcribing with batch_size=%s initial_prompt=%r %s", CONFIG.BATCH_SIZE, initial_prompt, options_dict)
         try:
             result = pipeline.transcribe(audio, batch_size=CONFIG.BATCH_SIZE, **options_dict)

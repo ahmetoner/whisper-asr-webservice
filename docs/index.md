@@ -5,6 +5,7 @@ based on [OpenAI Whisper](https://github.com/openai/whisper). It runs as a Docke
 
 ## Features
 
+- OpenAI-compatible API: works with the OpenAI SDKs and any application that lets you set the OpenAI base URL
 - Three engines: OpenAI Whisper, Faster Whisper and WhisperX
 - Transcription in every language Whisper supports, and translation into English
 - Language detection with a confidence score
@@ -38,7 +39,7 @@ based on [OpenAI Whisper](https://github.com/openai/whisper). It runs as a Docke
 Open <http://localhost:9000/docs> to use the API from your browser, or send a request directly:
 
 ```shell
-curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
+curl http://localhost:9000/v1/audio/transcriptions -F model=whisper-1 -F file=@audio.mp3
 ```
 
 ## Engines
@@ -52,7 +53,8 @@ curl -F "audio_file=@audio.mp3" "http://localhost:9000/asr?output=json"
 ## Next Steps
 
 - [Installation](run.md): Docker images, GPU setup and model caching
-- [API](endpoints.md): endpoints, parameters and response formats
+- [OpenAI API](openai.md): the OpenAI-compatible endpoints and SDK examples
+- [Legacy API](endpoints.md): the original endpoints, parameters and response formats
 - [Configuration](environmental-variables.md): all environment variables
 - [Development](build.md): running from source, tests and building images
 

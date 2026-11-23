@@ -7,7 +7,7 @@ from threading import BoundedSemaphore, Event
 import pytest
 from fastapi.testclient import TestClient
 
-from app import webservice
+from app import service, webservice
 
 
 def test_index_redirects_to_docs(client):
@@ -75,16 +75,16 @@ def test_health(client):
 
 
 def test_health_reports_loading_until_the_model_is_loaded(client, monkeypatch):
-    monkeypatch.setattr(webservice, "model_ready", Event())
+    monkeypatch.setattr(service, "model_ready", Event())
     response = client.get("/health")
     assert response.status_code == 503
     assert response.json() == {"status": "loading"}
 
 
 def test_model_is_loaded_in_the_background_on_startup(monkeypatch):
-    monkeypatch.setattr(webservice, "model_ready", Event())
+    monkeypatch.setattr(service, "model_ready", Event())
     with TestClient(webservice.app):
-        assert webservice.model_ready.wait(timeout=5)
+        assert service.model_ready.wait(timeout=5)
 
 
 def test_health_stays_public_when_api_key_configured(client, monkeypatch):
@@ -131,7 +131,7 @@ def test_invalid_log_level_is_rejected():
 
 def test_requests_are_rejected_when_too_many_are_pending(client, monkeypatch, pcm_bytes):
     semaphore = BoundedSemaphore(1)
-    monkeypatch.setattr(webservice, "pending_requests", semaphore)
+    monkeypatch.setattr(service, "pending_requests", semaphore)
     files = {"audio_file": ("tone.pcm", pcm_bytes)}
     semaphore.acquire()
     assert client.post("/asr?encode=false", files=files).status_code == 503

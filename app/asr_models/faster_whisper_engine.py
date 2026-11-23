@@ -39,6 +39,8 @@ class FasterWhisperASR(ASRModel):
             options_dict["vad_filter"] = True
         if word_timestamps:
             options_dict["word_timestamps"] = True
+        if options.get("temperature") is not None:
+            options_dict["temperature"] = options["temperature"]
         beam_size = CONFIG.BEAM_SIZE or 5
         logger.debug("Transcribing with beam_size=%s batch_size=%s %s", beam_size, CONFIG.BATCH_SIZE, options_dict)
         if CONFIG.BATCH_SIZE:
@@ -47,9 +49,8 @@ class FasterWhisperASR(ASRModel):
             )
         else:
             segment_generator, info = self.model.transcribe(audio, beam_size=beam_size, **options_dict)
-        segments = list(segment_generator)
-        logger.debug("Got %d segments, detected language %s (%.2f)", len(segments), info.language, info.language_probability)
-        return {"language": options_dict.get("language", info.language), "segments": segments}
+        logger.debug("Detected language %s (%.2f)", info.language, info.language_probability)
+        return {"language": options_dict.get("language", info.language), "segments": segment_generator}
 
     def _detect_language(self, audio):
         # load audio and pad/trim it to fit 30 seconds

@@ -9,7 +9,7 @@ from typing import Union
 import torch
 
 from app.config import CONFIG
-from app.results import build_result
+from app.results import build_result, normalize_segment
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,25 @@ class ASRModel(ABC):
     ) -> dict:
         with self.loaded_model():
             raw = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
-        return build_result(raw["segments"], raw["language"], len(audio) / CONFIG.SAMPLE_RATE, task)
+            segments = list(raw["segments"])
+        logger.debug("Got %d segments in language %s", len(segments), raw["language"])
+        return build_result(segments, raw["language"], len(audio) / CONFIG.SAMPLE_RATE, task)
+
+    def transcribe_stream(
+        self,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        options: Union[dict, None],
+    ):
+        """Yields (language, segment) pairs as soon as the engine produces each segment."""
+        with self.loaded_model():
+            raw = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
+            for index, segment in enumerate(raw["segments"]):
+                yield raw["language"], normalize_segment(segment, index, raw["language"])
 
     def language_detection(self, audio):
         with self.loaded_model():
