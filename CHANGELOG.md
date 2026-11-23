@@ -35,6 +35,7 @@ Unreleased
 ### Fixed
 
 - WhisperX subtitles missing the spaces between words, and merging many segments into one subtitle
+- `word_timestamps` missing from the Swagger UI with the `openai_whisper` engine, which supports it
 
 [1.11.0] (2026-11-22)
 ---------------------
