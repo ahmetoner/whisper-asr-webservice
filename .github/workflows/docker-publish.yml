@@ -10,7 +10,7 @@ env:
   DOCKER_USER: ${{secrets.DOCKER_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
   REPO_NAME: ${{secrets.REPO_NAME}}
-  TRIVY: docker run --rm -v ${{ github.workspace }}:/src -w /src -v /home/runner/.docker/config.json:/root/.docker/config.json:ro aquasec/trivy:0.76.2
+  TRIVY: docker run --rm -e TRIVY_TIMEOUT=30m -v /home/runner/.cache/trivy:/root/.cache/trivy -v ${{ github.workspace }}:/src -w /src -v /home/runner/.docker/config.json:/root/.docker/config.json:ro aquasec/trivy:0.76.2
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
