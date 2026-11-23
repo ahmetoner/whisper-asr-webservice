@@ -10,9 +10,10 @@ from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import Depends, FastAPI, File, Query, Request, Security, UploadFile, applications
+from fastapi import Depends, FastAPI, File, Query, Request, Security, UploadFile
 from fastapi.exception_handlers import http_exception_handler, request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -86,22 +87,40 @@ app = FastAPI(
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
     lifespan=lifespan,
     max_body_size=CONFIG.MAX_UPLOAD_SIZE_MB * 1024 * 1024 if CONFIG.MAX_UPLOAD_SIZE_MB > 0 else None,
+    docs_url=None,
 )
 
+if CONFIG.CORS_ALLOW_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=CONFIG.CORS_ALLOW_ORIGINS,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["Content-Disposition", "Asr-Engine"],
+    )
+
 assets_path = os.getcwd() + "/swagger-ui-assets"
-if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
+swagger_assets = path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js")
+if swagger_assets:
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
 
-    def swagger_monkey_patch(*args, **kwargs):
-        return get_swagger_ui_html(
-            *args,
-            **kwargs,
-            swagger_favicon_url="",
-            swagger_css_url="/assets/swagger-ui.css",
-            swagger_js_url="/assets/swagger-ui-bundle.js",
-        )
 
-    applications.get_swagger_ui_html = swagger_monkey_patch
+@app.get("/docs", include_in_schema=False)
+async def swagger_ui(request: Request):
+    root_path = request.scope.get("root_path", "")
+    assets = {}
+    if swagger_assets:
+        assets = {
+            "swagger_css_url": f"{root_path}/assets/swagger-ui.css",
+            "swagger_js_url": f"{root_path}/assets/swagger-ui-bundle.js",
+            "swagger_favicon_url": "",
+        }
+    return get_swagger_ui_html(
+        openapi_url=f"{root_path}{app.openapi_url}",
+        title=f"{app.title} - Swagger UI",
+        swagger_ui_parameters=app.swagger_ui_parameters,
+        **assets,
+    )
 
 
 OPENAI_ERROR_TYPES = {401: "invalid_request_error", 404: "invalid_request_error", 429: "rate_limit_error"}
@@ -142,9 +161,9 @@ async def handle_validation_error(request: Request, exc: RequestValidationError)
 app.include_router(openai_api.router)
 
 
-@app.get("/", response_class=RedirectResponse, include_in_schema=False)
-async def index():
-    return "/docs"
+@app.get("/", include_in_schema=False)
+async def index(request: Request):
+    return RedirectResponse(f"{request.scope.get('root_path', '')}/docs")
 
 
 @app.get("/health", include_in_schema=False)
@@ -255,7 +274,7 @@ def detect_language(
 )
 @click.version_option(version=projectMetadata["Version"])
 def start(host: str, port: Optional[int] = None):
-    uvicorn.run(app, host=host, port=port, log_level=CONFIG.LOG_LEVEL.lower(), log_config=None)
+    uvicorn.run(app, host=host, port=port, root_path=CONFIG.ROOT_PATH, log_level=CONFIG.LOG_LEVEL.lower(), log_config=None)
 
 
 if __name__ == "__main__":

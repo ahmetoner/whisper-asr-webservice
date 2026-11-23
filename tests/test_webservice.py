@@ -163,3 +163,29 @@ def test_asr_json_output_has_the_same_layout_for_every_engine(client, pcm_bytes)
     assert output["duration"] == 1.0
     assert output["text"] == "hello world"
     assert output["segments"][0]["start"] == 0.0 and output["segments"][0]["text"] == " hello world"
+
+
+def run_with_env(code, **env):
+    script = (
+        "import os\nfrom tests.conftest import webservice\nfrom fastapi.testclient import TestClient\n"
+        "client = TestClient(webservice.app, root_path=os.environ.get('ROOT_PATH', ''))\n"
+    )
+    return subprocess.run(
+        [sys.executable, "-c", script + code], env=os.environ | env, capture_output=True, text=True, check=True
+    ).stdout.strip().splitlines()[-1]
+
+
+def test_cors_allow_origins():
+    code = """
+headers = {"Origin": "https://app.example", "Access-Control-Request-Method": "POST"}
+print(client.options("/v1/audio/transcriptions", headers=headers).headers.get("access-control-allow-origin"))
+"""
+    assert run_with_env(code, CORS_ALLOW_ORIGINS="https://app.example, https://other.example") == "https://app.example"
+
+
+def test_root_path_is_used_for_docs_and_redirects():
+    code = """
+response = client.get("/", follow_redirects=False)
+print(response.headers["location"], client.get("/docs").text.count("/whisper/openapi.json"))
+"""
+    assert run_with_env(code, ROOT_PATH="/whisper") == "/whisper/docs 1"

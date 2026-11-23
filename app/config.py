@@ -63,6 +63,9 @@ class CONFIG:
     MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", 0))
     MAX_PENDING_REQUESTS = int(os.getenv("MAX_PENDING_REQUESTS", 0))
 
+    CORS_ALLOW_ORIGINS = [origin.strip() for origin in os.getenv("CORS_ALLOW_ORIGINS", "").split(",") if origin.strip()]
+    ROOT_PATH = os.getenv("ROOT_PATH", "").rstrip("/")
+
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
     if LOG_LEVEL not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
         raise ValueError("Invalid LOG_LEVEL. Choose 'DEBUG', 'INFO', 'WARNING' or 'ERROR'.")

@@ -23,6 +23,8 @@ The service is configured with environment variables. All of them are optional.
 | `SAMPLE_RATE`              | `16000`                         | Sample rate audio is converted to. Whisper expects 16 kHz      |
 | `MAX_UPLOAD_SIZE_MB`       | `0`                             | Largest accepted upload in MB; `0` means no limit, see [Limits](#limits) |
 | `MAX_PENDING_REQUESTS`     | `0`                             | Requests processed or waiting at once; `0` means no limit      |
+| `CORS_ALLOW_ORIGINS`       | unset                           | Comma-separated origins allowed to call the API from a browser |
+| `ROOT_PATH`                | unset                           | URL prefix when served behind a reverse proxy, e.g. `/whisper` |
 | `LOG_LEVEL`                | `INFO`                          | `DEBUG`, `INFO`, `WARNING` or `ERROR`, see [Logging](#logging) |
 
 ## Models
@@ -85,6 +87,16 @@ export MAX_PENDING_REQUESTS=4       # further requests are rejected with 503 unt
 ```
 
 Both limits are off by default.
+
+## Browser Clients and Reverse Proxies
+
+Browser-based applications can only call the API from another origin when that origin is allowed. List the origins
+in `CORS_ALLOW_ORIGINS`, for example `CORS_ALLOW_ORIGINS=https://app.example.com,http://localhost:3000`, or `*` to
+allow every origin.
+
+When a reverse proxy serves the service under a path prefix and removes the prefix before forwarding requests, set
+`ROOT_PATH` to that prefix (e.g. `ROOT_PATH=/whisper`) so that redirects, the documentation and the Swagger UI use
+the right URLs.
 
 ## Logging
 

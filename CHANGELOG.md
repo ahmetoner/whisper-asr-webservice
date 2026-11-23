@@ -8,6 +8,8 @@ Unreleased
 
 - OpenAI-compatible API: `/v1/audio/transcriptions`, `/v1/audio/translations` and `/v1/models`, with every response format including `verbose_json` and `diarized_json`, word timestamps, streaming and OpenAI's error format, so the OpenAI SDKs and applications built for OpenAI work by changing the base URL
 - `Authorization: Bearer` authentication with `API_KEY`, next to the `X-API-Key` header
+- `CORS_ALLOW_ORIGINS` to allow browser-based applications on other origins to call the API
+- `ROOT_PATH` to serve the service behind a reverse proxy under a path prefix, including the documentation and Swagger UI
 
 ### Breaking
 
