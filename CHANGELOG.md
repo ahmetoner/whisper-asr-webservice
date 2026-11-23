@@ -29,6 +29,7 @@ Unreleased
 - Removed the `ffmpeg-python` dependency and the FFmpeg build layer from the Docker images
 - All engines share one set of output writers, and the `SUBTITLE_*` settings apply to every engine
 - `/asr` and `/detect-language` are documented as the legacy API
+- The documentation explains how to run offline with cached models, including WhisperX
 - `/detect-language` no longer rounds the WhisperX confidence to two decimals
 
 ### Fixed

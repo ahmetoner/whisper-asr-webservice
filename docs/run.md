@@ -81,6 +81,21 @@ docker run -d -p 9000:9000 \
 !!! note
     Cached models are not re-downloaded, so you will not receive upstream model updates until you clear the cache.
 
+## Running Offline
+
+Once the models are in the cache, the service can run without internet access. Set `HF_HUB_OFFLINE=1` so that the
+Hugging Face libraries load the models from the cache instead of checking for updates online:
+
+```shell
+docker run -d -p 9000:9000 \
+  -e HF_HUB_OFFLINE=1 \
+  -v $PWD/cache:/root/.cache \
+  onerahmet/openai-whisper-asr-webservice:latest
+```
+
+Start the service once with internet access first, so that it downloads the model. With WhisperX, also send one
+request for every language you need, because WhisperX downloads an alignment model per language on first use.
+
 ## Running as a Non-Root User
 
 The images run as root by default, so existing setups and `/root/.cache` volumes keep working unchanged. To run as
