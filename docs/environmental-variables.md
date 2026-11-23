@@ -9,6 +9,7 @@ The service is configured with environment variables. All of them are optional.
 | `ASR_MODEL_PATH`           | `$XDG_CACHE_HOME/whisper`       | Model download directory (`openai_whisper`, `faster_whisper`)  |
 | `XDG_CACHE_HOME`           | `~/.cache`                      | Base directory for downloaded models and data                  |
 | `ASR_DEVICE`               | `cuda` if available, else `cpu` | Device to run the model on                                     |
+| `ASR_CPU_THREADS`          | engine default                  | CPU threads for transcription, see [Device and Quantization](#device-and-quantization) |
 | `ASR_QUANTIZATION`         | `float32` on GPU, `int8` on CPU | Weight precision (`faster_whisper`, `whisperx`)                |
 | `ASR_BEAM_SIZE`            | engine default                  | Beam size used for decoding                                    |
 | `ASR_BATCH_SIZE`           | engine default                  | Batch size for batched inference (`faster_whisper`, `whisperx`) |
@@ -53,6 +54,10 @@ for faster inference.
 | `float32` | slowest | highest  | Default on GPU            |
 | `float16` | faster  | high     | Recommended on GPU        |
 | `int8`    | fastest | lower    | Default on CPU            |
+
+On a CPU, `faster_whisper` and `whisperx` use 4 threads by default. `ASR_CPU_THREADS` changes this, but more threads
+are not always faster: depending on the CPU they can make transcription much slower, so measure with your own audio
+before changing it.
 
 ## Decoding
 

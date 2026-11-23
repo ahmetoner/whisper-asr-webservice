@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
 class OpenAIWhisperASR(ASRModel):
 
     def _load_model(self):
+        if CONFIG.CPU_THREADS:
+            torch.set_num_threads(CONFIG.CPU_THREADS)
         model = whisper.load_model(name=CONFIG.MODEL_NAME, download_root=CONFIG.MODEL_PATH)
         return model.cuda() if torch.cuda.is_available() else model
 

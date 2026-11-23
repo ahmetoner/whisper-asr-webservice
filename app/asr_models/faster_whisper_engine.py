@@ -17,7 +17,8 @@ class FasterWhisperASR(ASRModel):
             model_size_or_path=CONFIG.MODEL_NAME,
             device=CONFIG.DEVICE,
             compute_type=CONFIG.MODEL_QUANTIZATION,
-            download_root=CONFIG.MODEL_PATH
+            download_root=CONFIG.MODEL_PATH,
+            cpu_threads=CONFIG.CPU_THREADS or 0,
         )
 
     def _transcribe(

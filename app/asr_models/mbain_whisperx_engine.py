@@ -33,6 +33,7 @@ class WhisperXASR(ASRModel):
                 compute_type=CONFIG.MODEL_QUANTIZATION,
                 asr_options=asr_options,
                 vad_options=vad_options,
+                threads=CONFIG.CPU_THREADS or 4,
             ),
             'diarize_model': None,
             'align_model': {},

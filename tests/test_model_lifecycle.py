@@ -124,3 +124,13 @@ def test_faster_whisper_language_detection_uses_vad_settings(monkeypatch):
     assert engine._detect_language(AUDIO, True) == ("en", 0.9)
     assert seen["vad_filter"] is True
     assert isinstance(seen["vad_parameters"], fw.VadOptions) and seen["vad_parameters"].threshold == 0.6
+
+
+def test_cpu_threads_setting(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    captured = {}
+    monkeypatch.setattr(fw, "WhisperModel", lambda **kwargs: captured.update(kwargs))
+    monkeypatch.setattr(CONFIG, "CPU_THREADS", 12)
+    fw.FasterWhisperASR()._load_model()
+    assert captured["cpu_threads"] == 12

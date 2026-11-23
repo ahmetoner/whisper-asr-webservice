@@ -42,6 +42,8 @@ class CONFIG:
     MODEL_IDLE_TIMEOUT = int(os.getenv("MODEL_IDLE_TIMEOUT", 0))
     MODEL_UNLOAD_AFTER_REQUEST = os.getenv("MODEL_UNLOAD_AFTER_REQUEST", "false").lower() == "true"
 
+    CPU_THREADS = int(os.getenv("ASR_CPU_THREADS")) if os.getenv("ASR_CPU_THREADS") else None
+
     # Optional decoding settings. When unset, each engine keeps its own default.
     BEAM_SIZE = int(os.getenv("ASR_BEAM_SIZE")) if os.getenv("ASR_BEAM_SIZE") else None
     BATCH_SIZE = int(os.getenv("ASR_BATCH_SIZE")) if os.getenv("ASR_BATCH_SIZE") else None
