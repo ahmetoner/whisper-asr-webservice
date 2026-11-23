@@ -33,13 +33,14 @@ See the [upgrade guide](https://ahmetoner.github.io/whisper-asr-webservice/migra
 - `/asr` and `/detect-language` are documented as the legacy API
 - The documentation explains how to run offline with cached models, including WhisperX
 - `/detect-language` no longer rounds the WhisperX confidence to two decimals
-- `poetry install` installs the CPU build of PyTorch by default, so `--extras cpu` is no longer needed
+- The project uses uv instead of Poetry: `uv sync` installs the CPU build of PyTorch, `uv sync --no-group cpu --group cuda` the CUDA build, and locking and Docker builds are much faster
+- The CPU Docker image no longer includes `pip`
 
 ### Fixed
 
 - WhisperX subtitles missing the spaces between words, and merging many segments into one subtitle
 - `word_timestamps` missing from the Swagger UI with the `openai_whisper` engine, which supports it
-- `poetry install` without extras failing on macOS and arm64 because it picked the CUDA build of PyTorch
+- Installing without extras failing on macOS and arm64 because the CUDA build of PyTorch was selected
 - Transcription with more than 4 CPU threads being several times slower because the model was loaded in a thread that exits
 
 [1.11.0] (2026-11-22)

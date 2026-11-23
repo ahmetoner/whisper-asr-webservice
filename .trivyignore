@@ -8,9 +8,5 @@ CVE-2026-4372
 CVE-2026-5241
 CVE-2026-9856
 
-# pip bundles pkg_resources from setuptools 70.3.0 (pip/_vendor/vendor.txt), which Trivy reports as setuptools.
-# The vulnerable PackageIndex download code is not part of pip.
-CVE-2025-47273
-
 # Images run as root so existing model cache volumes mounted at /root/.cache keep working
 DS-0002

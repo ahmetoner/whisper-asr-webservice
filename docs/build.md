@@ -3,7 +3,7 @@
 ## Requirements
 
 - Python 3.12 or 3.13
-- [Poetry](https://python-poetry.org) 2.x
+- [uv](https://docs.astral.sh/uv/)
 - For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
 
 ## Request Flow
@@ -28,24 +28,27 @@ edited at [excalidraw.com](https://excalidraw.com).
 ## Install
 
 ```shell
-poetry install                # CPU build of PyTorch
-poetry install --extras cuda  # PyTorch for CUDA 12.8
+uv sync                                # CPU build of PyTorch
+uv sync --no-group cpu --group cuda    # PyTorch for CUDA 12.8
 ```
+
+`uv run` installs the default CPU build again before running a command, so after installing the CUDA build run
+commands with `uv run --no-sync`, or set `UV_NO_SYNC=1`.
 
 ## Run
 
 ```shell
-poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
+uv run whisper-asr-webservice --host 0.0.0.0 --port 9000
 ```
 
 Configure the service with the [environment variables](environmental-variables.md), for example
-`ASR_ENGINE=faster_whisper ASR_MODEL=tiny poetry run whisper-asr-webservice`.
+`ASR_ENGINE=faster_whisper ASR_MODEL=tiny uv run whisper-asr-webservice`.
 
 ## Test and Lint
 
 ```shell
-poetry run pytest
-poetry run ruff check app tests
+uv run pytest
+uv run ruff check app tests
 ```
 
 The tests replace the ASR engine with a stub, so they run without downloading models.
@@ -78,7 +81,7 @@ The tests replace the ASR engine with a stub, so they run without downloading mo
 ## Documentation
 
 ```shell
-poetry run mkdocs serve
+uv run mkdocs serve
 ```
 
 The site is served at <http://localhost:8000> and reloads on changes.

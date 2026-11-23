@@ -93,12 +93,12 @@ Full documentation is available at <https://ahmetoner.github.io/whisper-asr-webs
 
 ## Development
 
-Requires Python 3.12 or 3.13 and [Poetry](https://python-poetry.org) 2.x.
+Requires Python 3.12 or 3.13 and [uv](https://docs.astral.sh/uv/).
 
 ```shell
-poetry install                    # add --extras cuda for NVIDIA GPUs
-poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
-poetry run pytest
+uv sync                           # for NVIDIA GPUs: uv sync --no-group cpu --group cuda
+uv run whisper-asr-webservice --host 0.0.0.0 --port 9000
+uv run pytest
 ```
 
 See the [development guide](https://ahmetoner.github.io/whisper-asr-webservice/build/) for building Docker images and the documentation.

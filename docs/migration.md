@@ -41,8 +41,9 @@ running from source no longer needs FFmpeg installed. Supported formats are unch
 
 ## Running from Source
 
-`poetry install` installs the CPU build of PyTorch, so `--extras cpu` is no longer needed (it still works). Use
-`poetry install --extras cuda` for NVIDIA GPUs.
+The project uses [uv](https://docs.astral.sh/uv/) instead of Poetry. `uv sync` installs the CPU build of PyTorch and
+the development tools; for NVIDIA GPUs use `uv sync --no-group cpu --group cuda` and then `uv run --no-sync` so
+that the CUDA build is kept. Run commands with `uv run`, e.g. `uv run whisper-asr-webservice`.
 
 ## New Integrations
 

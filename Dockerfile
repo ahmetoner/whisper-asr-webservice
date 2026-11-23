@@ -14,23 +14,24 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir -U pip
+    && pip uninstall -y pip
 
 FROM base AS build
 
-RUN python3 -m venv /opt/poetry \
-    && /opt/poetry/bin/pip install --no-cache-dir poetry==2.5.2
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /bin/uv
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_NO_CACHE=1 \
+    UV_PYTHON_DOWNLOADS=never
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock poetry.toml ./
-RUN /opt/poetry/bin/poetry config virtualenvs.in-project true \
-    && /opt/poetry/bin/poetry config virtualenvs.options.no-pip true \
-    && /opt/poetry/bin/poetry install --without dev --no-root
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-dev --no-install-project
 
-COPY README.md ./
+COPY README.md LICENCE ./
 COPY app ./app
-RUN /opt/poetry/bin/poetry install --only-root
+RUN uv sync --locked --no-dev
 
 FROM base
 
