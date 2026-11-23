@@ -14,6 +14,7 @@ Unreleased
 - Docker images no longer include the `ffmpeg` binary; audio is decoded in-process with PyAV
 - `/asr?output=json` returns the same structure for every engine, following OpenAI's `verbose_json` format; `language` is now a name such as `english`
 - `SUBTITLE_MAX_LINE_WIDTH` and `SUBTITLE_MAX_LINE_COUNT` are unset by default, so subtitles contain one cue per segment
+- The default engine is `faster_whisper` instead of `openai_whisper`; set `ASR_ENGINE=openai_whisper` to keep the previous engine
 
 ### Changed
 

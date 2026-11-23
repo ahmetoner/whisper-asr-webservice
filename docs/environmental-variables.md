@@ -4,7 +4,7 @@ The service is configured with environment variables. All of them are optional.
 
 | Variable                   | Default                         | Description                                                    |
 |----------------------------|---------------------------------|----------------------------------------------------------------|
-| `ASR_ENGINE`               | `openai_whisper`                | `openai_whisper`, `faster_whisper` or `whisperx`               |
+| `ASR_ENGINE`               | `faster_whisper`                | `faster_whisper`, `openai_whisper` or `whisperx`               |
 | `ASR_MODEL`                | `base`                          | Model to load, see [Models](#models)                           |
 | `ASR_MODEL_PATH`           | `$XDG_CACHE_HOME/whisper`       | Model download directory (`openai_whisper`, `faster_whisper`)  |
 | `XDG_CACHE_HOME`           | `~/.cache`                      | Base directory for downloaded models and data                  |

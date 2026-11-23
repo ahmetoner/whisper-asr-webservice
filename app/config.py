@@ -9,7 +9,7 @@ class CONFIG:
     Reads environment variables for runtime configuration, with sensible defaults.
     """
     # Determine the ASR engine ('faster_whisper', 'openai_whisper' or 'whisperx')
-    ASR_ENGINE = os.getenv("ASR_ENGINE", "openai_whisper")
+    ASR_ENGINE = os.getenv("ASR_ENGINE", "faster_whisper")
 
     # Retrieve Huggingface Token
     HF_TOKEN = os.getenv("HF_TOKEN", "")

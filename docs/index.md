@@ -46,8 +46,8 @@ curl http://localhost:9000/v1/audio/transcriptions -F model=whisper-1 -F file=@a
 
 | Engine                                                       | `ASR_ENGINE`               | Notes                                                    |
 |--------------------------------------------------------------|----------------------------|----------------------------------------------------------|
-| [OpenAI Whisper](https://github.com/openai/whisper)          | `openai_whisper` (default) | Reference implementation                                 |
-| [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper`           | Faster and lighter on memory; VAD and batched inference  |
+| [OpenAI Whisper](https://github.com/openai/whisper)          | `openai_whisper`           | Reference implementation                                 |
+| [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper` (default) | Faster and lighter on memory; VAD and batched inference  |
 | [WhisperX](https://github.com/m-bain/whisperX)               | `whisperx`                 | Word alignment and speaker diarization                   |
 
 ## Next Steps
