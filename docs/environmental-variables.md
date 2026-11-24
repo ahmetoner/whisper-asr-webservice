@@ -46,6 +46,17 @@ fraction of the cost and is a good default on GPU. For English-only audio, the `
 their multilingual counterparts, especially at the `tiny` and `base` sizes. Distilled models trade a little accuracy
 for faster inference.
 
+`distil-large-v2` and `distil-large-v3` are distilled versions of `large-v3` for the `faster_whisper` and `whisperx`
+engines (both run on faster-whisper underneath). They are about six times faster and roughly half the size of
+`large-v3` while staying within about 1% WER of it on out-of-distribution audio, which makes them a good choice for
+low-latency English transcription. They are English only: they transcribe English and do not translate. Set them by
+name or by their Hugging Face repository id:
+
+```shell
+export ASR_ENGINE=faster_whisper
+export ASR_MODEL=Systran/faster-distil-whisper-large-v3
+```
+
 ## Device and Quantization
 
 `ASR_QUANTIZATION` sets the precision of the model weights for `faster_whisper` and `whisperx`:
