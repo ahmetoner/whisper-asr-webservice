@@ -3,34 +3,34 @@ revision = 5
 requires-python = ">=3.12, <3.14"
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
 ]
 required-markers = [
@@ -175,7 +175,8 @@ name = "asteroid-filterbanks"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -268,6 +269,43 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/51/33/4cd27639502f010084bcef7a2036391dd637439901341ce1a530f36f6e51/certifi-2026.11.20.tar.gz", hash = "sha256:af1cb240a8133f105aa52684a3a3258339d7f2fd0bd4e2812698ff5cf5588c4e", size = 128901, upload-time = "2026-11-20T23:37:49.522Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6d/39/5eec3296860b94ac20bb8ed807725b88f6adfab3f343df592afd975f5f86/certifi-2026.11.20-py3-none-any.whl", hash = "sha256:7422df25243767b9877031a2248cb14d09ddac9beee846f4cef3d5c9191d488f", size = 127913, upload-time = "2026-11-20T23:37:48.117Z" },
+]
+
+[[package]]
+name = "cffi"
+version = "2.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9e/ef/008a1939e372c06329a3fce4279c02f328488f3526744906eeec3da7ad5f/cffi-2.1.1.tar.gz", hash = "sha256:dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be", size = 530807, upload-time = "2026-08-03T21:21:18.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/69/43965eccfdead3b9220015fd1320e117be8c6ed01a62ffab76eeb752f5d5/cffi-2.1.1-cp312-cp312-macosx_10_15_x86_64.whl", hash = "sha256:c8c69575568085ba0b1b10c0249d779a214aea6f6522e949a0fc9fb0fcb449d0", size = 184821, upload-time = "2026-08-03T21:19:44.887Z" },
+    { url = "https://files.pythonhosted.org/packages/54/7d/16e5a096677b5e313ca80cd5e5170efa3ea44624a82bb111925522da64b1/cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f81b3b8f3d4e343550fa4baa0e479bba9f2d29ce9c2e9b51d1ce1718d7442fcf", size = 184719, upload-time = "2026-08-03T21:19:46.129Z" },
+    { url = "https://files.pythonhosted.org/packages/56/e6/8941622732edec876dd17d0453dce07317ae96db34f2ec1436c9d3785986/cffi-2.1.1-cp312-cp312-manylinux1_i686.manylinux2014_i686.manylinux_2_17_i686.manylinux_2_5_i686.whl", hash = "sha256:811bd1e21d32de12efca32393a0ab3f5133b54fce9bd44b8bd77ab07da14bf6a", size = 214799, upload-time = "2026-08-03T21:19:47.218Z" },
+    { url = "https://files.pythonhosted.org/packages/44/de/f98430906df1545ffde0d543dd124a7a439bc2cd32b36b9c53f805df7333/cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:68e62fe11f30d5ca8289242866f0a5291402d8529ca2178ab8afc5c9694ae890", size = 222389, upload-time = "2026-08-03T21:19:48.331Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/5b/717f1526b9957b34456313c31645c5b82b8fb5c3fe9e4752999be7128bfc/cffi-2.1.1-cp312-cp312-manylinux2014_ppc64le.manylinux_2_17_ppc64le.whl", hash = "sha256:4a7c934f7360e8cd64fe9efadcbd10c7c6364f531e432b9a4bf5ccbc9e0e8b50", size = 210249, upload-time = "2026-08-03T21:19:49.543Z" },
+    { url = "https://files.pythonhosted.org/packages/64/b3/f8aa4f3e34986c7e4ec45072d1b1b9dd295b6b18007b45518d79726dd725/cffi-2.1.1-cp312-cp312-manylinux2014_s390x.manylinux_2_17_s390x.whl", hash = "sha256:3143d81e29e1e20a9ce10901ec369012947876596f75a222235965f2b7ae832e", size = 208775, upload-time = "2026-08-03T21:19:50.918Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/db/dceb9dd5b231e1da801793f8acc9f3c52a7e1afe40bb1aae37e02b0faad5/cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:c1453022f490d2459a11819d83ad1d586e9ff65a12ac3e705ffebd46d3685dcf", size = 221822, upload-time = "2026-08-03T21:19:52.054Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/d2/6cd24ae3be000a634109c247d1475d62e5616d0dc78c82770942ec384248/cffi-2.1.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:208f941bb9d18e768138677f0a6d2ce01f590df56043dda1df1535ac57c88517", size = 225232, upload-time = "2026-08-03T21:19:53.109Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/52/3fa190537004dd7f0ab860a6dc7c0175b8667f68d1e618a46f5498d30250/cffi-2.1.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:210019b6c7cf07f081b4c54635c8cf744377001350e29cc0f81c4377b4797735", size = 223597, upload-time = "2026-08-03T21:19:54.515Z" },
+    { url = "https://files.pythonhosted.org/packages/80/fb/0bb75b7039588c074b37ae99f40d9bfddf990ecb2fbc346ebccd2e56b9be/cffi-2.1.1-cp312-cp312-win32.whl", hash = "sha256:046bfc24911b37851ee1b51aab8bffe713d89c68c6a057b09484ce9fd5f69b4e", size = 175292, upload-time = "2026-08-03T21:19:55.566Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/79/615cc094e2fb508cade7de88d3b4f6c4ec2bab695c97bce9153dc65aadf5/cffi-2.1.1-cp312-cp312-win_amd64.whl", hash = "sha256:f53e442b08449d42821fa4a4fba000095af9f62742a500f978a9f557ec44339a", size = 185919, upload-time = "2026-08-03T21:19:56.89Z" },
+    { url = "https://files.pythonhosted.org/packages/70/c6/d0ea84713fe46b243a436a18fcd47d639732747e21635c8a27191b06dc30/cffi-2.1.1-cp312-cp312-win_arm64.whl", hash = "sha256:7bde5e4cc5c10140859842b9d383af292b22639a4dffb725314baf45968cef80", size = 180093, upload-time = "2026-08-03T21:19:58.155Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/f4/035513d4117049066b4779dc3b7c0c0fdad175fa13731c9f4003f1cd1478/cffi-2.1.1-cp313-cp313-ios_13_0_arm64_iphoneos.whl", hash = "sha256:b5bdfd1c873d4e093aabc0ca84c4ca6dbc4f752afb5c86f146d9742580c9da2e", size = 194248, upload-time = "2026-08-03T21:19:59.399Z" },
+    { url = "https://files.pythonhosted.org/packages/76/af/2aeb4dbb5fc41a04161ae9ff1518de7cec08e164f44a8ce6a4cf7fd2cd1d/cffi-2.1.1-cp313-cp313-ios_13_0_arm64_iphonesimulator.whl", hash = "sha256:31348097ff5bbe827ccc41795d4dd099d9f0625e7def00ee653c137a490c2a6c", size = 196908, upload-time = "2026-08-03T21:20:00.746Z" },
+    { url = "https://files.pythonhosted.org/packages/a7/46/2e5fdde8555706dd98139a910ca11be02809f3f605ce956f655d0214e100/cffi-2.1.1-cp313-cp313-macosx_10_15_x86_64.whl", hash = "sha256:9d2055050ea716bd38b7f7f1579c275386646b4894c155a3e2f3cd62ed41b7c6", size = 184805, upload-time = "2026-08-03T21:20:02.02Z" },
+    { url = "https://files.pythonhosted.org/packages/55/41/4c7042f317b9217502988f0873af87e16ad606dc20f84e546e3e6ce9764c/cffi-2.1.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:19ee6127ee34de7d83ce3d371ebc5ed91addbdcc39f9ab15ce4eb35a4e534971", size = 184764, upload-time = "2026-08-03T21:20:03.141Z" },
+    { url = "https://files.pythonhosted.org/packages/43/1f/1c3d90d91811c8f86ced9ed637956c54bfe5b79ca98fe976d7f8c8979f6b/cffi-2.1.1-cp313-cp313-manylinux1_i686.manylinux2014_i686.manylinux_2_17_i686.manylinux_2_5_i686.whl", hash = "sha256:6a8dddef476fab96d066d578fc88526767b836ab5ab21754e1d5bf3879c31c7c", size = 214722, upload-time = "2026-08-03T21:20:04.377Z" },
+    { url = "https://files.pythonhosted.org/packages/37/6f/3b5ce4c3b2192d250f04908f2bfd91ef34552ec8f7716a5d4abdb8d67bb2/cffi-2.1.1-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:f16c709686a78c727bbbf059f92b0bf41c6fc60deec706d2dc19f529175a6125", size = 222369, upload-time = "2026-08-03T21:20:05.544Z" },
+    { url = "https://files.pythonhosted.org/packages/02/10/4b3c75dde3d9663c9e02ba05c2668b954f671d4bbe346413ca8c696b295a/cffi-2.1.1-cp313-cp313-manylinux2014_ppc64le.manylinux_2_17_ppc64le.whl", hash = "sha256:fcd22650c908d7b7da162bbfaab594a1227a15d1643a98c68b122ac642fa2264", size = 210175, upload-time = "2026-08-03T21:20:06.75Z" },
+    { url = "https://files.pythonhosted.org/packages/df/62/14f74b9543e605d17701dc797b815958b8bb70b7624ce1b832ddad48ed6c/cffi-2.1.1-cp313-cp313-manylinux2014_s390x.manylinux_2_17_s390x.whl", hash = "sha256:aa9511c62d14da7aacc9b4bf51f3f697a621e83b2d6919008243c3aad168eea3", size = 208670, upload-time = "2026-08-03T21:20:08.04Z" },
+    { url = "https://files.pythonhosted.org/packages/95/95/86342356ff5953b3fb06f7ef7c5bee212d45e770abc7218d451b9148313c/cffi-2.1.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2", size = 221824, upload-time = "2026-08-03T21:20:09.274Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/ff/7b3429ff53aafe931ed8a5fc69f481bbef7ba6de87ddcbb63d08f483f613/cffi-2.1.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:a2d7755bef5a12ed488f4ef1f1b69ee9191d7396083b755a5d2295f6edb4768b", size = 225148, upload-time = "2026-08-03T21:20:10.7Z" },
+    { url = "https://files.pythonhosted.org/packages/34/34/a95870b9221e09cf4f2ce3178b1a210abdfe63a1bd357da940418d7b8d15/cffi-2.1.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:e0bcb7e0f677f543555d2adff3bf19c05f66cdb4796e5ff602442ab2fe3c4ef7", size = 223564, upload-time = "2026-08-03T21:20:12.165Z" },
+    { url = "https://files.pythonhosted.org/packages/70/ea/839b50531021a647fb5e929f72cf97bc1ff702b5472166164b5b6e76b851/cffi-2.1.1-cp313-cp313-win32.whl", hash = "sha256:334644fbac4eff73d985a17a91226df55d0f394160c4cfb880e084c8f7161cac", size = 175263, upload-time = "2026-08-03T21:20:13.559Z" },
+    { url = "https://files.pythonhosted.org/packages/60/a6/8b149b2c3f2e11aaa1618ef64500b45f50f22c57a977a4dff1aff1f91042/cffi-2.1.1-cp313-cp313-win_amd64.whl", hash = "sha256:1aa5645c30469b09530c4ebca77ebf8f17618293c58f8549cb1a543a50236e7d", size = 185688, upload-time = "2026-08-03T21:20:14.69Z" },
+    { url = "https://files.pythonhosted.org/packages/01/9a/11f687cb39d6a3504060d5242f04f48c735afb4d3d533958a20594890cb2/cffi-2.1.1-cp313-cp313-win_arm64.whl", hash = "sha256:63bbfd5ded17c4840ac07cd8f1c21ba9d9708141f840b324f422f41b207e3973", size = 180078, upload-time = "2026-08-03T21:20:15.917Z" },
 ]
 
 [[package]]
@@ -376,7 +414,8 @@ name = "contourpy"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/83/5a/a55177dd22553a277388e8a1b3220e92de91bacb28356cdc73caa240121d/contourpy-1.4.0.tar.gz", hash = "sha256:20156f5a1ac4f8ce02656e39a61e82164a3d359796dc8026f75b062783d500e1", size = 13323726, upload-time = "2026-09-11T19:05:05.808Z" }
 wheels = [
@@ -410,7 +449,8 @@ name = "ctranslate2"
 version = "4.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "pyyaml" },
 ]
 wheels = [
@@ -860,6 +900,33 @@ wheels = [
 ]
 
 [[package]]
+name = "jsonschema"
+version = "4.26.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "jsonschema-specifications" },
+    { name = "referencing" },
+    { name = "rpds-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b3/fc/e067678238fa451312d4c62bf6e6cf5ec56375422aee02f9cb5f909b3047/jsonschema-4.26.0.tar.gz", hash = "sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326", size = 366583, upload-time = "2026-01-07T13:41:07.246Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl", hash = "sha256:d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce", size = 90630, upload-time = "2026-01-07T13:41:05.306Z" },
+]
+
+[[package]]
+name = "jsonschema-specifications"
+version = "2025.9.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "referencing" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
+]
+
+[[package]]
 name = "julius"
 version = "0.2.8"
 source = { registry = "https://pypi.org/simple" }
@@ -1057,7 +1124,8 @@ dependencies = [
     { name = "cycler" },
     { name = "fonttools" },
     { name = "kiwisolver" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "packaging" },
     { name = "pillow" },
     { name = "pyparsing" },
@@ -1097,6 +1165,35 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3a/41/580bb4006e3ed0361b8151a01d324fb03f420815446c7def45d02f74c270/mergedeep-1.3.4.tar.gz", hash = "sha256:0096d52e9dad9939c3d975a774666af186eda617e6ca84df4c94dec30004f2a8", size = 4661, upload-time = "2021-02-05T18:55:30.623Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/19/04f9b178c2d8a15b076c8b5140708fa6ffc5601fb6f1e975537072df5b2a/mergedeep-1.3.4-py3-none-any.whl", hash = "sha256:70775750742b25c0d8f36c55aed03d24c3384d17c951b3175d898bd778ef0307", size = 6354, upload-time = "2021-02-05T18:55:29.583Z" },
+]
+
+[[package]]
+name = "mistral-common"
+version = "1.9.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jsonschema" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+    { name = "pillow" },
+    { name = "pydantic" },
+    { name = "pydantic-extra-types", extra = ["pycountry"] },
+    { name = "requests" },
+    { name = "tiktoken" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/db/ce/685b8127a326478e05501cb4c9ca23d1cd9f37e16c465a1e832c75aea709/mistral_common-1.9.1.tar.gz", hash = "sha256:550583d70a395c3586cfb748ffab53bd1d7c3409507f0efc0118bff30ffb26e9", size = 6338922, upload-time = "2026-02-12T10:53:41.639Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ac/72/a38bb1fd9fd4d4ef990341c9dd1a7c8061f1951e10efa6d50c0a3f04eced/mistral_common-1.9.1-py3-none-any.whl", hash = "sha256:9e2b2520b6f67bac2e2bb06fcf985b7a1277b01938da2b7cda8cf0fdbfa92e91", size = 6518623, upload-time = "2026-02-12T10:53:39.457Z" },
+]
+
+[package.optional-dependencies]
+audio = [
+    { name = "soundfile" },
+    { name = "soxr" },
+]
+hf-hub = [
+    { name = "huggingface-hub" },
 ]
 
 [[package]]
@@ -1287,7 +1384,8 @@ version = "0.68.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "llvmlite" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0f/a4/a60b14d955b898ce00d815dfe14435ae3b30c1dd2587aa0a172e92310cf8/numba-0.68.1.tar.gz", hash = "sha256:9de461812470173a14eeb7e0bbd27c897dffe835402a33861166842fc5f6ea57", size = 2858572, upload-time = "2026-10-27T18:13:04.352Z" }
 wheels = [
@@ -1305,8 +1403,83 @@ wheels = [
 
 [[package]]
 name = "numpy"
+version = "2.3.5"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/76/65/21b3bc86aac7b8f2862db1e808f1ea22b028e30a225a34a5ede9bf8678f2/numpy-2.3.5.tar.gz", hash = "sha256:784db1dcdab56bf0517743e746dfb0f885fc68d948aba86eeec2cba234bdf1c0", size = 20584950, upload-time = "2025-11-16T22:52:42.067Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/37/e669fe6cbb2b96c62f6bbedc6a81c0f3b7362f6a59230b23caa673a85721/numpy-2.3.5-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:74ae7b798248fe62021dbf3c914245ad45d1a6b0cb4a29ecb4b31d0bfbc4cc3e", size = 16733873, upload-time = "2025-11-16T22:49:49.84Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/65/df0db6c097892c9380851ab9e44b52d4f7ba576b833996e0080181c0c439/numpy-2.3.5-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:ee3888d9ff7c14604052b2ca5535a30216aa0a58e948cdd3eeb8d3415f638769", size = 12259838, upload-time = "2025-11-16T22:49:52.863Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/e1/1ee06e70eb2136797abe847d386e7c0e830b67ad1d43f364dd04fa50d338/numpy-2.3.5-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:612a95a17655e213502f60cfb9bf9408efdc9eb1d5f50535cc6eb365d11b42b5", size = 5088378, upload-time = "2025-11-16T22:49:55.055Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/9c/1ca85fb86708724275103b81ec4cf1ac1d08f465368acfc8da7ab545bdae/numpy-2.3.5-cp312-cp312-macosx_14_0_x86_64.whl", hash = "sha256:3101e5177d114a593d79dd79658650fe28b5a0d8abeb8ce6f437c0e6df5be1a4", size = 6628559, upload-time = "2025-11-16T22:49:57.371Z" },
+    { url = "https://files.pythonhosted.org/packages/74/78/fcd41e5a0ce4f3f7b003da85825acddae6d7ecb60cf25194741b036ca7d6/numpy-2.3.5-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:8b973c57ff8e184109db042c842423ff4f60446239bd585a5131cc47f06f789d", size = 14250702, upload-time = "2025-11-16T22:49:59.632Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/23/2a1b231b8ff672b4c450dac27164a8b2ca7d9b7144f9c02d2396518352eb/numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:0d8163f43acde9a73c2a33605353a4f1bc4798745a8b1d73183b28e5b435ae28", size = 16606086, upload-time = "2025-11-16T22:50:02.127Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/c5/5ad26fbfbe2012e190cc7d5003e4d874b88bb18861d0829edc140a713021/numpy-2.3.5-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:51c1e14eb1e154ebd80e860722f9e6ed6ec89714ad2db2d3aa33c31d7c12179b", size = 16025985, upload-time = "2025-11-16T22:50:04.536Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/fa/dd48e225c46c819288148d9d060b047fd2a6fb1eb37eae25112ee4cb4453/numpy-2.3.5-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:b46b4ec24f7293f23adcd2d146960559aaf8020213de8ad1909dba6c013bf89c", size = 18542976, upload-time = "2025-11-16T22:50:07.557Z" },
+    { url = "https://files.pythonhosted.org/packages/05/79/ccbd23a75862d95af03d28b5c6901a1b7da4803181513d52f3b86ed9446e/numpy-2.3.5-cp312-cp312-win32.whl", hash = "sha256:3997b5b3c9a771e157f9aae01dd579ee35ad7109be18db0e85dbdbe1de06e952", size = 6285274, upload-time = "2025-11-16T22:50:10.746Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/57/8aeaf160312f7f489dea47ab61e430b5cb051f59a98ae68b7133ce8fa06a/numpy-2.3.5-cp312-cp312-win_amd64.whl", hash = "sha256:86945f2ee6d10cdfd67bcb4069c1662dd711f7e2a4343db5cecec06b87cf31aa", size = 12782922, upload-time = "2025-11-16T22:50:12.811Z" },
+    { url = "https://files.pythonhosted.org/packages/78/a6/aae5cc2ca78c45e64b9ef22f089141d661516856cf7c8a54ba434576900d/numpy-2.3.5-cp312-cp312-win_arm64.whl", hash = "sha256:f28620fe26bee16243be2b7b874da327312240a7cdc38b769a697578d2100013", size = 10194667, upload-time = "2025-11-16T22:50:16.16Z" },
+    { url = "https://files.pythonhosted.org/packages/db/69/9cde09f36da4b5a505341180a3f2e6fadc352fd4d2b7096ce9778db83f1a/numpy-2.3.5-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:d0f23b44f57077c1ede8c5f26b30f706498b4862d3ff0a7298b8411dd2f043ff", size = 16728251, upload-time = "2025-11-16T22:50:19.013Z" },
+    { url = "https://files.pythonhosted.org/packages/79/fb/f505c95ceddd7027347b067689db71ca80bd5ecc926f913f1a23e65cf09b/numpy-2.3.5-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:aa5bc7c5d59d831d9773d1170acac7893ce3a5e130540605770ade83280e7188", size = 12254652, upload-time = "2025-11-16T22:50:21.487Z" },
+    { url = "https://files.pythonhosted.org/packages/78/da/8c7738060ca9c31b30e9301ee0cf6c5ffdbf889d9593285a1cead337f9a5/numpy-2.3.5-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:ccc933afd4d20aad3c00bcef049cb40049f7f196e0397f1109dba6fed63267b0", size = 5083172, upload-time = "2025-11-16T22:50:24.562Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/b4/ee5bb2537fb9430fd2ef30a616c3672b991a4129bb1c7dcc42aa0abbe5d7/numpy-2.3.5-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:afaffc4393205524af9dfa400fa250143a6c3bc646c08c9f5e25a9f4b4d6a903", size = 6622990, upload-time = "2025-11-16T22:50:26.47Z" },
+    { url = "https://files.pythonhosted.org/packages/95/03/dc0723a013c7d7c19de5ef29e932c3081df1c14ba582b8b86b5de9db7f0f/numpy-2.3.5-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:9c75442b2209b8470d6d5d8b1c25714270686f14c749028d2199c54e29f20b4d", size = 14248902, upload-time = "2025-11-16T22:50:28.861Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/10/ca162f45a102738958dcec8023062dad0cbc17d1ab99d68c4e4a6c45fb2b/numpy-2.3.5-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:11e06aa0af8c0f05104d56450d6093ee639e15f24ecf62d417329d06e522e017", size = 16597430, upload-time = "2025-11-16T22:50:31.56Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/51/c1e29be863588db58175175f057286900b4b3327a1351e706d5e0f8dd679/numpy-2.3.5-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:ed89927b86296067b4f81f108a2271d8926467a8868e554eaf370fc27fa3ccaf", size = 16024551, upload-time = "2025-11-16T22:50:34.242Z" },
+    { url = "https://files.pythonhosted.org/packages/83/68/8236589d4dbb87253d28259d04d9b814ec0ecce7cb1c7fed29729f4c3a78/numpy-2.3.5-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:51c55fe3451421f3a6ef9a9c1439e82101c57a2c9eab9feb196a62b1a10b58ce", size = 18533275, upload-time = "2025-11-16T22:50:37.651Z" },
+    { url = "https://files.pythonhosted.org/packages/40/56/2932d75b6f13465239e3b7b7e511be27f1b8161ca2510854f0b6e521c395/numpy-2.3.5-cp313-cp313-win32.whl", hash = "sha256:1978155dd49972084bd6ef388d66ab70f0c323ddee6f693d539376498720fb7e", size = 6277637, upload-time = "2025-11-16T22:50:40.11Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/88/e2eaa6cffb115b85ed7c7c87775cb8bcf0816816bc98ca8dbfa2ee33fe6e/numpy-2.3.5-cp313-cp313-win_amd64.whl", hash = "sha256:00dc4e846108a382c5869e77c6ed514394bdeb3403461d25a829711041217d5b", size = 12779090, upload-time = "2025-11-16T22:50:42.503Z" },
+    { url = "https://files.pythonhosted.org/packages/8f/88/3f41e13a44ebd4034ee17baa384acac29ba6a4fcc2aca95f6f08ca0447d1/numpy-2.3.5-cp313-cp313-win_arm64.whl", hash = "sha256:0472f11f6ec23a74a906a00b48a4dcf3849209696dff7c189714511268d103ae", size = 10194710, upload-time = "2025-11-16T22:50:44.971Z" },
+    { url = "https://files.pythonhosted.org/packages/13/cb/71744144e13389d577f867f745b7df2d8489463654a918eea2eeb166dfc9/numpy-2.3.5-cp313-cp313t-macosx_10_13_x86_64.whl", hash = "sha256:414802f3b97f3c1eef41e530aaba3b3c1620649871d8cb38c6eaff034c2e16bd", size = 16827292, upload-time = "2025-11-16T22:50:47.715Z" },
+    { url = "https://files.pythonhosted.org/packages/71/80/ba9dc6f2a4398e7f42b708a7fdc841bb638d353be255655498edbf9a15a8/numpy-2.3.5-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:5ee6609ac3604fa7780e30a03e5e241a7956f8e2fcfe547d51e3afa5247ac47f", size = 12378897, upload-time = "2025-11-16T22:50:51.327Z" },
+    { url = "https://files.pythonhosted.org/packages/2e/6d/db2151b9f64264bcceccd51741aa39b50150de9b602d98ecfe7e0c4bff39/numpy-2.3.5-cp313-cp313t-macosx_14_0_arm64.whl", hash = "sha256:86d835afea1eaa143012a2d7a3f45a3adce2d7adc8b4961f0b362214d800846a", size = 5207391, upload-time = "2025-11-16T22:50:54.542Z" },
+    { url = "https://files.pythonhosted.org/packages/80/ae/429bacace5ccad48a14c4ae5332f6aa8ab9f69524193511d60ccdfdc65fa/numpy-2.3.5-cp313-cp313t-macosx_14_0_x86_64.whl", hash = "sha256:30bc11310e8153ca664b14c5f1b73e94bd0503681fcf136a163de856f3a50139", size = 6721275, upload-time = "2025-11-16T22:50:56.794Z" },
+    { url = "https://files.pythonhosted.org/packages/74/5b/1919abf32d8722646a38cd527bc3771eb229a32724ee6ba340ead9b92249/numpy-2.3.5-cp313-cp313t-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:1062fde1dcf469571705945b0f221b73928f34a20c904ffb45db101907c3454e", size = 14306855, upload-time = "2025-11-16T22:50:59.208Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/87/6831980559434973bebc30cd9c1f21e541a0f2b0c280d43d3afd909b66d0/numpy-2.3.5-cp313-cp313t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:ce581db493ea1a96c0556360ede6607496e8bf9b3a8efa66e06477267bc831e9", size = 16657359, upload-time = "2025-11-16T22:51:01.991Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/91/c797f544491ee99fd00495f12ebb7802c440c1915811d72ac5b4479a3356/numpy-2.3.5-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:cc8920d2ec5fa99875b670bb86ddeb21e295cb07aa331810d9e486e0b969d946", size = 16093374, upload-time = "2025-11-16T22:51:05.291Z" },
+    { url = "https://files.pythonhosted.org/packages/74/a6/54da03253afcbe7a72785ec4da9c69fb7a17710141ff9ac5fcb2e32dbe64/numpy-2.3.5-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:9ee2197ef8c4f0dfe405d835f3b6a14f5fee7782b5de51ba06fb65fc9b36e9f1", size = 18594587, upload-time = "2025-11-16T22:51:08.585Z" },
+    { url = "https://files.pythonhosted.org/packages/80/e9/aff53abbdd41b0ecca94285f325aff42357c6b5abc482a3fcb4994290b18/numpy-2.3.5-cp313-cp313t-win32.whl", hash = "sha256:70b37199913c1bd300ff6e2693316c6f869c7ee16378faf10e4f5e3275b299c3", size = 6405940, upload-time = "2025-11-16T22:51:11.541Z" },
+    { url = "https://files.pythonhosted.org/packages/d5/81/50613fec9d4de5480de18d4f8ef59ad7e344d497edbef3cfd80f24f98461/numpy-2.3.5-cp313-cp313t-win_amd64.whl", hash = "sha256:b501b5fa195cc9e24fe102f21ec0a44dffc231d2af79950b451e0d99cea02234", size = 12920341, upload-time = "2025-11-16T22:51:14.312Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/ab/08fd63b9a74303947f34f0bd7c5903b9c5532c2d287bead5bdf4c556c486/numpy-2.3.5-cp313-cp313t-win_arm64.whl", hash = "sha256:a80afd79f45f3c4a7d341f13acbe058d1ca8ac017c165d3fa0d3de6bc1a079d7", size = 10262507, upload-time = "2025-11-16T22:51:16.846Z" },
+]
+
+[[package]]
+name = "numpy"
 version = "2.5.5"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+]
 sdist = { url = "https://files.pythonhosted.org/packages/4e/3a/8770c288c47f0b5c2a786d3c20e79f66fd245f2d42cd232d7cd5e00e83e5/numpy-2.5.5.tar.gz", hash = "sha256:5cddc243c75114ba845f01b1f87aca1572dbf7b6c2d88636ed3e1d2bccd7f1bf", size = 20873892, upload-time = "2026-11-15T21:32:28.607Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/20/74/5b99f425938870958d43dc9f7b17c684e793ce47ec46b7885cdc7acea285/numpy-2.5.5-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:7da9a248f149cfbb220c6da964a59c8d051d516704f7758acfb81eb382a05d97", size = 14750374, upload-time = "2026-11-15T21:30:10.113Z" },
@@ -1378,7 +1551,7 @@ name = "nvidia-cudnn-cu12"
 version = "9.10.2.21"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cublas-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fa/41/e79269ce215c857c935fd86bcfe91a451a584dfc27f1e068f568b9ad1ab7/nvidia_cudnn_cu12-9.10.2.21-py3-none-manylinux_2_27_aarch64.whl", hash = "sha256:c9132cc3f8958447b4910a1720036d9eff5928cc3179b0a51fb6d167c6cc87d8", size = 705026878, upload-time = "2025-06-06T21:52:51.348Z" },
@@ -1391,7 +1564,7 @@ name = "nvidia-cufft-cu12"
 version = "11.3.3.83"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/bc/7771846d3a0272026c416fbb7e5f4c1f146d6d80704534d0b187dd6f4800/nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:848ef7224d6305cdb2a4df928759dca7b1201874787083b6e7550dd6765ce69a", size = 193109211, upload-time = "2025-03-07T01:44:56.873Z" },
@@ -1423,9 +1596,9 @@ name = "nvidia-cusolver-cu12"
 version = "11.7.3.90"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "nvidia-cusparse-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cublas-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-cusparse-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c8/32/f7cd6ce8a7690544d084ea21c26e910a97e077c9b7f07bf5de623ee19981/nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_aarch64.whl", hash = "sha256:db9ed69dbef9715071232caa9b69c52ac7de3a95773c2db65bdba85916e4e5c0", size = 267229841, upload-time = "2025-03-07T01:46:54.356Z" },
@@ -1438,7 +1611,7 @@ name = "nvidia-cusparse-cu12"
 version = "12.5.8.93"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (platform_machine != 'aarch64' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (sys_platform != 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "nvidia-nvjitlink-cu12", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu') or (sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/f7/cd777c4109681367721b00a106f491e0d0d15cfa1fd59672ce580ce42a97/nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:9b6c161cb130be1a07a27ea6923df8141f3c295852f4b260c65f18f3e0a091dc", size = 288117129, upload-time = "2025-03-07T01:47:40.407Z" },
@@ -1503,7 +1676,8 @@ version = "1.32.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flatbuffers" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "packaging" },
     { name = "protobuf" },
 ]
@@ -1546,7 +1720,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "more-itertools" },
     { name = "numba" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "tiktoken" },
     { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -1708,7 +1883,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alembic" },
     { name = "colorlog" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "packaging" },
     { name = "pyyaml" },
     { name = "sqlalchemy" },
@@ -1742,7 +1918,8 @@ name = "pandas"
 version = "3.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "python-dateutil" },
     { name = "tzdata", marker = "sys_platform == 'emscripten' or sys_platform == 'win32'" },
 ]
@@ -1940,7 +2117,8 @@ name = "pyannote-core"
 version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "pandas" },
     { name = "sortedcontainers" },
 ]
@@ -1968,7 +2146,8 @@ name = "pyannote-metrics"
 version = "4.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "pandas" },
     { name = "pyannote-core" },
     { name = "pyannote-database" },
@@ -2008,6 +2187,24 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f6/53/3e3f14c1382cf14e1dfeb958c08282c44ac07e6965803608e1b748a38273/pyannoteai_sdk-0.4.0.tar.gz", hash = "sha256:fbdade06eb54347374acf10698b8c9c0bcdb592f8339c90c5a16fa441ea8cf9d", size = 14773, upload-time = "2026-01-14T14:20:19.19Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f9/8d/16e62133ff748931e923c2d29a150a710c85283f533a4148adc42addb6a8/pyannoteai_sdk-0.4.0-py3-none-any.whl", hash = "sha256:36a0175978e0427f27843d690eb4d1e8ec839009ea540516d6dfcdce749cd883", size = 8886, upload-time = "2026-01-14T14:20:18.407Z" },
+]
+
+[[package]]
+name = "pycountry"
+version = "26.2.16"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/1d/061b9e7a48b85cfd69f33c33d2ef784a531c359399ad764243399673c8f5/pycountry-26.2.16.tar.gz", hash = "sha256:5b6027d453fcd6060112b951dd010f01f168b51b4bf8a1f1fc8c95c8d94a0801", size = 7711342, upload-time = "2026-02-17T03:42:52.367Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/42/7703bd45b62fecd44cd7d3495423097e2f7d28bc2e99e7c1af68892ab157/pycountry-26.2.16-py3-none-any.whl", hash = "sha256:115c4baf7cceaa30f59a4694d79483c9167dbce7a9de4d3d571c5f3ea77c305a", size = 8044600, upload-time = "2026-02-17T03:42:49.777Z" },
+]
+
+[[package]]
+name = "pycparser"
+version = "3.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/27/eeb9f307bf07060f3d9f9aa0fb8c15b01bdfded0a941e4b2719c7f94cacd/pycparser-3.12.tar.gz", hash = "sha256:f03387877eab82ce01bbdfd0ba7252ee55a90b1c708d5129e2ce915475cf1db6", size = 158785, upload-time = "2026-10-22T13:40:03.56Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/ae/315bbeee126a769cbde43cf4908acb4b40408d8bf8bbf334dd7368d8dadf/pycparser-3.12-py3-none-any.whl", hash = "sha256:a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e", size = 62600, upload-time = "2026-10-22T13:40:02.021Z" },
 ]
 
 [[package]]
@@ -2071,6 +2268,24 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ed/1d/0e2d5bb47dc729ddf21fb846cb1ac85baf6290eca5ef1ee3d871712496f4/pydantic_core-2.50.5-graalpy313-graalpy253_313_native-macosx_11_0_arm64.whl", hash = "sha256:d7826407ed74ff8e6cc6e6df7ffbf180e9b449ab1516f28eb5f6e2a489bc5129", size = 2054207, upload-time = "2026-11-19T12:56:17.916Z" },
     { url = "https://files.pythonhosted.org/packages/59/61/f1b75d2dffa662c4326adc6b16881f98158717cfd461936c2f0c36d9d1c8/pydantic_core-2.50.5-graalpy313-graalpy253_313_native-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:c415a8da7c89a3dd32d988a9117bf0a52371769b77b0943bcfd50b281ecefb8d", size = 2125491, upload-time = "2026-11-19T12:56:19.202Z" },
     { url = "https://files.pythonhosted.org/packages/e5/78/104a8c414f58132acaa6b2ce4cc3441b8cc556df0f7fcc9ca8c07473f17a/pydantic_core-2.50.5-graalpy313-graalpy253_313_native-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:ea7429e3adb2f2fd81e2d6e8942e5c1cd760a6e6be5b7574d2ee5499b5e19e67", size = 2284742, upload-time = "2026-11-19T12:56:20.825Z" },
+]
+
+[[package]]
+name = "pydantic-extra-types"
+version = "2.11.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/71/dba38ee2651f84f7842206adbd2233d8bbdb59fb85e9fa14232486a8c471/pydantic_extra_types-2.11.1.tar.gz", hash = "sha256:46792d2307383859e923d8fcefa82108b1a141f8a9c0198982b3832ab5ef1049", size = 172002, upload-time = "2026-03-16T08:08:03.92Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/17/c1/3226e6d7f5a4f736f38ac11a6fbb262d701889802595cdb0f53a885ac2e0/pydantic_extra_types-2.11.1-py3-none-any.whl", hash = "sha256:1722ea2bddae5628ace25f2aa685b69978ef533123e5638cfbddb999e0100ec1", size = 79526, upload-time = "2026-03-16T08:08:02.533Z" },
+]
+
+[package.optional-dependencies]
+pycountry = [
+    { name = "pycountry" },
 ]
 
 [[package]]
@@ -2196,7 +2411,8 @@ name = "pytorch-metric-learning"
 version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "scikit-learn" },
     { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -2247,6 +2463,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/eb/2e/79c822141bfd05a853236b504869ebc6b70159afc570e1d5a20641782eaa/pyyaml_env_tag-1.1.tar.gz", hash = "sha256:2eb38b75a2d21ee0475d6d97ec19c63287a7e140231e4214969d0eac923cd7ff", size = 5737, upload-time = "2025-05-13T15:24:01.64Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/11/432f32f8097b03e3cd5fe57e88efb685d964e2e5178a48ed61e841f7fdce/pyyaml_env_tag-1.1-py3-none-any.whl", hash = "sha256:17109e1a528561e32f026364712fee1264bc2ea6715120891174ed1b980d2e04", size = 4722, upload-time = "2025-05-13T15:23:59.629Z" },
+]
+
+[[package]]
+name = "referencing"
+version = "0.37.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "rpds-py" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/22/f5/df4e9027acead3ecc63e50fe1e36aca1523e1719559c499951bb4b53188f/referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8", size = 78036, upload-time = "2025-10-13T15:30:48.871Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl", hash = "sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231", size = 26766, upload-time = "2025-10-13T15:30:47.625Z" },
 ]
 
 [[package]]
@@ -2318,6 +2548,56 @@ wheels = [
 ]
 
 [[package]]
+name = "rpds-py"
+version = "2026.9.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/42/68/3bd46b8a5e01d3c2ebdf9c5e9497912e3fe0cde02bac21a7130ca866e403/rpds_py-2026.9.1.tar.gz", hash = "sha256:4793ef7f78268b124b73fa933440f01d258bbae01de9fa53e9080c9ab0425a12", size = 63948, upload-time = "2026-10-04T16:32:36.469Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5d/34/a828586ea3329fbb50895b50e9cf98ca3d924a9f41a0b26d443bff1b3794/rpds_py-2026.9.1-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:50906f5aea24b5a865cbd0a589698288631d9f3a54c3a937c83aefa95a0d14af", size = 346822, upload-time = "2026-10-04T16:29:16.258Z" },
+    { url = "https://files.pythonhosted.org/packages/90/81/ac6a0d064982251856ce009c9e1dd51a34110b3c055aa7d1aad18b4899a3/rpds_py-2026.9.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:e21c1429e205828ea886a2293a4a2c8e01f4c25d9893ca330e97a6cf73f52e7b", size = 341380, upload-time = "2026-10-04T16:29:17.706Z" },
+    { url = "https://files.pythonhosted.org/packages/42/ff/bf7d54f362748fd6a49277b9d6531c394074110fedf50ad791ec59133fbb/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2693b2728bbcc48d09a981a356954b0c47c53ff25b545856f28a889ea619f69a", size = 373053, upload-time = "2026-10-04T16:29:19.063Z" },
+    { url = "https://files.pythonhosted.org/packages/60/de/74b0ccdbbd28687b9b5fdb34c1cabed88352182facaced9d6f5486b8b9ed/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:8601470267d938bcb7f3ab1a336100af51a4fd5b6ed030ef52461bb3ef5e7e07", size = 377742, upload-time = "2026-10-04T16:29:20.543Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/6d/b979775a3057b2a5c26d75ecbff60a20a24ef081db6dd76836fca3f20247/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:3890a6aa36e6baa53d5258a2a25d3ef8b37ad165a6ab27a892d7c3e3a432cd69", size = 487289, upload-time = "2026-10-04T16:29:21.958Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/5d/7c34734ce3ece943d9d6ee0122a74a21bbc75b47acb5b7053c83f6efb1ed/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:6b5b393eda5ea42cca1c1a6665f2a4882b4fd5d1777e41ce0545a107fb008c9d", size = 390710, upload-time = "2026-10-04T16:29:23.378Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/6d/b26eb1e75395925b3a142ed351cbed2ec8212f5c9d937aee3df32c701baa/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:addeda51556dac7c1a2f14cda62db8b621cd12afba3091d03a96c72932387eab", size = 371261, upload-time = "2026-10-04T16:29:25.1Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/98/b2fdfe10301a9e27af21e634337fbba7baac0bc17fe44619a17c26bba2cb/rpds_py-2026.9.1-cp312-cp312-manylinux_2_31_riscv64.whl", hash = "sha256:d9edf30457d74eebfd76b045535e36f1cd89062566a128a0db2145ca042d787e", size = 376075, upload-time = "2026-10-04T16:29:26.748Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/b1/c4b8d954e49c3c69cf8063c0c9e0919c99f3d2cecc46311606a1cbe835dc/rpds_py-2026.9.1-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:815d26356930846a40c7bc1366e7b1b0320ab8a063e66c11298a208bed0fd237", size = 399358, upload-time = "2026-10-04T16:29:28.282Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/59/9559a7293c97dff0cbb293efffbd36644103883ecc27741af8ef90c84ca8/rpds_py-2026.9.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:3b5a6f40f0a1486b4b36c888123afc67acdbd9f33235927acf5ff295429a0ba3", size = 550267, upload-time = "2026-10-04T16:29:29.851Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/9d/6dc60e49511de4c8b00e74f9c1d43aed4d27f712cdb1ade92f2c199cbf64/rpds_py-2026.9.1-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:b5b8b0753718d258fd454283fbd57e14545d3b40583fa672e27cb4f987626bcc", size = 614018, upload-time = "2026-10-04T16:29:31.54Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/bc/92a4ecf27301b886232a413360f6b348a81d55ffef654f2ebda5970ebc3d/rpds_py-2026.9.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:46d80bc76b51a6c24f9944368c28d38b8bcbcea1da4f2f8d3ebc31a67e8c6ec6", size = 578509, upload-time = "2026-10-04T16:29:33.01Z" },
+    { url = "https://files.pythonhosted.org/packages/08/53/efb97f2e6589b7ab8394385a73870e0b2ab2a195281c117b21fd6d7d4855/rpds_py-2026.9.1-cp312-cp312-win32.whl", hash = "sha256:befc2d6a953e563f8a7bfd87a42c22ebf8a3e980dcb7b6a4d17b70b0e914e8a3", size = 205401, upload-time = "2026-10-04T16:29:34.451Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/84/1700cc748d0eaa747486e4e82882d2575224e6e9a3148df583058850c629/rpds_py-2026.9.1-cp312-cp312-win_amd64.whl", hash = "sha256:5ce8943f79c2210f7abcc28e86367b03b28d95027fd01c46d2472373ae70c86f", size = 222923, upload-time = "2026-10-04T16:29:35.709Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/89/0302215373c2f8b4408b0fdfee955368cc378a98ff59508d47a7e0dc2dbf/rpds_py-2026.9.1-cp312-cp312-win_arm64.whl", hash = "sha256:501909f2e4a1e2dee528ef766fe3c469060ebc17e54a8383d404ba07a81a6f02", size = 218415, upload-time = "2026-10-04T16:29:37.263Z" },
+    { url = "https://files.pythonhosted.org/packages/83/ea/ee88fd9e756ff93fb6b1182a47ec09504a242620e33ce1d20679efefe841/rpds_py-2026.9.1-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:a36b70596407634ca82d4b989a3729074a008537a0522e4c8046a67c729103e9", size = 346229, upload-time = "2026-10-04T16:29:38.82Z" },
+    { url = "https://files.pythonhosted.org/packages/57/71/a097d6552f837500fc36e6b23d09cfb9890c3cc47531f9ca64e149799615/rpds_py-2026.9.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:eba5d173f7d5708b22a93815017a4611873ed54db9f268077c0dd1ed99cfc858", size = 340514, upload-time = "2026-10-04T16:29:40.405Z" },
+    { url = "https://files.pythonhosted.org/packages/bd/b7/497e85768bf4e0d8ddbaa096a4cac31d1509251dee2728a8490aa367e0b5/rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:457866b85daf5034296666168b84a69e0b2e89dc4f1af102b46f6448a60b9063", size = 372611, upload-time = "2026-10-04T16:29:41.778Z" },
+    { url = "https://files.pythonhosted.org/packages/52/4b/74ab4108916250b6e198e0d3af05bc6835eb046315f22f7a0ceb49667c5a/rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:a3a52a3ba86436ab3aef510fbe21512abc2ddd1993005dfe50514bd2284ef025", size = 377712, upload-time = "2026-10-04T16:29:43.242Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/8e/067e77d9d7b3cc793c9d909b7e97e7aadbbb1fb094093b6876902cc96d38/rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d7841166b7fa64c9c56404617ae4341448847482d45933b13135d26c130519e5", size = 488106, upload-time = "2026-10-04T16:29:44.692Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/b4/c5aae6c2dde269bf955f6b7d35065c655a57e47750d9668052ad67e74dda/rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:926bdd3e3b5998ddf70cc64bc8cf57209571f9044542913afb673799fec77dd0", size = 390795, upload-time = "2026-10-04T16:29:46.129Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/36/76fab39973ee11e7f9f357c55138197bb01c86f6502cb76487e3b4f42db0/rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7868b85224291c6cb6759f9b5adb9745f486d226f62b16a614dd5a2a5ab2b35b", size = 370794, upload-time = "2026-10-04T16:29:47.603Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/fe/cd2a80e6d7b871937a60e935c5d507aa390d143f4ff3636f640b9733d5df/rpds_py-2026.9.1-cp313-cp313-manylinux_2_31_riscv64.whl", hash = "sha256:3cd182d7291d29b92c521a0069d9c01ba6193628a9a105531d11b40a6d731a33", size = 375673, upload-time = "2026-10-04T16:29:49.223Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/18/7464a9953724e55a3b3206062fa0ffdeaa519584c6aabf65d3956d94f131/rpds_py-2026.9.1-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:e6ea1cda8d8c688278430e4268a42f5e5da3bdd74578dfadc0820c3f1766ce83", size = 398758, upload-time = "2026-10-04T16:29:50.601Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/86/1534b436700fd49ff411063b7c4d7e938adfabf90895b6cf1622d5a7d1f6/rpds_py-2026.9.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:5943980471829f6de242a20b109de3111ba6b77e3af0ffc587028ac854b05e6c", size = 550370, upload-time = "2026-10-04T16:29:52.002Z" },
+    { url = "https://files.pythonhosted.org/packages/57/1c/e1fa82a8a01e3c5820f3ba98a8b2673f642128eb368fa88871b01dd2c909/rpds_py-2026.9.1-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:76d3af9732d2dab69f28179b40ba2d87e2f1d5824b4a694780aa787d685e8f36", size = 613106, upload-time = "2026-10-04T16:29:53.655Z" },
+    { url = "https://files.pythonhosted.org/packages/29/55/b20b8c4c3dde8755bfcd5b08492a02d0cd2e26929aedf6199ca2a377d42a/rpds_py-2026.9.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:78326f4cb4427a56ba4996c0762b63be45f06b85f086526420d2b3a66e40f84d", size = 578235, upload-time = "2026-10-04T16:29:55.157Z" },
+    { url = "https://files.pythonhosted.org/packages/55/42/df3f7bbc3f7ab37a8a9db8d6c2ff2c985422899f1f7926afbf7ec3c0b8b4/rpds_py-2026.9.1-cp313-cp313-win32.whl", hash = "sha256:172e47169583f46ce118cbec68e6795d0da0f4606b488b6434f8276bca0a058c", size = 205293, upload-time = "2026-10-04T16:29:56.669Z" },
+    { url = "https://files.pythonhosted.org/packages/31/9c/ba5a9569d719bfdd6ce863df4133ac6a1658cf1b07cc3534c31db729fbbc/rpds_py-2026.9.1-cp313-cp313-win_amd64.whl", hash = "sha256:3e93b2cd69a9830be33e03945cd7cda940a0a8bfcfbff41d6144f0cb0d3d8bd9", size = 222409, upload-time = "2026-10-04T16:29:58.049Z" },
+    { url = "https://files.pythonhosted.org/packages/35/72/f28ca566f6c23c35bbf7445f65eb0364577b25a026305995e24f78b83d94/rpds_py-2026.9.1-cp313-cp313-win_arm64.whl", hash = "sha256:d151e148117294133bf8af7eeace085e7e87432db15ab6adf640330298a47f6f", size = 217681, upload-time = "2026-10-04T16:29:59.449Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/90/a9ba81408369d34c1aca73319c15adc91ed45c1d21e9e8ee4832ffb7fe0b/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6cdc537c8633d7fd92a82e2e0d2ab74320a3f63d5e59fb9cf08711e08fe151c4", size = 381109, upload-time = "2026-10-04T16:32:08.994Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/44/5192a0bed94cec86bd2a5e1cc5a1bb8f7eec3aec907eacd2deb13e87e326/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:10e208f2425d973938afcd56e28a7c4be32e27b6a60b5d381f49fb9d8acf9759", size = 388222, upload-time = "2026-10-04T16:32:11.321Z" },
+    { url = "https://files.pythonhosted.org/packages/92/cd/5356549711448f18b52f7a11ffbe90f1228774996fbf3c6cd1b18d22abaf/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:6c0dbbcc19735fe5f8b0a54c07659d154a9e69f47e15d0a6ab7299215daf62cb", size = 500384, upload-time = "2026-10-04T16:32:13.478Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/88/ddda9d28adfe33119c75b2e733d4ba7e326f41d7e1b1093951771768ca48/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:684fd492fff4fead00587544e059be2bbcb6f93454f21fa2a91b66fc7508be82", size = 401661, upload-time = "2026-10-04T16:32:15.653Z" },
+    { url = "https://files.pythonhosted.org/packages/32/c3/bb59ba16a6b4a57995d15b8c04c00f28df3b938c4dcdde48fbe0f73edb0c/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d1028417bb44037eb3069c1009bd7b7277212876cda22fbe565b0bca9fab6d2c", size = 380748, upload-time = "2026-10-04T16:32:17.727Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/b8/0580faa1c5a32ddc160130dd7ae54d2d007272a89a40a6b5db3e50f9f585/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_31_riscv64.whl", hash = "sha256:492e5e428cbe126221611f47e068f01660352feec4ad18bc0f5ea9b2ae88fb14", size = 385731, upload-time = "2026-10-04T16:32:19.855Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/70/f73564642bbe3322c7eeef2c2f258cf040b71c41a430b532e59d04a1b838/rpds_py-2026.9.1-pp312-pypy312_pp73-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:88b5268892fde430d5531f95bc560b6efbbd67c929662c586afd729a96e7461c", size = 412131, upload-time = "2026-10-04T16:32:22.285Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/5d/17fff2e1f8f68721a2afb5cb48f7e442c751bb6b4883157c5abaf618cd08/rpds_py-2026.9.1-pp312-pypy312_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:01445c8d194aa032a08e944f16567672da1c62dbdbefd8b6d0693032e290cf68", size = 558193, upload-time = "2026-10-04T16:32:24.4Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/d0/869ab6fb08531f97aae4a780b4d61b4190d8aef48fe054ee28bcf7114466/rpds_py-2026.9.1-pp312-pypy312_pp73-musllinux_1_2_i686.whl", hash = "sha256:eef6a03b0b6d08d0835ccfa8ec8d1bc70525e3801387567137b50c557695e6da", size = 622448, upload-time = "2026-10-04T16:32:26.844Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/a5/9672e532fe02cd3b92c78cfd8743abca939d96853006c63835009a1ecb6f/rpds_py-2026.9.1-pp312-pypy312_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:6b9bf3135b4ad5981df9a73d71a35272d650a2985ae9c2746357b24d59de2448", size = 591126, upload-time = "2026-10-04T16:32:29.274Z" },
+    { url = "https://files.pythonhosted.org/packages/80/ef/3a9f8e4279c7920af561deed4cb7ebebed2794a8f608cf404d5eef14a105/rpds_py-2026.9.1-pp312-pypy312_pp80-macosx_10_12_x86_64.whl", hash = "sha256:56c6952a9b15047466d0c2347c446a761d4527f89976156341e68f0ce5cc08b0", size = 357108, upload-time = "2026-10-04T16:32:31.641Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/55/4b2fa381a583760aea5c92841e4e928a358e1c6511b129219e9c2826a226/rpds_py-2026.9.1-pp312-pypy312_pp80-macosx_11_0_arm64.whl", hash = "sha256:b242c27c8f836305a4a72df9cdd564386ac57b807bd252a063223331c9316b37", size = 346877, upload-time = "2026-10-04T16:32:34.061Z" },
+]
+
+[[package]]
 name = "ruff"
 version = "0.17.6"
 source = { registry = "https://pypi.org/simple" }
@@ -2373,7 +2653,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "joblib" },
     { name = "narwhals" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "scipy" },
     { name = "threadpoolctl" },
 ]
@@ -2398,7 +2679,8 @@ name = "scipy"
 version = "1.18.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7e/74/66de6258867beb2ef08f35f9f2ac017a52cacd5081714d239ff1a442d458/scipy-1.18.1.tar.gz", hash = "sha256:52c4b7422442aba924d03ad4019852b08a92e64ea187b933135687bfe2747307", size = 30781235, upload-time = "2026-08-21T23:28:50.599Z" }
 wheels = [
@@ -2449,6 +2731,45 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e8/c4/ba2f8066cceb6f23394729afe52f3bf7adec04bf9ed2c820b39e19299111/sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88", size = 30594, upload-time = "2021-05-16T22:03:42.897Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0", size = 29575, upload-time = "2021-05-16T22:03:41.177Z" },
+]
+
+[[package]]
+name = "soundfile"
+version = "0.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cffi" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/db/949331952a6fb1c5b12e9de80fd08747966c2039d1a61db4764fbd3981c2/soundfile-0.14.0.tar.gz", hash = "sha256:ba1c1a2d618bca5c406647c83b89f07cc8810fa506a50622a6993ba130c1de11", size = 47842, upload-time = "2026-06-06T08:58:47.869Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b1/d1/5e338af9ca6ed0786cd5bb03f6d60de1c325728c1189014f3b59aae7403c/soundfile-0.14.0-py2.py3-none-any.whl", hash = "sha256:8ba81ae3a89fd5ab3bef8a8eb481fbbe794e806309675a89b4df48b8d31908a8", size = 26799, upload-time = "2026-06-06T08:58:33.269Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/72/c6b21e58d3113596e7e8de0a08d6f1d95173492cfbca0a4db14148cbba2a/soundfile-0.14.0-py2.py3-none-macosx_10_9_x86_64.whl", hash = "sha256:19be05428da76ed61a4cad29b8e4bcf43a3e5c100089d2ec81dc961eed1b0dd4", size = 1144568, upload-time = "2026-06-06T08:58:35.231Z" },
+    { url = "https://files.pythonhosted.org/packages/63/7a/dfdd6f8c748988427119f75eb860a3cedd858d1aea1fe28f39ad8559ef22/soundfile-0.14.0-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:d828d35a059626da52f1415b5faee610aeab393319cb3fc4a9aef47b619fc14c", size = 1103726, upload-time = "2026-06-06T08:58:37.948Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/f8/fc39fad6f879633461d27394cd1ddaf1f769ffa0597dca35872f51b16461/soundfile-0.14.0-py2.py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:e85724a90bc99a6e8062c0b4ddf725f53b2a3b70afd4da875e9d2cfc4e92f377", size = 1238050, upload-time = "2026-06-06T08:58:39.932Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/a2/70fd4432b924684c372df8b0a45708c36c057ef3596c9eb53e0a806b980b/soundfile-0.14.0-py2.py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:1e38bac1853412871318e82a1ba69a8be677619b56025bbfcccdb41b6cafe82d", size = 1315963, upload-time = "2026-06-06T08:58:41.716Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/34/c9e80783d83eab739a9531fdee03675d53e0bf1b2ccb4bb3af5844675046/soundfile-0.14.0-py2.py3-none-win32.whl", hash = "sha256:0a6ae43c50c71b4e020cc55382925cb89451c1ed1a0c3d0f5d802da269226849", size = 902199, upload-time = "2026-06-06T08:58:43.289Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/97/b39c18ac1df45e755ca22b8b00e872929da5d107998a207a5e4ac831bfda/soundfile-0.14.0-py2.py3-none-win_amd64.whl", hash = "sha256:299491d3499460fb1b74bb4bd78b57ffc2d243a5fafa7b6ec1b264875c78453e", size = 1021480, upload-time = "2026-06-06T08:58:45.016Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/83/55c65e61cf457805ce2ec157c1c6ae17715d0851aa2374422de0538838ca/soundfile-0.14.0-py2.py3-none-win_arm64.whl", hash = "sha256:e090704718e124e7c844695236f1fce8d18a5e761eaf7c82dfcd124620805f98", size = 888858, upload-time = "2026-06-06T08:58:46.593Z" },
+]
+
+[[package]]
+name = "soxr"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ed/11/27cebce4a108f77afea7c80545115536b45e3f11ebfb914f638fdd9ba847/soxr-1.1.0.tar.gz", hash = "sha256:9f228ae21c78fa9359ca98d8a5e8e91f30639e438e574133dace62c5b5309e44", size = 173067, upload-time = "2026-05-03T00:15:18.214Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/06/8a/f3da7973b5f1b05d2d7e94d5376b881dcbc05297900cae6c3d33d95b209b/soxr-1.1.0-cp312-abi3-macosx_10_14_x86_64.whl", hash = "sha256:e0e09fa633ce2e67df08b298afced4d184f6e753fc330f241022250f1d0d61da", size = 204124, upload-time = "2026-05-03T00:14:54.505Z" },
+    { url = "https://files.pythonhosted.org/packages/03/dc/200013a74641f8774664bbcd2346c695c05c2e300ea792adcb40a293eed0/soxr-1.1.0-cp312-abi3-macosx_11_0_arm64.whl", hash = "sha256:d6a7ad82b8d5f3fcc04b1d2ca055562b96af571e1d4fa7c6c61d0fb509ac43b4", size = 165457, upload-time = "2026-05-03T00:14:56.007Z" },
+    { url = "https://files.pythonhosted.org/packages/88/2b/2e5eba817a762a2ec589ff165b8bc5955b25a0ad140045f7cd8e45410543/soxr-1.1.0-cp312-abi3-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:bf98c0d7b7d5ef5bf072fee8d3020e8b664f2d195933ea7bc5089267c2e22a06", size = 206529, upload-time = "2026-05-03T00:14:57.646Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/f1/0e55195893228609c9a08c3b13b7a83a46c3a992cd00d3304f0f320cfb07/soxr-1.1.0-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3b033078e86f3c4a658e5697fac8995764fad9e799563616b630136b613167f1", size = 240413, upload-time = "2026-05-03T00:14:59.363Z" },
+    { url = "https://files.pythonhosted.org/packages/b0/4d/621e4150e4815246ad552d215a8a294a90143fedd19ee442cf82d3b3abc8/soxr-1.1.0-cp312-abi3-win_amd64.whl", hash = "sha256:6ae2a174bffea94e8ead857dad85999d3f49f091774dbad5b046c0417d7092f4", size = 174357, upload-time = "2026-05-03T00:15:00.724Z" },
 ]
 
 [[package]]
@@ -2575,26 +2896,26 @@ version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
 ]
 dependencies = [
@@ -2642,8 +2963,8 @@ version = "2.8.0+cpu"
 source = { registry = "https://download.pytorch.org/whl/cpu" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
@@ -2829,26 +3150,26 @@ version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
 ]
 dependencies = [
@@ -2915,28 +3236,28 @@ version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
 ]
 wheels = [
@@ -2967,7 +3288,8 @@ version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lightning-utilities" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "packaging" },
     { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
@@ -2988,7 +3310,8 @@ resolution-markers = [
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "pillow", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
@@ -3010,7 +3333,8 @@ resolution-markers = [
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "pillow", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cu129", source = { registry = "https://download.pytorch.org/whl/cu129" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
@@ -3026,30 +3350,31 @@ version = "0.23.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
-    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version >= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'emscripten' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
     "python_full_version < '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'linux') or (python_full_version < '3.13' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.13' and platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'linux') or (python_full_version >= '3.13' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "pillow", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64' and extra == 'group-22-whisper-asr-webservice-cuda') or sys_platform != 'linux' or (extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
@@ -3077,7 +3402,8 @@ resolution-markers = [
     "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "pillow", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
@@ -3099,7 +3425,8 @@ resolution-markers = [
     "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "pillow", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
     { name = "torch", version = "2.8.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cuda') or (extra == 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda')" },
 ]
@@ -3131,7 +3458,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
     { name = "huggingface-hub" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "packaging" },
     { name = "pyyaml" },
     { name = "regex" },
@@ -3171,14 +3499,14 @@ version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version >= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version >= '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
+    "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra == 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda'",
     "(python_full_version < '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda') or (python_full_version < '3.13' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32' and extra != 'group-22-whisper-asr-webservice-cpu' and extra != 'group-22-whisper-asr-webservice-cuda')",
 ]
 dependencies = [
@@ -3405,13 +3733,16 @@ dependencies = [
     { name = "fastapi" },
     { name = "faster-whisper" },
     { name = "llvmlite" },
+    { name = "mistral-common", extra = ["audio", "hf-hub"] },
     { name = "numba" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "openai-whisper" },
     { name = "python-multipart" },
     { name = "torchcodec", version = "0.7.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
     { name = "torchcodec", version = "0.17.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
     { name = "tqdm" },
+    { name = "transformers" },
     { name = "uvicorn", extra = ["standard"] },
     { name = "whisperx" },
 ]
@@ -3455,6 +3786,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.165.0" },
     { name = "faster-whisper", specifier = ">=1.2.1" },
     { name = "llvmlite", specifier = ">=0.50.0" },
+    { name = "mistral-common", extras = ["audio", "hf-hub"], specifier = ">=1.8.1,<1.10" },
     { name = "numba", specifier = ">=0.68.1" },
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "openai-whisper", specifier = ">=20250625" },
@@ -3462,6 +3794,7 @@ requires-dist = [
     { name = "torchcodec", marker = "platform_machine != 'aarch64' or sys_platform != 'linux'", specifier = ">=0.7.0,<0.8.0" },
     { name = "torchcodec", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = ">=0.11.0" },
     { name = "tqdm", specifier = ">=4.70.1" },
+    { name = "transformers", specifier = ">=4.56.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
     { name = "whisperx", specifier = ">=3.8.6" },
 ]
@@ -3506,7 +3839,8 @@ dependencies = [
     { name = "faster-whisper" },
     { name = "huggingface-hub" },
     { name = "nltk" },
-    { name = "numpy" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "omegaconf" },
     { name = "pandas" },
     { name = "pyannote-audio" },

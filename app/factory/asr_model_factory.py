@@ -18,5 +18,9 @@ class ASRModelFactory:
             from app.asr_models.mbain_whisperx_engine import WhisperXASR
 
             return WhisperXASR()
+        elif CONFIG.ASR_ENGINE == "voxtral":
+            from app.asr_models.voxtral_engine import VoxtralASR
+
+            return VoxtralASR()
         else:
             raise ValueError(f"Unsupported ASR engine: {CONFIG.ASR_ENGINE}")

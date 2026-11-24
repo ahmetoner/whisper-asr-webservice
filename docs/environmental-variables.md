@@ -4,7 +4,7 @@ The service is configured with environment variables. All of them are optional.
 
 | Variable                   | Default                         | Description                                                    |
 |----------------------------|---------------------------------|----------------------------------------------------------------|
-| `ASR_ENGINE`               | `faster_whisper`                | `faster_whisper`, `openai_whisper` or `whisperx`; `openai_whisper` by default on ARM64 GPUs |
+| `ASR_ENGINE`               | `faster_whisper`                | `faster_whisper`, `openai_whisper`, `whisperx` or `voxtral`; `openai_whisper` by default on ARM64 GPUs |
 | `ASR_MODEL`                | `base`                          | Model to load, see [Models](#models)                           |
 | `ASR_MODEL_PATH`           | `$XDG_CACHE_HOME/whisper`       | Model download directory (`openai_whisper`, `faster_whisper`)  |
 | `XDG_CACHE_HOME`           | `~/.cache`                      | Base directory for downloaded models and data                  |
@@ -45,6 +45,21 @@ Larger models are more accurate but slower and need more memory. `turbo` is clos
 fraction of the cost and is a good default on GPU. For English-only audio, the `.en` models are more accurate than
 their multilingual counterparts, especially at the `tiny` and `base` sizes. Distilled models trade a little accuracy
 for faster inference.
+
+## Voxtral
+
+`ASR_ENGINE=voxtral` runs [Mistral's Voxtral](https://huggingface.co/mistralai/Voxtral-Mini-3B-2507) audio model
+through Hugging Face transformers. Set `ASR_MODEL` to a Hugging Face repository id, for example
+`mistralai/Voxtral-Mini-3B-2507` (the default for this engine) or `mistralai/Voxtral-Small-24B-2507`; a bare Whisper
+size such as `base` falls back to Voxtral-Mini. Weights are downloaded from the Hub and cached under `ASR_MODEL_PATH`;
+set `HF_TOKEN` if the repository is gated. Voxtral is a 3B+ model and is best run on the GPU.
+
+Voxtral is used through its transcription API, which has some limits compared with the Whisper engines:
+
+- It transcribes in a single language and cannot translate, so `/v1/audio/translations` returns the source language.
+- It has no language detection: pass `language` to transcribe in that language, otherwise English is assumed, and
+  `/detect-language` always reports English.
+- It returns the transcript as one segment without word timestamps.
 
 ## Device and Quantization
 
