@@ -4,6 +4,46 @@ Changelog
 Unreleased
 ----------
 
+### Added
+
+- OpenAI-compatible API: `/v1/audio/transcriptions`, `/v1/audio/translations` and `/v1/models`, with every response format including `verbose_json` and `diarized_json`, word timestamps, streaming and OpenAI's error format, so the OpenAI SDKs and applications built for OpenAI work by changing the base URL
+- `Authorization: Bearer` authentication with `API_KEY`, next to the `X-API-Key` header
+- `CORS_ALLOW_ORIGINS` to allow browser-based applications on other origins to call the API
+- `ROOT_PATH` to serve the service behind a reverse proxy under a path prefix, including the documentation and Swagger UI
+- `ASR_VAD_THRESHOLD`, `ASR_VAD_MIN_SILENCE_MS` and `ASR_VAD_SPEECH_PAD_MS` to tune voice activity detection; the threshold also applies to WhisperX, which drops the start or end of some non-English audio with its default
+- `ASR_PROMPT_RESET_ON_TEMPERATURE` to keep punctuation and capitalization on long recordings
+- `ASR_CONDITION_ON_PREVIOUS_TEXT` to stop Whisper from skipping speech at the end of a file, such as an outro after the main content
+- `vad_filter` for `/detect-language`, so the language is detected from speech instead of leading silence
+- `ASR_CPU_THREADS` to use more CPU cores; `faster_whisper` and `whisperx` use 4 threads by default
+- GPU Docker image for ARM64, e.g. NVIDIA DGX and Grace, with PyTorch built for CUDA 12.9; only the `openai_whisper` engine can use the GPU there, so it is the default on these systems
+
+### Breaking
+
+See the [upgrade guide](https://ahmetoner.github.io/whisper-asr-webservice/migration/) for what to check when upgrading from v1.
+
+- Docker images no longer include the `ffmpeg` binary; audio is decoded in-process with PyAV
+- `/asr?output=json` returns the same structure for every engine, following OpenAI's `verbose_json` format; `language` is now a name such as `english`
+- `SUBTITLE_MAX_LINE_WIDTH` and `SUBTITLE_MAX_LINE_COUNT` are unset by default, so subtitles contain one cue per segment
+- The default engine is `faster_whisper` instead of `openai_whisper`; set `ASR_ENGINE=openai_whisper` to keep the previous engine
+
+### Changed
+
+- Audio is decoded in-process with PyAV instead of an `ffmpeg` subprocess, so running from source no longer requires FFmpeg
+- Removed the `ffmpeg-python` dependency and the FFmpeg build layer from the Docker images
+- All engines share one set of output writers, and the `SUBTITLE_*` settings apply to every engine
+- `/asr` and `/detect-language` are documented as the legacy API
+- The documentation explains how to run offline with cached models, including WhisperX
+- `/detect-language` no longer rounds the WhisperX confidence to two decimals
+- The project uses uv instead of Poetry: `uv sync` installs the CPU build of PyTorch, `uv sync --no-group cpu --group cuda` the CUDA build, and locking and Docker builds are much faster
+- The CPU Docker image no longer includes `pip`
+
+### Fixed
+
+- WhisperX subtitles missing the spaces between words, and merging many segments into one subtitle
+- `word_timestamps` missing from the Swagger UI with the `openai_whisper` engine, which supports it
+- Installing without extras failing on macOS and arm64 because the CUDA build of PyTorch was selected
+- Transcription with more than 4 CPU threads being several times slower because the model was loaded in a thread that exits
+
 [1.11.0] (2026-11-22)
 ---------------------
 

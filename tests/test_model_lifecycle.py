@@ -1,8 +1,12 @@
 import logging
 
+import numpy as np
+
 from app.asr_models import mbain_whisperx_engine as wx
 from app.config import CONFIG
 from tests.conftest import FakeASRModel
+
+AUDIO = np.zeros(16000, dtype=np.float32)
 
 
 def test_release_model_is_idempotent():
@@ -43,7 +47,7 @@ def test_whisperx_applies_initial_prompt_for_one_request(monkeypatch):
     monkeypatch.setattr(wx.whisperx, "align", lambda *args, **kwargs: {"segments": []})
     model = wx.WhisperXASR()
     model.model = {"whisperx": pipeline, "diarize_model": None, "align_model": {}}
-    model.transcribe(None, "transcribe", None, "Kennedy", None, None, {}, "txt")
+    model.transcribe(AUDIO, "transcribe", None, "Kennedy", None, None, {})
     assert pipeline.seen_prompt == "Kennedy"
     assert pipeline.options.initial_prompt is None
 
@@ -66,7 +70,7 @@ def test_whisperx_passes_speaker_limits_by_keyword(monkeypatch):
         "align_model": {},
     }
     options = {"diarize": True, "min_speakers": 2, "max_speakers": 4}
-    model.transcribe(None, "transcribe", None, None, None, None, options, "txt")
+    model.transcribe(AUDIO, "transcribe", None, None, None, None, options)
     assert calls == [{"min_speakers": 2, "max_speakers": 4}]
 
 
@@ -81,7 +85,7 @@ def test_requests_reload_the_model_after_it_was_released():
     model = FakeASRModel()
     model.load_model()
     model.release_model()
-    assert model.transcribe(None, "transcribe", None, None, None, None, {}, "txt").read() == "hello world\n"
+    assert model.transcribe(AUDIO, "transcribe", None, None, None, None, {})["text"] == "hello world"
     assert model.model == "loaded"
     model.release_model()
     assert model.language_detection(None) == ("en", 0.99)
@@ -98,7 +102,74 @@ def test_engines_do_not_share_state():
 def test_model_is_unloaded_after_each_request_when_configured(monkeypatch):
     monkeypatch.setattr(CONFIG, "MODEL_UNLOAD_AFTER_REQUEST", True)
     model = FakeASRModel()
-    assert model.transcribe(None, "transcribe", None, None, None, None, {}, "txt").read() == "hello world\n"
+    assert model.transcribe(AUDIO, "transcribe", None, None, None, None, {})["text"] == "hello world"
     assert model.model is None
     assert model.language_detection(None) == ("en", 0.99)
     assert model.model is None
+
+
+def test_faster_whisper_language_detection_uses_vad_settings(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    seen = {}
+
+    class Model:
+        def detect_language(self, audio, vad_filter, vad_parameters):
+            seen.update(vad_filter=vad_filter, vad_parameters=vad_parameters)
+            return "en", 0.9, []
+
+    monkeypatch.setattr(CONFIG, "VAD_THRESHOLD", 0.6)
+    engine = fw.FasterWhisperASR()
+    engine.model = Model()
+    assert engine._detect_language(AUDIO, True) == ("en", 0.9)
+    assert seen["vad_filter"] is True
+    assert isinstance(seen["vad_parameters"], fw.VadOptions) and seen["vad_parameters"].threshold == 0.6
+
+
+def test_cpu_threads_setting(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    captured = {}
+    monkeypatch.setattr(fw, "WhisperModel", lambda **kwargs: captured.update(kwargs))
+    monkeypatch.setattr(CONFIG, "CPU_THREADS", 12)
+    fw.FasterWhisperASR()._load_model()
+    assert captured["cpu_threads"] == 12
+
+
+def test_condition_on_previous_text_setting(monkeypatch):
+    from app.asr_models import faster_whisper_engine as fw
+
+    class Info:
+        language, language_probability = "en", 0.9
+
+    captured = {}
+
+    class Model:
+        def transcribe(self, audio, **kwargs):
+            captured.update(kwargs)
+            return iter([]), Info()
+
+    monkeypatch.setattr(CONFIG, "CONDITION_ON_PREVIOUS_TEXT", False)
+    engine = fw.FasterWhisperASR()
+    engine.model = Model()
+    engine.transcribe(AUDIO, "transcribe", None, None, None, None, {})
+    assert captured["condition_on_previous_text"] is False
+
+
+def test_models_are_always_loaded_in_the_same_long_lived_thread():
+    import threading
+
+    threads = []
+
+    class Model(FakeASRModel):
+        def _load_model(self):
+            threads.append(threading.current_thread())
+            return "loaded"
+
+    model = Model()
+    model.load_model()
+    model.release_model()
+    reload = threading.Thread(target=model.load_model)
+    reload.start()
+    reload.join()
+    assert threads[0] is threads[1] and threads[0].is_alive()

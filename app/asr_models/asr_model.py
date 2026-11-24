@@ -2,25 +2,28 @@ import gc
 import logging
 import time
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
-from io import StringIO
 from threading import Lock, Thread
-from typing import BinaryIO, Union
+from typing import Union
 
 import torch
 
 from app.config import CONFIG
+from app.results import build_result, normalize_segment
 
 logger = logging.getLogger(__name__)
 
 
 class ASRModel(ABC):
-    """Base class for the ASR engines; it owns loading, locking, idle tracking and unloading of the model."""
+    """Base class for the ASR engines; it owns loading, locking, idle tracking, unloading and the result format."""
 
     def __init__(self):
         self.model = None
         self.model_lock = Lock()
         self.last_activity_time = time.time()
+        # CTranslate2 inference slows down once the thread that created the model exits, so this thread never exits
+        self._loader = ThreadPoolExecutor(max_workers=1, thread_name_prefix="model-loader")
 
     @abstractmethod
     def _load_model(self):
@@ -37,15 +40,11 @@ class ASRModel(ABC):
         word_timestamps: Union[bool, None],
         options: Union[dict, None],
     ) -> dict:
-        """Transcribes the audio with the loaded model and returns the result."""
+        """Transcribes the audio with the loaded model and returns its raw "segments" and the "language" code."""
 
     @abstractmethod
-    def _detect_language(self, audio) -> tuple[str, float]:
+    def _detect_language(self, audio, vad_filter: bool = False) -> tuple[str, float]:
         """Detects the language with the loaded model and returns its code and probability."""
-
-    @abstractmethod
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        """Writes the result in the requested output format."""
 
     def load_model(self):
         logger.info(
@@ -53,7 +52,7 @@ class ASRModel(ABC):
             CONFIG.ASR_ENGINE, CONFIG.MODEL_NAME, CONFIG.DEVICE,
         )
         start = time.time()
-        self.model = self._load_model()
+        self.model = self._loader.submit(self._load_model).result()
         logger.info("Model loaded in %.1fs", time.time() - start)
         self.last_activity_time = time.time()
         if CONFIG.MODEL_IDLE_TIMEOUT > 0:
@@ -82,19 +81,32 @@ class ASRModel(ABC):
         vad_filter: Union[bool, None],
         word_timestamps: Union[bool, None],
         options: Union[dict, None],
-        output,
+    ) -> dict:
+        with self.loaded_model():
+            raw = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
+            segments = list(raw["segments"])
+        logger.debug("Got %d segments in language %s", len(segments), raw["language"])
+        return build_result(segments, raw["language"], len(audio) / CONFIG.SAMPLE_RATE, task)
+
+    def transcribe_stream(
+        self,
+        audio,
+        task: Union[str, None],
+        language: Union[str, None],
+        initial_prompt: Union[str, None],
+        vad_filter: Union[bool, None],
+        word_timestamps: Union[bool, None],
+        options: Union[dict, None],
     ):
+        """Yields (language, segment) pairs as soon as the engine produces each segment."""
         with self.loaded_model():
-            result = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
+            raw = self._transcribe(audio, task, language, initial_prompt, vad_filter, word_timestamps, options)
+            for index, segment in enumerate(raw["segments"]):
+                yield raw["language"], normalize_segment(segment, index, raw["language"])
 
-        output_file = StringIO()
-        self.write_result(result, output_file, output)
-        output_file.seek(0)
-        return output_file
-
-    def language_detection(self, audio):
+    def language_detection(self, audio, vad_filter: bool = False):
         with self.loaded_model():
-            return self._detect_language(audio)
+            return self._detect_language(audio, vad_filter)
 
     def monitor_idleness(self):
         """

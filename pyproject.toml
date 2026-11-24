@@ -7,7 +7,7 @@ dependencies = [
     "fastapi (>=0.165.0)",
     "uvicorn[standard] (>=0.54.0)",
     "python-multipart (>=0.0.34)",
-    "ffmpeg-python (>=0.2.0)",
+    "av (>=19.0.2)",
     "numpy (>=2.2.6)",
     "openai-whisper (>=20250625)",
     "faster-whisper (>=1.2.1)",
@@ -25,13 +25,10 @@ authors = [
     { name = "Ahmet Öner" },
     { name = "Besim Alibegovic" }
 ]
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENCE"]
 readme = "README.md"
 keywords = ["speech-recognition", "whisper", "asr", "webservice"]
-
-[tool.poetry]
-requires-poetry = ">=2.0"
-packages = [{ include = "app" }]
 
 [project.urls]
 Homepage = "https://github.com/ahmetoner/whisper-asr-webservice/"
@@ -40,60 +37,81 @@ Repository = "https://github.com/ahmetoner/whisper-asr-webservice"
 [project.scripts]
 whisper-asr-webservice = "app.webservice:start"
 
-[project.optional-dependencies]
+[dependency-groups]
 cpu = [
     "torch (==2.8.0)",
     "torchaudio (==2.8.0)",
-    "torchvision (==0.23.0)"
+    "torchvision (==0.23.0)",
 ]
 cuda = [
-    "torch (==2.8.0+cu128)",
-    "torchaudio (==2.8.0+cu128)",
-    "torchvision (==0.23.0+cu128)"
+    "torch (==2.8.0) ; sys_platform == 'linux'",
+    "torchaudio (==2.8.0) ; sys_platform == 'linux'",
+    "torchvision (==0.23.0) ; sys_platform == 'linux'",
+    "triton (==3.4.0) ; sys_platform == 'linux' and platform_machine == 'aarch64'",
+]
+dev = [
+    "pytest (>=9.2.0,<10.0.0)",
+    "httpx2 (>=2.16.2,<3.0.0)",
+    "ruff (>=0.17.6,<1.0.0)",
+    "black (>=26.10.1,<27.0.0)",
+    "mkdocs-material (>=9.8.2,<10.0.0)",
+    "pymdown-extensions (>=13.1.2,<14.0.0)",
+    "openai (>=3.58.0,<4.0.0)",
 ]
 
-[[tool.poetry.source]]
+[tool.uv]
+required-version = ">=0.13.7"
+default-groups = ["cpu", "dev"]
+conflicts = [[{ group = "cpu" }, { group = "cuda" }]]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'linux' and platform_machine == 'aarch64'",
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
+]
+torchaudio = [
+    { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
+]
+torchvision = [
+    { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cuda", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
+]
+triton = [
+    { index = "pytorch-cuda-arm64", group = "cuda", marker = "sys_platform == 'linux' and platform_machine == 'aarch64'" },
+]
+
+[[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
-priority = "explicit"
+explicit = true
 
-[[tool.poetry.source]]
+[[tool.uv.index]]
 name = "pytorch-cuda"
 url = "https://download.pytorch.org/whl/cu128"
-priority = "explicit"
+explicit = true
 
-[tool.poetry.dependencies]
-torch = [
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
-    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
- ]
-torchaudio = [
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
-    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
- ]
-torchvision = [
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cpu"},
-    { markers = "extra == 'cuda' and extra != 'cpu' and platform_machine == 'x86_64' and sys_platform != 'darwin'", source = "pytorch-cuda"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and sys_platform == 'darwin'", source = "pypi"},
-    { markers = "extra == 'cpu' and extra != 'cuda' and platform_machine == 'aarch64' and sys_platform != 'darwin'", source = "pypi"}
- ]
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = ">=9.2.0,<10.0.0"
-httpx2 = ">=2.16.2,<3.0.0"
-ruff = ">=0.17.6,<1.0.0"
-black = ">=26.10.1,<27.0.0"
-mkdocs-material = ">=9.8.2,<10.0.0"
-pymdown-extensions = ">=13.1.2,<14.0.0"
+# PyTorch publishes its ARM64 CUDA builds only for CUDA 12.9
+[[tool.uv.index]]
+name = "pytorch-cuda-arm64"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
 
 [build-system]
-requires = ["poetry-core>=2.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build (>=0.13.7,<0.14)"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "app"
+module-root = ""
 
 [tool.black]
 skip-string-normalization = true

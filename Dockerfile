@@ -1,5 +1,3 @@
-FROM onerahmet/ffmpeg:n9.1 AS ffmpeg
-
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
 FROM python:3.12-slim-bookworm AS base
@@ -16,23 +14,24 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir -U pip
+    && pip uninstall -y pip
 
 FROM base AS build
 
-RUN python3 -m venv /opt/poetry \
-    && /opt/poetry/bin/pip install --no-cache-dir poetry==2.5.2
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /bin/uv
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_NO_CACHE=1 \
+    UV_PYTHON_DOWNLOADS=never
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock poetry.toml ./
-RUN /opt/poetry/bin/poetry config virtualenvs.in-project true \
-    && /opt/poetry/bin/poetry config virtualenvs.options.no-pip true \
-    && /opt/poetry/bin/poetry install --extras cpu --without dev --no-root
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-dev --no-install-project
 
-COPY README.md ./
+COPY README.md LICENCE ./
 COPY app ./app
-RUN /opt/poetry/bin/poetry install --only-root
+RUN uv sync --locked --no-dev
 
 FROM base
 
@@ -43,8 +42,6 @@ WORKDIR /app
 
 COPY --from=build /app/.venv /app/.venv
 COPY . .
-COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=ffmpeg /usr/local/share/doc/ffmpeg /usr/local/share/doc/ffmpeg
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css swagger-ui-assets/swagger-ui.css
 COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
 

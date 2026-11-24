@@ -1,12 +1,11 @@
 import logging
 import os
 from dataclasses import replace
-from typing import BinaryIO, Union
+from typing import Union
 
 import whisperx
 from whisperx.audio import N_SAMPLES
 from whisperx.diarize import DiarizationPipeline
-from whisperx.utils import ResultWriter, SubtitlesWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
@@ -22,12 +21,21 @@ class WhisperXASR(ASRModel):
         asr_options = {"without_timestamps": False}
         if CONFIG.BEAM_SIZE:
             asr_options["beam_size"] = CONFIG.BEAM_SIZE
+        if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
+            asr_options["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        if CONFIG.CONDITION_ON_PREVIOUS_TEXT is not None:
+            asr_options["condition_on_previous_text"] = CONFIG.CONDITION_ON_PREVIOUS_TEXT
+        vad_options = None
+        if CONFIG.VAD_THRESHOLD is not None:
+            vad_options = {"vad_onset": CONFIG.VAD_THRESHOLD, "vad_offset": CONFIG.VAD_THRESHOLD}
         model = {
             'whisperx': whisperx.load_model(
                 CONFIG.MODEL_NAME,
                 device=CONFIG.DEVICE,
                 compute_type=CONFIG.MODEL_QUANTIZATION,
-                asr_options=asr_options
+                asr_options=asr_options,
+                vad_options=vad_options,
+                threads=CONFIG.CPU_THREADS or 4,
             ),
             'diarize_model': None,
             'align_model': {},
@@ -53,11 +61,16 @@ class WhisperXASR(ASRModel):
         if language:
             options_dict["language"] = language
 
-        # whisperx takes the initial prompt from the pipeline options, not as a transcribe() argument
+        # whisperx takes the initial prompt and temperature from the pipeline options, not as transcribe() arguments
         pipeline = self.model['whisperx']
         default_options = pipeline.options
+        changes = {}
         if initial_prompt:
-            pipeline.options = replace(default_options, initial_prompt=initial_prompt)
+            changes["initial_prompt"] = initial_prompt
+        if options.get("temperature") is not None:
+            changes["temperatures"] = [options["temperature"]]
+        if changes:
+            pipeline.options = replace(default_options, **changes)
         logger.debug("Transcribing with batch_size=%s initial_prompt=%r %s", CONFIG.BATCH_SIZE, initial_prompt, options_dict)
         try:
             result = pipeline.transcribe(audio, batch_size=CONFIG.BATCH_SIZE, **options_dict)
@@ -89,29 +102,11 @@ class WhisperXASR(ASRModel):
         result["language"] = language
         return result
 
-    def _detect_language(self, audio):
+    def _detect_language(self, audio, vad_filter=False):
         if audio.shape[0] < N_SAMPLES:
             logger.warning("Audio is shorter than 30s, language detection may be inaccurate")
         results = self.model['whisperx'].model.detect_language(audio)
         language = results[0]
-        language_probability = round(float(results[1]), 2)
+        language_probability = float(results[1])
         logger.debug("Detected language %s (%s) in the first 30s of audio", language, language_probability)
         return language, language_probability
-
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        default_options = {
-            "max_line_width": CONFIG.SUBTITLE_MAX_LINE_WIDTH,
-            "max_line_count": CONFIG.SUBTITLE_MAX_LINE_COUNT,
-            "highlight_words": CONFIG.SUBTITLE_HIGHLIGHT_WORDS
-        }
-
-        if output == "srt":
-            WriteSRT(SubtitlesWriter).write_result(result, file=file, options=default_options)
-        elif output == "vtt":
-            WriteVTT(SubtitlesWriter).write_result(result, file=file, options=default_options)
-        elif output == "tsv":
-            WriteTSV(ResultWriter).write_result(result, file=file, options=default_options)
-        elif output == "json":
-            WriteJSON(ResultWriter).write_result(result, file=file, options=default_options)
-        else:
-            WriteTXT(ResultWriter).write_result(result, file=file, options=default_options)

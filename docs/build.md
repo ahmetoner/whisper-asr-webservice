@@ -3,8 +3,7 @@
 ## Requirements
 
 - Python 3.12 or 3.13
-- [Poetry](https://python-poetry.org) 2.x
-- [FFmpeg](https://ffmpeg.org) on the `PATH`
+- [uv](https://docs.astral.sh/uv/)
 - For GPU support, an NVIDIA driver that supports CUDA 12.8 or newer
 
 ## Request Flow
@@ -20,7 +19,7 @@ edited at [excalidraw.com](https://excalidraw.com).
 |--------------------------------------|----------------------------------------------------------------------|
 | `app/webservice.py`                  | FastAPI application, endpoints, API key check and CLI entry point    |
 | `app/config.py`                      | Reads the environment variables                                      |
-| `app/utils.py`                       | Audio decoding with FFmpeg and the output format writers             |
+| `app/utils.py`                       | Audio decoding with PyAV and the output format writers               |
 | `app/factory/asr_model_factory.py`   | Creates the engine selected by `ASR_ENGINE`                          |
 | `app/asr_models/asr_model.py`        | Engine base class: model lock, lazy loading and idle unloading       |
 | `app/asr_models/*_engine.py`         | `openai_whisper`, `faster_whisper` and `whisperx` implementations    |
@@ -29,28 +28,30 @@ edited at [excalidraw.com](https://excalidraw.com).
 ## Install
 
 ```shell
-poetry install --extras cpu   # CPU build of PyTorch
-poetry install --extras cuda  # PyTorch for CUDA 12.8
+uv sync                                # CPU build of PyTorch
+uv sync --no-group cpu --group cuda    # PyTorch for CUDA 12.8 (CUDA 12.9 on ARM64)
 ```
+
+`uv run` installs the default CPU build again before running a command, so after installing the CUDA build run
+commands with `uv run --no-sync`, or set `UV_NO_SYNC=1`.
 
 ## Run
 
 ```shell
-poetry run whisper-asr-webservice --host 0.0.0.0 --port 9000
+uv run whisper-asr-webservice --host 0.0.0.0 --port 9000
 ```
 
 Configure the service with the [environment variables](environmental-variables.md), for example
-`ASR_ENGINE=faster_whisper ASR_MODEL=tiny poetry run whisper-asr-webservice`.
+`ASR_ENGINE=faster_whisper ASR_MODEL=tiny uv run whisper-asr-webservice`.
 
 ## Test and Lint
 
 ```shell
-poetry run pytest
-poetry run ruff check app tests
+uv run pytest
+uv run ruff check app tests
 ```
 
-The tests replace the ASR engine with a stub, so they run without downloading models. Audio decoding tests are skipped
-when FFmpeg is not installed.
+The tests replace the ASR engine with a stub, so they run without downloading models.
 
 ## Build Docker Images
 
@@ -80,7 +81,7 @@ when FFmpeg is not installed.
 ## Documentation
 
 ```shell
-poetry run mkdocs serve
+uv run mkdocs serve
 ```
 
 The site is served at <http://localhost:8000> and reloads on changes.
@@ -92,5 +93,5 @@ Pushing to the `debug` branch publishes the `debug` and `debug-gpu` images for t
 
 Each architecture is built on a native GitHub runner and scanned with Trivy before the multi-platform tags are
 published, so a failed scan never updates a published tag. The per-architecture images stay available as
-`<tag>-amd64`, `<tag>-arm64` and `<tag>-gpu-amd64`. Builds of the `debug` branch reuse the layer cache stored in the
+`<tag>-amd64`, `<tag>-arm64`, `<tag>-gpu-amd64` and `<tag>-gpu-arm64`. Builds of the `debug` branch reuse the layer cache stored in the
 `buildcache-*` tags; version tags are always built from scratch.

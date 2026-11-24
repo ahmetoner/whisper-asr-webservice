@@ -1,7 +1,8 @@
-# API
+# Legacy API
 
-The service exposes two endpoints. Both accept a file upload as `multipart/form-data` in the `audio_file` field.
-Interactive documentation is available at `/docs`, and the OpenAPI schema at `/openapi.json`.
+These are the service's original endpoints. They remain supported for existing integrations; new integrations should
+use the [OpenAI-compatible API](openai.md). Both accept a file upload as `multipart/form-data` in the `audio_file`
+field. Interactive documentation is available at `/docs`, and the OpenAPI schema at `/openapi.json`.
 
 | Method | Path               | Description                                 |
 |--------|--------------------|---------------------------------------------|
@@ -23,7 +24,7 @@ Transcribes the uploaded file in its original language, or translates it into En
 | `language`        | string  | auto-detected  | Language code of the audio, e.g. `en`, `de`, `tr`                           |
 | `output`          | string  | `txt`          | `txt`, `json`, `vtt`, `srt` or `tsv`                                        |
 | `initial_prompt`  | string  | none           | Text that guides the style or vocabulary of the transcript                  |
-| `encode`          | boolean | `true`         | Decode the file with FFmpeg. Set to `false` to send raw PCM (see below)     |
+| `encode`          | boolean | `true`         | Decode the file. Set to `false` to send raw PCM (see below)                 |
 | `word_timestamps` | boolean | `false`        | Include word-level timestamps. `openai_whisper` and `faster_whisper`        |
 | `vad_filter`      | boolean | `false`        | Skip parts of the audio without speech. `faster_whisper` only               |
 | `diarize`         | boolean | `false`        | Label segments by speaker. `whisperx` only, requires `HF_TOKEN`             |
@@ -59,33 +60,42 @@ curl -F "audio_file=@call.m4a" "http://localhost:9000/asr?output=json&diarize=tr
 | `srt`    | `application/x-subrip`       | SubRip subtitles                                    |
 | `tsv`    | `text/tab-separated-values`  | Segment start, end (in milliseconds) and text       |
 
-The JSON output contains:
+The JSON output has the same structure for every engine and follows OpenAI's `verbose_json` format:
 
+- `task`: `transcribe` or `translate`
+- `language`: the detected or requested language, as a lowercase name such as `english`
+- `duration`: the length of the audio in seconds
 - `text`: the full transcript
-- `segments`: one entry per segment, with start and end times, text and engine-specific metadata such as word
-  timestamps and, when diarization is enabled, the speaker label
-- `language`: the detected or requested language code
+- `segments`: one entry per segment with `id`, `seek`, `start`, `end`, `text`, `tokens`, `temperature`,
+  `avg_logprob`, `compression_ratio` and `no_speech_prob`, plus `speaker` when diarization is enabled. WhisperX does
+  not report the decoding statistics, so they are `0` with that engine.
+- `words`: word timestamps with `word`, `start`, `end` and `probability`, included when `word_timestamps` is enabled
+  or with the WhisperX engine
+
+With diarization, the text outputs prefix every segment with its speaker, e.g. `[SPEAKER_00]: Hello`.
 
 The response includes an `Asr-Engine` header with the engine that produced it.
 
 ### Input
 
 With `encode=true` (the default), any audio or video format supported by FFmpeg is accepted, including MP3, WAV,
-FLAC, OGG, Opus, M4A, MP4, MOV, MKV and WebM. Audio is converted to 16 kHz mono before transcription.
+FLAC, OGG, Opus, M4A, MP4, MOV, MKV and WebM. The file is decoded in-process with PyAV and converted to 16 kHz mono
+before transcription.
 
-With `encode=false`, the file must be raw 16-bit little-endian mono PCM at 16 kHz. This skips FFmpeg and is useful
+With `encode=false`, the file must be raw 16-bit little-endian mono PCM at 16 kHz. This skips decoding and is useful
 when the client already has decoded audio.
 
 ## Language Detection
 
 `POST /detect-language`
 
-Detects the language spoken in the first 30 seconds of the file.
+Detects the language spoken in the first 30 seconds of the file, or of its speech with `vad_filter=true`.
 
 | Name         | Type    | Default  | Description                                   |
 |--------------|---------|----------|-----------------------------------------------|
 | `audio_file` | file    | required | Audio or video file                           |
-| `encode`     | boolean | `true`   | Decode the file with FFmpeg                   |
+| `encode`     | boolean | `true`   | Decode the file                               |
+| `vad_filter` | boolean | `false`  | Detect from speech, skipping silence. `faster_whisper` only |
 
 ```shell
 curl -F "audio_file=@audio.mp3" "http://localhost:9000/detect-language"
@@ -112,8 +122,9 @@ curl http://localhost:9000/health
 
 ## Authentication
 
-When the `API_KEY` environment variable is set, both endpoints require the key in the `X-API-Key` header. The
-documentation pages stay public, and the Swagger UI provides an **Authorize** button to enter the key.
+When the `API_KEY` environment variable is set, both endpoints require the key in the `X-API-Key` header or as
+`Authorization: Bearer <key>`. The documentation pages stay public, and the Swagger UI provides an **Authorize** button
+to enter the key.
 
 ```shell
 curl -H "X-API-Key: your-secret-key" -F "audio_file=@audio.mp3" "http://localhost:9000/asr"

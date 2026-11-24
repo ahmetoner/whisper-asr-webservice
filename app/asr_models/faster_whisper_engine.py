@@ -1,12 +1,11 @@
 import logging
-from typing import BinaryIO, Union
+from typing import Union
 
-import whisper
 from faster_whisper import BatchedInferencePipeline, WhisperModel
+from faster_whisper.vad import VadOptions
 
 from app.asr_models.asr_model import ASRModel
 from app.config import CONFIG
-from app.utils import ResultWriter, WriteJSON, WriteSRT, WriteTSV, WriteTXT, WriteVTT
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,8 @@ class FasterWhisperASR(ASRModel):
             model_size_or_path=CONFIG.MODEL_NAME,
             device=CONFIG.DEVICE,
             compute_type=CONFIG.MODEL_QUANTIZATION,
-            download_root=CONFIG.MODEL_PATH
+            download_root=CONFIG.MODEL_PATH,
+            cpu_threads=CONFIG.CPU_THREADS or 0,
         )
 
     def _transcribe(
@@ -40,6 +40,15 @@ class FasterWhisperASR(ASRModel):
             options_dict["vad_filter"] = True
         if word_timestamps:
             options_dict["word_timestamps"] = True
+        if options.get("temperature") is not None:
+            options_dict["temperature"] = options["temperature"]
+        if CONFIG.PROMPT_RESET_ON_TEMPERATURE is not None:
+            options_dict["prompt_reset_on_temperature"] = CONFIG.PROMPT_RESET_ON_TEMPERATURE
+        if CONFIG.CONDITION_ON_PREVIOUS_TEXT is not None:
+            options_dict["condition_on_previous_text"] = CONFIG.CONDITION_ON_PREVIOUS_TEXT
+        vad_parameters = {**self._vad_parameters(), **(options.get("vad") or {})}
+        if vad_parameters and (vad_filter or CONFIG.BATCH_SIZE):
+            options_dict["vad_parameters"] = vad_parameters
         beam_size = CONFIG.BEAM_SIZE or 5
         logger.debug("Transcribing with beam_size=%s batch_size=%s %s", beam_size, CONFIG.BATCH_SIZE, options_dict)
         if CONFIG.BATCH_SIZE:
@@ -48,25 +57,21 @@ class FasterWhisperASR(ASRModel):
             )
         else:
             segment_generator, info = self.model.transcribe(audio, beam_size=beam_size, **options_dict)
-        segments = list(segment_generator)
-        text = "".join(segment.text for segment in segments)
-        logger.debug("Got %d segments, detected language %s (%.2f)", len(segments), info.language, info.language_probability)
-        return {"language": options_dict.get("language", info.language), "segments": segments, "text": text}
+        logger.debug("Detected language %s (%.2f)", info.language, info.language_probability)
+        return {"language": options_dict.get("language", info.language), "segments": segment_generator}
 
-    def _detect_language(self, audio):
-        # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.pad_or_trim(audio)
-        _, info = self.model.transcribe(audio, beam_size=5)
-        return info.language, info.language_probability
+    def _detect_language(self, audio, vad_filter=False):
+        parameters = self._vad_parameters()
+        language, probability, _ = self.model.detect_language(
+            audio, vad_filter=vad_filter, vad_parameters=VadOptions(**parameters) if parameters else None
+        )
+        return language, probability
 
-    def write_result(self, result: dict, file: BinaryIO, output: Union[str, None]):
-        if output == "srt":
-            WriteSRT(ResultWriter).write_result(result, file=file)
-        elif output == "vtt":
-            WriteVTT(ResultWriter).write_result(result, file=file)
-        elif output == "tsv":
-            WriteTSV(ResultWriter).write_result(result, file=file)
-        elif output == "json":
-            WriteJSON(ResultWriter).write_result(result, file=file)
-        else:
-            WriteTXT(ResultWriter).write_result(result, file=file)
+    @staticmethod
+    def _vad_parameters():
+        settings = {
+            "threshold": CONFIG.VAD_THRESHOLD,
+            "min_silence_duration_ms": CONFIG.VAD_MIN_SILENCE_MS,
+            "speech_pad_ms": CONFIG.VAD_SPEECH_PAD_MS,
+        }
+        return {key: value for key, value in settings.items() if value is not None}

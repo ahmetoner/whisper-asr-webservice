@@ -1,26 +1,28 @@
 import importlib.metadata
 import logging
 import os
-import secrets
 import time
 from contextlib import asynccontextmanager
 from os import path
-from threading import BoundedSemaphore, Event, Thread
+from threading import Thread
 from typing import Annotated, Literal, Optional, Union
 from urllib.parse import quote
 
 import click
 import uvicorn
-from fastapi import Depends, FastAPI, File, HTTPException, Query, Security, UploadFile, applications
+from fastapi import Depends, FastAPI, File, Query, Request, Security, UploadFile
+from fastapi.exception_handlers import http_exception_handler, request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
-from fastapi.security import APIKeyHeader
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from whisper import tokenizer
 
-from app.config import CONFIG
-from app.factory.asr_model_factory import ASRModelFactory
-from app.utils import load_audio
+from app import openai_api, service
+from app.config import CONFIG, CTRANSLATE2_GPU_UNSUPPORTED
+from app.results import format_result
 
 logging.basicConfig(
     level=max(logging.getLevelName(CONFIG.LOG_LEVEL), logging.INFO),
@@ -51,26 +53,14 @@ logger.debug(
     CONFIG.MODEL_UNLOAD_AFTER_REQUEST,
     "set" if CONFIG.API_KEY else "not set",
 )
+if CTRANSLATE2_GPU_UNSUPPORTED and not os.getenv("ASR_ENGINE"):
+    logger.info("Using the openai_whisper engine, the only one that supports the GPU on this platform")
 if CONFIG.ASR_ENGINE == "whisperx" and not CONFIG.HF_TOKEN:
     logger.warning("HF_TOKEN is not set, so WhisperX speaker diarization is disabled")
 
-asr_model = ASRModelFactory.create_asr_model()
-model_ready = Event()
-
-
-def load_initial_model():
-    try:
-        with asr_model.loaded_model():
-            pass
-    except Exception:
-        logger.exception("Failed to load the model")
-        os._exit(1)
-    model_ready.set()
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Thread(target=load_initial_model, daemon=True).start()
+    Thread(target=service.load_initial_model, daemon=True).start()
     yield
 
 
@@ -91,76 +81,106 @@ app = FastAPI(
     version=projectMetadata["Version"],
     contact={"url": projectUrls.get("Homepage")},
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
+    openapi_tags=[
+        {"name": "Audio", "description": "Transcribe or translate audio files"},
+        {"name": "Models", "description": "List the available models"},
+        {"name": "Legacy", "description": "The original endpoints, kept for existing integrations"},
+    ],
     license_info={"name": "MIT License", "url": "https://github.com/ahmetoner/whisper-asr-webservice/blob/main/LICENCE"},
     lifespan=lifespan,
     max_body_size=CONFIG.MAX_UPLOAD_SIZE_MB * 1024 * 1024 if CONFIG.MAX_UPLOAD_SIZE_MB > 0 else None,
+    docs_url=None,
 )
 
+if CONFIG.CORS_ALLOW_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=CONFIG.CORS_ALLOW_ORIGINS,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["Content-Disposition", "Asr-Engine"],
+    )
+
 assets_path = os.getcwd() + "/swagger-ui-assets"
-if path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js"):
+swagger_assets = path.exists(assets_path + "/swagger-ui.css") and path.exists(assets_path + "/swagger-ui-bundle.js")
+if swagger_assets:
     app.mount("/assets", StaticFiles(directory=assets_path), name="static")
 
-    def swagger_monkey_patch(*args, **kwargs):
-        return get_swagger_ui_html(
-            *args,
-            **kwargs,
-            swagger_favicon_url="",
-            swagger_css_url="/assets/swagger-ui.css",
-            swagger_js_url="/assets/swagger-ui-bundle.js",
-        )
 
-    applications.get_swagger_ui_html = swagger_monkey_patch
-
-
-api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
-
-
-def verify_api_key(api_key: Annotated[Optional[str], Security(api_key_header)]):
-    if CONFIG.API_KEY and not (api_key and secrets.compare_digest(api_key, CONFIG.API_KEY)):
-        logger.warning("Rejected a request with a missing or invalid API key")
-        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+@app.get("/docs", include_in_schema=False)
+async def swagger_ui(request: Request):
+    root_path = request.scope.get("root_path", "")
+    assets = {}
+    if swagger_assets:
+        assets = {
+            "swagger_css_url": f"{root_path}/assets/swagger-ui.css",
+            "swagger_js_url": f"{root_path}/assets/swagger-ui-bundle.js",
+            "swagger_favicon_url": "",
+        }
+    return get_swagger_ui_html(
+        openapi_url=f"{root_path}{app.openapi_url}",
+        title=f"{app.title} - Swagger UI",
+        swagger_ui_parameters=app.swagger_ui_parameters,
+        **assets,
+    )
 
 
-pending_requests = BoundedSemaphore(CONFIG.MAX_PENDING_REQUESTS) if CONFIG.MAX_PENDING_REQUESTS > 0 else None
+OPENAI_ERROR_TYPES = {401: "invalid_request_error", 404: "invalid_request_error", 429: "rate_limit_error"}
 
 
-def limit_pending_requests():
-    if pending_requests is None:
-        yield
-        return
-    if not pending_requests.acquire(blocking=False):
-        logger.warning("Rejected a request because %s requests are already pending", CONFIG.MAX_PENDING_REQUESTS)
-        raise HTTPException(status_code=503, detail="Too many pending requests, try again later")
-    try:
-        yield
-    finally:
-        pending_requests.release()
+def _is_openai_request(request: Request) -> bool:
+    path = request.url.path
+    root_path = request.scope.get("root_path", "")
+    if root_path and path.startswith(root_path):
+        path = path[len(root_path):]
+    return path.startswith("/v1/")
 
 
-def read_audio(audio_file: UploadFile, encode: bool):
-    try:
-        return load_audio(audio_file.file, encode)
-    except ValueError as e:
-        logger.warning("Could not read %r: %s", audio_file.filename, e)
-        raise HTTPException(status_code=400, detail=str(e)) from e
+def _openai_error_response(status_code: int, detail) -> JSONResponse:
+    detail = detail if isinstance(detail, dict) else {"message": str(detail)}
+    error_type = OPENAI_ERROR_TYPES.get(status_code, "server_error" if status_code >= 500 else "invalid_request_error")
+    code = detail.get("code") or ("invalid_api_key" if status_code == 401 else None)
+    error = {"message": detail["message"], "type": error_type, "param": detail.get("param"), "code": code}
+    return JSONResponse({"error": error}, status_code=status_code)
 
 
-@app.get("/", response_class=RedirectResponse, include_in_schema=False)
-async def index():
-    return "/docs"
+@app.exception_handler(StarletteHTTPException)
+async def handle_http_error(request: Request, exc: StarletteHTTPException):
+    if _is_openai_request(request):
+        return _openai_error_response(exc.status_code, exc.detail)
+    return await http_exception_handler(request, exc)
+
+
+@app.exception_handler(RequestValidationError)
+async def handle_validation_error(request: Request, exc: RequestValidationError):
+    if _is_openai_request(request):
+        error = exc.errors()[0]
+        param = str(error["loc"][-1]).removesuffix("[]") if error.get("loc") else None
+        return _openai_error_response(400, {"message": f"{param}: {error['msg']}", "param": param})
+    return await request_validation_exception_handler(request, exc)
+
+
+app.include_router(openai_api.router)
+
+
+@app.get("/", include_in_schema=False)
+async def index(request: Request):
+    return RedirectResponse(f"{request.scope.get('root_path', '')}/docs")
 
 
 @app.get("/health", include_in_schema=False)
 async def health():
-    if not model_ready.is_set():
+    if not service.model_ready.is_set():
         return JSONResponse({"status": "loading"}, status_code=503)
     return {"status": "ok"}
 
 
-@app.post("/asr", tags=["Endpoints"], dependencies=[Security(verify_api_key), Depends(limit_pending_requests)])
+@app.post(
+    "/asr", tags=["Legacy"], dependencies=[Security(service.verify_api_key), Depends(service.limit_pending_requests)]
+)
 def asr(
     audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through ffmpeg"),
+    encode: bool = Query(default=True, description="Decode the file; set to false to send raw 16 kHz mono 16-bit PCM"),
     task: Literal["transcribe", "translate"] = Query(default="transcribe"),
     language: Annotated[Optional[LanguageCode], Query()] = None,
     initial_prompt: Union[str, None] = Query(default=None),
@@ -174,7 +194,7 @@ def asr(
     word_timestamps: bool = Query(
         default=False,
         description="Word level timestamps",
-        include_in_schema=(True if CONFIG.ASR_ENGINE == "faster_whisper" else False),
+        include_in_schema=CONFIG.ASR_ENGINE in ("faster_whisper", "openai_whisper"),
     ),
     diarize: bool = Query(
         default=False,
@@ -194,8 +214,8 @@ def asr(
     output: Literal["txt", "vtt", "srt", "tsv", "json"] = Query(default="txt"),
 ):
     start = time.time()
-    audio = read_audio(audio_file, encode)
-    result = asr_model.transcribe(
+    audio = service.read_audio(audio_file, encode)
+    result = service.asr_model.transcribe(
         audio,
         task,
         language,
@@ -203,14 +223,13 @@ def asr(
         vad_filter,
         word_timestamps,
         {"diarize": diarize, "min_speakers": min_speakers, "max_speakers": max_speakers},
-        output,
     )
     logger.info(
         "Transcribed %r (%.1fs of audio, task %s, language %s, output %s) in %.1fs",
         audio_file.filename, len(audio) / CONFIG.SAMPLE_RATE, task, language or "auto", output, time.time() - start,
     )
-    return StreamingResponse(
-        result,
+    return Response(
+        format_result(result, output),
         media_type=MEDIA_TYPES[output],
         headers={
             "Asr-Engine": CONFIG.ASR_ENGINE,
@@ -220,14 +239,24 @@ def asr(
 
 
 @app.post(
-    "/detect-language", tags=["Endpoints"], dependencies=[Security(verify_api_key), Depends(limit_pending_requests)]
+    "/detect-language",
+    tags=["Legacy"],
+    dependencies=[Security(service.verify_api_key), Depends(service.limit_pending_requests)],
 )
 def detect_language(
     audio_file: UploadFile = File(...),  # noqa: B008
-    encode: bool = Query(default=True, description="Encode audio first through FFmpeg"),
+    encode: bool = Query(default=True, description="Decode the file; set to false to send raw 16 kHz mono 16-bit PCM"),
+    vad_filter: Annotated[
+        bool,
+        Query(
+            description="Skip parts of the audio without speech before detecting the language",
+            include_in_schema=CONFIG.ASR_ENGINE == "faster_whisper",
+        ),
+    ] = CONFIG.VAD_FILTER,
 ):
     start = time.time()
-    detected_lang_code, confidence = asr_model.language_detection(read_audio(audio_file, encode))
+    audio = service.read_audio(audio_file, encode)
+    detected_lang_code, confidence = service.asr_model.language_detection(audio, vad_filter)
     logger.info(
         "Detected language %s (%.2f) in %r in %.1fs", detected_lang_code, confidence, audio_file.filename, time.time() - start
     )
@@ -255,7 +284,7 @@ def detect_language(
 )
 @click.version_option(version=projectMetadata["Version"])
 def start(host: str, port: Optional[int] = None):
-    uvicorn.run(app, host=host, port=port, log_level=CONFIG.LOG_LEVEL.lower(), log_config=None)
+    uvicorn.run(app, host=host, port=port, root_path=CONFIG.ROOT_PATH, log_level=CONFIG.LOG_LEVEL.lower(), log_config=None)
 
 
 if __name__ == "__main__":

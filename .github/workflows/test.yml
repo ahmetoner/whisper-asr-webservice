@@ -17,23 +17,19 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Cache Poetry downloads
+      - name: Cache uv downloads
         uses: actions/cache@v5
         with:
-          path: |
-            ~/.cache/pypoetry/artifacts
-            ~/.cache/pypoetry/cache
-          key: poetry-downloads-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
       - name: Install dependencies
         run: |
-          pip install poetry==2.5.2
-          poetry install --extras cpu
+          pip install uv==0.13.7
+          uv sync --locked
       - name: Lint
-        run: poetry run ruff check app tests
+        run: uv run ruff check app tests
       - name: Test
-        run: poetry run pytest -q
+        run: uv run pytest -q
 
   # Fails on fixable HIGH/CRITICAL vulnerabilities and misconfigurations; MEDIUM ones only produce a warning.
   # Accepted findings are listed in .trivyignore.

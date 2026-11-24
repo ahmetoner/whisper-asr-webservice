@@ -7,7 +7,7 @@ from threading import BoundedSemaphore, Event
 import pytest
 from fastapi.testclient import TestClient
 
-from app import webservice
+from app import service, webservice
 
 
 def test_index_redirects_to_docs(client):
@@ -75,16 +75,16 @@ def test_health(client):
 
 
 def test_health_reports_loading_until_the_model_is_loaded(client, monkeypatch):
-    monkeypatch.setattr(webservice, "model_ready", Event())
+    monkeypatch.setattr(service, "model_ready", Event())
     response = client.get("/health")
     assert response.status_code == 503
     assert response.json() == {"status": "loading"}
 
 
 def test_model_is_loaded_in_the_background_on_startup(monkeypatch):
-    monkeypatch.setattr(webservice, "model_ready", Event())
+    monkeypatch.setattr(service, "model_ready", Event())
     with TestClient(webservice.app):
-        assert webservice.model_ready.wait(timeout=5)
+        assert service.model_ready.wait(timeout=5)
 
 
 def test_health_stays_public_when_api_key_configured(client, monkeypatch):
@@ -131,7 +131,7 @@ def test_invalid_log_level_is_rejected():
 
 def test_requests_are_rejected_when_too_many_are_pending(client, monkeypatch, pcm_bytes):
     semaphore = BoundedSemaphore(1)
-    monkeypatch.setattr(webservice, "pending_requests", semaphore)
+    monkeypatch.setattr(service, "pending_requests", semaphore)
     files = {"audio_file": ("tone.pcm", pcm_bytes)}
     semaphore.acquire()
     assert client.post("/asr?encode=false", files=files).status_code == 503
@@ -154,3 +154,67 @@ print(client.post("/asr?encode=false", files=files).status_code)
     env = os.environ | {"MAX_UPLOAD_SIZE_MB": "1"}
     result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
     assert result.stdout.strip().splitlines()[-1] == "413"
+
+
+def test_asr_json_output_has_the_same_layout_for_every_engine(client, pcm_bytes):
+    output = client.post("/asr?encode=false&output=json", files={"audio_file": ("tone.pcm", pcm_bytes)}).json()
+    assert output["task"] == "transcribe"
+    assert output["language"] == "english"
+    assert output["duration"] == 1.0
+    assert output["text"] == "hello world"
+    assert output["segments"][0]["start"] == 0.0 and output["segments"][0]["text"] == " hello world"
+
+
+def run_with_env(code, **env):
+    script = (
+        "import os\nfrom tests.conftest import webservice\nfrom fastapi.testclient import TestClient\n"
+        "client = TestClient(webservice.app, root_path=os.environ.get('ROOT_PATH', ''))\n"
+    )
+    return subprocess.run(
+        [sys.executable, "-c", script + code], env=os.environ | env, capture_output=True, text=True, check=True
+    ).stdout.strip().splitlines()[-1]
+
+
+def test_cors_allow_origins():
+    code = """
+headers = {"Origin": "https://app.example", "Access-Control-Request-Method": "POST"}
+print(client.options("/v1/audio/transcriptions", headers=headers).headers.get("access-control-allow-origin"))
+"""
+    assert run_with_env(code, CORS_ALLOW_ORIGINS="https://app.example, https://other.example") == "https://app.example"
+
+
+def test_root_path_is_used_for_docs_and_redirects():
+    code = """
+response = client.get("/", follow_redirects=False)
+print(response.headers["location"], client.get("/docs").text.count("/whisper/openapi.json"))
+"""
+    assert run_with_env(code, ROOT_PATH="/whisper") == "/whisper/docs 1"
+
+
+def test_detect_language_passes_vad_filter(client, fake_model, pcm_bytes):
+    client.post("/detect-language?encode=false&vad_filter=true", files={"audio_file": ("tone.pcm", pcm_bytes)})
+    assert fake_model.calls[-1] == {"detect_vad_filter": True}
+
+
+def run_config_with_gpu_without_ctranslate2_cuda(**env):
+    code = (
+        "import torch, ctranslate2\n"
+        "torch.cuda.is_available = lambda: True\n"
+        "def no_cuda(device): raise ValueError('This CTranslate2 package was not compiled with CUDA support')\n"
+        "ctranslate2.get_supported_compute_types = no_cuda\n"
+        "from app.config import CONFIG\n"
+        "print(CONFIG.ASR_ENGINE, CONFIG.DEVICE)\n"
+    )
+    environment = {k: v for k, v in os.environ.items() if k not in ("ASR_ENGINE", "ASR_DEVICE")} | env
+    return subprocess.run([sys.executable, "-c", code], env=environment, capture_output=True, text=True)
+
+
+def test_gpu_without_ctranslate2_cuda_defaults_to_openai_whisper():
+    assert run_config_with_gpu_without_ctranslate2_cuda().stdout.strip() == "openai_whisper cuda"
+    assert run_config_with_gpu_without_ctranslate2_cuda(ASR_DEVICE="cpu", ASR_ENGINE="faster_whisper").stdout.strip() == "faster_whisper cpu"
+
+
+def test_gpu_without_ctranslate2_cuda_rejects_ctranslate2_engines_on_the_gpu():
+    result = run_config_with_gpu_without_ctranslate2_cuda(ASR_ENGINE="whisperx")
+    assert result.returncode != 0
+    assert "Use ASR_ENGINE=openai_whisper to run on the GPU, or ASR_DEVICE=cpu" in result.stderr

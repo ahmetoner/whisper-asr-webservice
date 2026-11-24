@@ -38,6 +38,5 @@ MANIFEST.in
 /releases/*
 pip-wheel-metadata
 
-poetry/core/*
 
 public
