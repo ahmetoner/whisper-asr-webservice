@@ -39,23 +39,29 @@ The service is configured with environment variables. All of them are optional.
 |-------------------|-------------------------------------------------------------------------------------------------|
 | Multilingual      | `tiny`, `base`, `small`, `medium`, `large-v1`, `large-v2`, `large-v3` (`large`), `large-v3-turbo` (`turbo`) |
 | English only      | `tiny.en`, `base.en`, `small.en`, `medium.en`                                                   |
-| Distilled         | `distil-small.en`, `distil-medium.en`, `distil-large-v2`, `distil-large-v3` (`faster_whisper`, `whisperx`) |
+| Distilled         | `distil-small.en`, `distil-medium.en`, `distil-large-v2`, `distil-large-v3`, `distil-large-v3.5` (`faster_whisper`, `whisperx`) |
 
 Larger models are more accurate but slower and need more memory. `turbo` is close to `large-v3` in accuracy at a
 fraction of the cost and is a good default on GPU. For English-only audio, the `.en` models are more accurate than
-their multilingual counterparts, especially at the `tiny` and `base` sizes. Distilled models trade a little accuracy
-for faster inference.
+their multilingual counterparts, especially at the `tiny` and `base` sizes.
 
-`distil-large-v2` and `distil-large-v3` are distilled versions of `large-v3` for the `faster_whisper` and `whisperx`
-engines (both run on faster-whisper underneath). They are about six times faster and roughly half the size of
-`large-v3` while staying within about 1% WER of it on out-of-distribution audio, which makes them a good choice for
-low-latency English transcription. They are English only: they transcribe English and do not translate. Set them by
-name or by their Hugging Face repository id:
+The distilled models are several times faster than the model they are distilled from, and the large ones stay within
+about 1% word error rate of it. They transcribe English only and cannot translate. `distil-large-v2` is distilled from
+`large-v2`, and `distil-large-v3` and `distil-large-v3.5` from `large-v3`.
+
+### Custom Models
+
+With `faster_whisper` and `whisperx`, `ASR_MODEL` also accepts the Hugging Face repository id of a model converted to
+the CTranslate2 format, or the path to a local directory with such a model. With `openai_whisper`, it accepts the path
+to a model checkpoint (`.pt` file):
 
 ```shell
 export ASR_ENGINE=faster_whisper
 export ASR_MODEL=Systran/faster-distil-whisper-large-v3
 ```
+
+Models fine-tuned with Hugging Face transformers can be converted with
+[`ct2-transformers-converter`](https://github.com/SYSTRAN/faster-whisper#model-conversion).
 
 ## Device and Quantization
 

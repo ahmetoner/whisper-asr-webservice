@@ -1,12 +1,19 @@
 # Findings accepted for now. Review this list when dependencies change and remove entries once they are fixed.
 
-# torch: fixed in torch 2.10, but whisperx 3.8.6 pins torch~=2.8.0
+# torch: fixed in torch 2.9 and later, but whisperx 3.8.6 pins torch~=2.8.0
+CVE-2025-2999
+CVE-2025-3000
+CVE-2025-3001
 CVE-2026-24747
 
 # transformers: fixed in transformers 5.x, but whisperx 3.8.6 pins huggingface-hub<1.0, which keeps transformers on 4.x
+CVE-2026-1839
 CVE-2026-4372
 CVE-2026-5241
 CVE-2026-9856
+
+# transformers: no fix yet; only affects custom generation code loaded from the Hub, which the service never uses
+CVE-2026-80047
 
 # Images run as root so existing model cache volumes mounted at /root/.cache keep working
 DS-0002

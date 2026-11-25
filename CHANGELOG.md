@@ -33,9 +33,11 @@ See the [upgrade guide](https://ahmetoner.github.io/whisper-asr-webservice/migra
 - All engines share one set of output writers, and the `SUBTITLE_*` settings apply to every engine
 - `/asr` and `/detect-language` are documented as the legacy API
 - The documentation explains how to run offline with cached models, including WhisperX
+- The documentation lists the distilled models and explains how to use custom and fine-tuned models
 - `/detect-language` no longer rounds the WhisperX confidence to two decimals
 - The project uses uv instead of Poetry: `uv sync` installs the CPU build of PyTorch, `uv sync --no-group cpu --group cuda` the CUDA build, and locking and Docker builds are much faster
 - The CPU Docker image no longer includes `pip`
+- The CPU Docker image is based on Debian 13 instead of Debian 12, which has far fewer known vulnerabilities
 
 ### Fixed
 
