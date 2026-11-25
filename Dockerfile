@@ -1,6 +1,6 @@
 FROM swaggerapi/swagger-ui:v5.35.1 AS swagger-ui
 
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.12-slim-trixie AS base
 
 LABEL org.opencontainers.image.title="Whisper ASR Webservice" \
       org.opencontainers.image.description="Self-hosted speech recognition API based on OpenAI Whisper" \
