@@ -22,7 +22,7 @@ class CONFIG:
     Configuration class for ASR models.
     Reads environment variables for runtime configuration, with sensible defaults.
     """
-    # Determine the ASR engine ('faster_whisper', 'openai_whisper' or 'whisperx')
+    # Determine the ASR engine ('faster_whisper', 'openai_whisper', 'whisperx' or 'voxtral')
     ASR_ENGINE = os.getenv("ASR_ENGINE") or ("openai_whisper" if CTRANSLATE2_GPU_UNSUPPORTED else "faster_whisper")
 
     # Retrieve Huggingface Token

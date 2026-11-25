@@ -62,6 +62,7 @@ print(client.audio.transcriptions.create(model="whisper-1", file=open("audio.mp3
 | [OpenAI Whisper](https://github.com/openai/whisper)          | `openai_whisper`           | Reference implementation                                 |
 | [Faster Whisper](https://github.com/SYSTRAN/faster-whisper)  | `faster_whisper` (default) | Faster and lighter on memory; VAD and batched inference  |
 | [WhisperX](https://github.com/m-bain/whisperX)               | `whisperx`                 | Word alignment and speaker diarization                   |
+| [Voxtral](https://huggingface.co/mistralai/Voxtral-Mini-3B-2507) | `voxtral`              | Mistral's audio model; transcription only, GPU recommended |
 
 ## Request Flow
 
@@ -73,7 +74,7 @@ The most common settings are listed below. See the [configuration reference](htt
 
 | Variable             | Default            | Description                                                 |
 |----------------------|--------------------|-------------------------------------------------------------|
-| `ASR_ENGINE`         | `faster_whisper`   | `faster_whisper`, `openai_whisper` or `whisperx`            |
+| `ASR_ENGINE`         | `faster_whisper`   | `faster_whisper`, `openai_whisper`, `whisperx` or `voxtral` |
 | `ASR_MODEL`          | `base`             | Model name, e.g. `tiny`, `small`, `large-v3`, `turbo`       |
 | `ASR_DEVICE`         | `cuda` if present  | `cuda` or `cpu`                                             |
 | `MODEL_IDLE_TIMEOUT` | `0`                | Seconds of inactivity before the model is unloaded          |

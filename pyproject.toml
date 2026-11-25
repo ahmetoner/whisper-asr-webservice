@@ -20,6 +20,10 @@ dependencies = [
     # torchcodec's decoders are never used; on linux/aarch64 any installable release is sufficient.
     "torchcodec (>=0.7.0,<0.8.0) ; sys_platform != 'linux' or platform_machine != 'aarch64'",
     "torchcodec (>=0.11.0) ; sys_platform == 'linux' and platform_machine == 'aarch64'",
+    "transformers (>=4.56.0)",
+    # mistral-common is for the voxtral engine. 1.10+ downloads the tokenizer through huggingface-hub >= 1.0,
+    # which transformers pins below, so the tokenizer download breaks at runtime; 1.9.x uses a compatible version.
+    "mistral-common[audio,hf-hub] (>=1.8.1,<1.10)",
 ]
 authors = [
     { name = "Ahmet Öner" },
