@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+[2.0.0] (2026-11-25)
+--------------------
 
 ### Added
 
@@ -586,6 +586,7 @@ See the [upgrade guide](https://ahmetoner.github.io/whisper-asr-webservice/migra
 - mp3 support by using FFmpeg instead of librosa in #8
 - add language detection endpoint in #9
 
+[2.0.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v2.0.0
 [1.11.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.11.0
 [1.10.0]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.10.0
 [1.9.1]: https://github.com/ahmetoner/whisper-asr-webservice/releases/tag/v1.9.1
