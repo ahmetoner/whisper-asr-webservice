@@ -1,0 +1,394 @@
+# =============================================================================
+# Dockerfile.jetson
+#
+# Multi-stage Docker build for whisper-asr-webservice on NVIDIA Jetson
+# (JetPack 6.x, L4T R36.x, aarch64, CUDA 12.6)
+#
+# This build addresses three critical challenges unique to the Jetson platform:
+#
+#   1. CTranslate2 (faster-whisper's inference backend) has no CUDA-enabled
+#      aarch64 wheels — PyPI ships CPU-only manylinux builds.  We compile it
+#      from source against the JetPack CUDA toolkit.
+#
+#   2. PyTorch, torchaudio, and onnxruntime require Jetson-specific builds
+#      from NVIDIA's Jetson AI Lab pip index to use the GPU.
+#
+#   3. Poetry's dependency resolver must coexist with these pre-installed
+#      platform-specific packages without overwriting them with CPU-only
+#      variants from PyPI.
+#
+# Strategy:
+#   - Stage 1: build CTranslate2 C++ library + Python wheel with CUDA.
+#   - Stage 2: extract platform-independent Swagger UI static assets.
+#   - Stage 3: assemble the runtime image.
+#       a) Pre-install CUDA packages (CTranslate2, torch, torchaudio,
+#          onnxruntime-gpu) into the project virtualenv via pip so that
+#          Poetry's resolver sees them as satisfied.
+#       b) Run  `poetry install --extras cuda`  which pulls the remaining
+#          pure-Python packages (openai-whisper, faster-whisper, whisperx,
+#          fastapi, …) from PyPI without touching anything we pre-installed.
+#       c) Re-apply onnxruntime-gpu as a guard, because Poetry may have
+#          replaced it with the CPU-only `onnxruntime` from PyPI.
+#
+# Build (on a Jetson or an aarch64 host with NVIDIA Container Runtime):
+#   docker build -f Dockerfile.jetson \
+#     -t whisper-asr-webservice-jetson:jp6.1-cu12.6-py3.10 .
+#
+# Customise JetPack / CUDA arch:
+#   docker build -f Dockerfile.jetson \
+#     --build-arg L4T_VERSION=r36.4.0 \
+#     --build-arg CUDA_ARCH_LIST="8.7" \
+#     -t whisper-asr-webservice-jetson:jp6.1-cu12.6-py3.10 .
+#
+# Run:
+#   docker run --runtime nvidia --gpus all \
+#     -e ASR_MODEL=base -e ASR_ENGINE=faster_whisper \
+#     -p 9000:9000 whisper-asr-webservice-jetson:jp6.1-cu12.6-py3.10
+# =============================================================================
+
+# -- Configurable build arguments --------------------------------------------
+# L4T / JetPack base image tag.  r36.4.0 = JetPack 6.1, CUDA 12.6.
+ARG L4T_VERSION=r36.4.0
+# Swagger UI platform — only static JS/CSS is copied, no binaries executed.
+ARG SWAGGER_PLATFORM=linux/amd64
+
+# ---------------------------------------------------------------------------
+# Stage 1 — Build CTranslate2 from source (aarch64 + CUDA)
+# ---------------------------------------------------------------------------
+FROM nvcr.io/nvidia/l4t-jetpack:${L4T_VERSION} AS ctranslate2-builder
+
+# CTranslate2 version must match the constraint from whisperx (<4.5.0) and
+# faster-whisper (>=4.0,<5).  v4.4.0 matches the project's poetry.lock.
+ARG CTRANSLATE2_VERSION=v4.4.0
+
+# Orin (JetPack 6) = sm_87.  Append ";7.2" for Xavier support.
+ARG CUDA_ARCH_LIST="8.7"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        cmake \
+        build-essential \
+        pkg-config \
+        python3-dev \
+        python3-pip \
+        python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone CTranslate2 and all submodules (cpu_features, googletest, …)
+WORKDIR /build
+RUN git clone --depth 1 --branch ${CTRANSLATE2_VERSION} --recursive \
+        https://github.com/OpenNMT/CTranslate2.git
+
+# ---- C++ shared library ---------------------------------------------------
+WORKDIR /build/CTranslate2/build
+RUN cmake .. \
+        -DCMAKE_INSTALL_PREFIX=/opt/ctranslate2 \
+        -DWITH_CUDA=ON \
+        -DWITH_CUDNN=ON \
+        -DWITH_MKL=OFF \
+        -DWITH_DNNL=OFF \
+        -DWITH_OPENBLAS=OFF \
+        -DCUDA_ARCH_LIST="${CUDA_ARCH_LIST}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DOPENMP_RUNTIME=COMP \
+    && make -j"$(nproc)" \
+    && make install
+
+# ---- Python wheel ----------------------------------------------------------
+RUN pip3 install pybind11 setuptools wheel
+
+WORKDIR /build/CTranslate2/python
+ENV CTRANSLATE2_ROOT=/opt/ctranslate2
+RUN pip3 wheel --no-build-isolation --no-deps -w /wheels .
+
+
+# ---------------------------------------------------------------------------
+# Stage 2 — Swagger UI static assets (platform-independent files)
+#
+# Swagger-UI may not publish a linux/arm64 image.  We set the target platform
+# via a build arg so BuildKit doesn't warn about a constant --platform value.
+# ---------------------------------------------------------------------------
+FROM --platform=${SWAGGER_PLATFORM} swaggerapi/swagger-ui:v5.9.1 AS swagger-ui
+
+
+# ---------------------------------------------------------------------------
+# Stage 3 — Final runtime image
+# ---------------------------------------------------------------------------
+FROM nvcr.io/nvidia/l4t-jetpack:${L4T_VERSION}
+
+LABEL org.opencontainers.image.source="https://github.com/ahmetoner/whisper-asr-webservice"
+
+ARG PYTHON_VERSION=3.10
+ARG JETSON_PIP_INDEX=https://pypi.jetson-ai-lab.io/jp6/cu126/+simple/
+
+ENV POETRY_VENV=/app/.venv \
+    DEBIAN_FRONTEND=noninteractive \
+    # CTranslate2 shared library path + NVIDIA pip packages (cudss)
+    # NOTE: Do NOT add nvidia/cublas/lib here — JetPack provides the correct
+    # system cuBLAS in /usr/local/cuda/lib64.  Loading the pip-installed
+    # nvidia-cublas-cu12 (pulled in by nvidia-cudss-cu12) alongside the
+    # system version causes CUBLAS_STATUS_ALLOC_FAILED at runtime.
+    LD_LIBRARY_PATH="/opt/ctranslate2/lib:/app/.venv/lib/python3.10/site-packages/nvidia/cu12/lib:${LD_LIBRARY_PATH}" \
+    # NVIDIA Container Runtime settings
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# -- System packages ---------------------------------------------------------
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --fix-missing \
+        python${PYTHON_VERSION} \
+        python${PYTHON_VERSION}-venv \
+        python${PYTHON_VERSION}-dev \
+        python3-pip \
+        # Audio processing — replaces the onerahmet/ffmpeg image used in the
+        # x86 Dockerfiles, which has no aarch64 variant.
+        ffmpeg \
+        # Required by soundfile / pyannote-audio (whisperx diarisation)
+        libsndfile1 \
+        # Required by Jetson CUDA PyTorch wheel (uses OpenBLAS for CPU fallback)
+        libopenblas0 \
+        # LLVM — needed if llvmlite (numba dependency) must compile from source
+        # on aarch64.  Matches llvmlite 0.44.x which targets LLVM 15.
+        llvm-15-dev \
+        # Native build tools — some transitive deps may need compilation
+        build-essential \
+        git \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# -- Rust toolchain (for tiktoken, required by openai-whisper) ---------------
+# tiktoken is a Rust extension.  Pre-built aarch64 wheels exist for recent
+# versions, but if the exact version needed has no wheel we need rustc+cargo.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 \
+    && ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python \
+    && ln -sf /usr/bin/pip3 /usr/bin/pip
+
+# -- CTranslate2 shared libs from the builder --------------------------------
+COPY --from=ctranslate2-builder /opt/ctranslate2 /opt/ctranslate2
+COPY --from=ctranslate2-builder /wheels /tmp/ct2-wheels
+RUN ldconfig /opt/ctranslate2/lib
+
+# -- Python venv + build tools ------------------------------------------------
+# Use poetry-core 2.1.x (matching the project's Poetry 2.1.3) to ensure
+# PEP 621 metadata generation includes the Home-page header from
+# [project.urls].Homepage — needed by the webservice at import time.
+RUN python3 -m venv ${POETRY_VENV} \
+    && ${POETRY_VENV}/bin/pip install --upgrade pip setuptools wheel \
+    && ${POETRY_VENV}/bin/pip install "poetry-core>=2.0,<2.2"
+
+ENV PATH="${POETRY_VENV}/bin:${PATH}"
+
+WORKDIR /app
+
+# ==========================================================================
+# PRE-INSTALL CUDA-DEPENDENT PACKAGES
+#
+# These packages MUST come from either our builder stage or the Jetson AI
+# Lab pip index because the standard PyPI wheels are CPU-only on aarch64.
+#
+# Installing them into the venv *before* Poetry runs ensures:
+#   a) The correct Jetson-optimised builds are used.
+#   b) Poetry's resolver sees them as already satisfied and does not
+#      re-download incompatible CPU-only wheels from PyPI.
+# ==========================================================================
+
+# 1. CTranslate2 — built from source in Stage 1 (CUDA-enabled)
+RUN pip install /tmp/ct2-wheels/ctranslate2*.whl \
+    && rm -rf /tmp/ct2-wheels
+
+# 2. PyTorch + torchaudio — NVIDIA Jetson AI Lab builds (CUDA 12.6)
+#    Use --index-url (not --extra-index-url) so that the Jetson index is the
+#    PRIMARY source.  The Jetson index serves CUDA-enabled linux_aarch64
+#    wheels; PyPI serves CPU-only manylinux_2_28 wheels for the same version.
+#    pip prefers manylinux over linux_aarch64, so we must make Jetson primary.
+RUN pip install \
+        --index-url ${JETSON_PIP_INDEX} \
+        'torch==2.9.1' \
+        'torchaudio==2.9.1'
+
+# 3. nvidia-cudss — CUDA Direct Sparse Solver; the Jetson PyTorch wheel
+#    links against libcudss.so.0 but it is not included in the JetPack base
+#    image.  The pip package from the Jetson index provides the shared lib.
+RUN pip install \
+        --index-url ${JETSON_PIP_INDEX} \
+        nvidia-cudss-cu12 \
+    && pip uninstall -y nvidia-cublas-cu12 2>/dev/null || true
+    # ↑ nvidia-cudss-cu12 pulls nvidia-cublas-cu12 as a dependency, but
+    #   loading it alongside JetPack's system cuBLAS (different version)
+    #   causes CUBLAS_STATUS_ALLOC_FAILED.  We only need libcudss.so.0.
+
+# 4. onnxruntime-gpu — Jetson AI Lab build with CUDA + TensorRT execution
+#    providers.  Pre-installed so the onnxruntime Python module is available.
+RUN pip install \
+        --index-url ${JETSON_PIP_INDEX} \
+        onnxruntime-gpu
+
+# -- Copy project files ------------------------------------------------------
+COPY . .
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui.css  swagger-ui-assets/swagger-ui.css
+COPY --from=swagger-ui /usr/share/nginx/html/swagger-ui-bundle.js swagger-ui-assets/swagger-ui-bundle.js
+
+# -- Dependency install -------------------------------------------------------
+# We install dependencies explicitly via pip rather than using
+# `pip install ".[cuda]"` because poetry-core's PEP 517 metadata generation
+# merges version specs from [tool.poetry.dependencies] source mappings with
+# [project.optional-dependencies], producing incorrect version constraints
+# (e.g. torch==2.7.1+cu126 instead of torch==2.10.0).
+#
+# Strategy:
+#   1. Write a constraints file pinning all pre-installed CUDA packages.
+#      This prevents pip's resolver from overwriting them with CPU-only
+#      wheels from PyPI during transitive dependency resolution.
+#   2. Install all direct dependencies from pyproject.toml via pip.
+#   3. Install the project itself with --no-deps to register the
+#      whisper-asr-webservice entry point without re-resolving.
+RUN echo "torch==2.9.1\ntorchaudio==2.9.1\nctranslate2==4.4.0" \
+        > /tmp/cuda-constraints.txt \
+    && pip install \
+        --extra-index-url ${JETSON_PIP_INDEX} \
+        --prefer-binary \
+        --constraint /tmp/cuda-constraints.txt \
+        "fastapi>=0.115.14" \
+        "uvicorn[standard]>=0.35.0" \
+        "python-multipart>=0.0.20" \
+        "ffmpeg-python>=0.2.0" \
+        "numpy>=2.2.6" \
+        "openai-whisper>=20250625" \
+        "faster-whisper>=1.1.1" \
+        "whisperx>=3.4.2" \
+        "tqdm>=4.67.1" \
+        "llvmlite>=0.44.0" \
+        "numba>=0.61.2" \
+        "click>=8.0" \
+    && rm /tmp/cuda-constraints.txt
+
+# Install the project package itself (entry point registration, no dep resolution)
+RUN pip install --no-deps .
+
+# -- Monkey-patch: torchaudio compatibility ------------------------------------
+# The Jetson AI Lab torchaudio builds strip out the legacy backend API
+# (AudioMetaData, info()).  pyannote.audio 3.x still relies on them.
+# We restore them using a soundfile-based shim so pyannote can read audio
+# metadata.  A .pth file in site-packages ensures it runs at interpreter
+# startup (before any user code imports torchaudio).
+RUN SITE=$(/app/.venv/bin/python3 -c "import site; print(site.getsitepackages()[0])") \
+    && printf '%s\n' \
+        '"""Jetson compatibility shim (loaded via .pth at interpreter startup)."""' \
+        '"""  1. Re-add torchaudio.AudioMetaData / info / list_audio_backends"""' \
+        '"""  2. Patch torch.load to default weights_only=False for pyannote VAD"""' \
+        '"""  3. Translate use_auth_token -> token for huggingface_hub >= 1.0"""' \
+        'import importlib' \
+        '' \
+        'def _patch():' \
+        '    # -- huggingface_hub: use_auth_token -> token compat --------------' \
+        '    # huggingface_hub >= 1.0 removed the deprecated use_auth_token' \
+        '    # parameter, but pyannote.audio 3.x and whisperx still pass it.' \
+        '    # Since this .pth runs BEFORE pyannote is imported, patching' \
+        '    # huggingface_hub.hf_hub_download here means pyannotes' \
+        '    # "from huggingface_hub import hf_hub_download" picks up the' \
+        '    # patched version.  We also install an import hook to re-patch' \
+        '    # any modules that import it later.' \
+        '    import functools, sys' \
+        '    try:' \
+        '        import huggingface_hub' \
+        '        def _make_wrapper(fn):' \
+        '            @functools.wraps(fn)' \
+        '            def _wrapper(*args, **kwargs):' \
+        '                if "use_auth_token" in kwargs:' \
+        '                    kwargs["token"] = kwargs.pop("use_auth_token")' \
+        '                return fn(*args, **kwargs)' \
+        '            return _wrapper' \
+        '        # Patch all relevant functions in huggingface_hub namespace' \
+        '        for fn_name in ("hf_hub_download", "model_info", "hf_hub_url"):' \
+        '            fn = getattr(huggingface_hub, fn_name, None)' \
+        '            if fn is not None:' \
+        '                setattr(huggingface_hub, fn_name, _make_wrapper(fn))' \
+        '        # Also patch submodules that may already be loaded' \
+        '        for sub in ("huggingface_hub.file_download", "huggingface_hub.hf_api"):' \
+        '            mod = sys.modules.get(sub)' \
+        '            if mod is None:' \
+        '                try:' \
+        '                    mod = importlib.import_module(sub)' \
+        '                except ImportError:' \
+        '                    continue' \
+        '            for fn_name in ("hf_hub_download", "model_info", "hf_hub_url"):' \
+        '                fn = getattr(mod, fn_name, None)' \
+        '                if fn is not None and not hasattr(fn, "__wrapped__"):' \
+        '                    setattr(mod, fn_name, _make_wrapper(fn))' \
+        '    except ImportError:' \
+        '        pass' \
+        '' \
+        '    # -- torch.load: allow legacy pickle-based checkpoints ------------' \
+        '    # PyTorch >=2.6 defaults weights_only=True, but pyannote.audio VAD' \
+        '    # checkpoints contain omegaconf globals that are not allowlisted.' \
+        '    # In this container all checkpoints come from trusted sources' \
+        '    # (Hugging Face), so we restore the old default.' \
+        '    import torch, functools' \
+        '    _original_load = torch.load' \
+        '    @functools.wraps(_original_load)' \
+        '    def _patched_load(*args, **kwargs):' \
+        '        if kwargs.get("weights_only") is None:' \
+        '            kwargs["weights_only"] = False' \
+        '        return _original_load(*args, **kwargs)' \
+        '    torch.load = _patched_load' \
+        '' \
+        '    # -- torchaudio compat -------------------------------------------' \
+        '    try:' \
+        '        ta = importlib.import_module("torchaudio")' \
+        '    except ImportError:' \
+        '        return' \
+        '' \
+        '    if not hasattr(ta, "list_audio_backends"):' \
+        '        ta.list_audio_backends = lambda: ["soundfile"]' \
+        '' \
+        '    if hasattr(ta, "AudioMetaData"):' \
+        '        return' \
+        '' \
+        '    class AudioMetaData:' \
+        '        __slots__ = ("sample_rate", "num_frames", "num_channels",' \
+        '                     "bits_per_sample", "encoding")' \
+        '        def __init__(self, sample_rate=0, num_frames=0, num_channels=0,' \
+        '                     bits_per_sample=0, encoding=""):' \
+        '            self.sample_rate = sample_rate' \
+        '            self.num_frames = num_frames' \
+        '            self.num_channels = num_channels' \
+        '            self.bits_per_sample = bits_per_sample' \
+        '            self.encoding = encoding' \
+        '' \
+        '    def info(filepath, backend=None, **kw):' \
+        '        import soundfile as sf' \
+        '        with sf.SoundFile(str(filepath)) as f:' \
+        '            bps = {"PCM_16": 16, "PCM_24": 24, "PCM_32": 32,' \
+        '                   "FLOAT": 32, "DOUBLE": 64}.get(f.subtype, 0)' \
+        '            return AudioMetaData(' \
+        '                sample_rate=f.samplerate, num_frames=f.frames,' \
+        '                num_channels=f.channels, bits_per_sample=bps,' \
+        '                encoding=f.subtype)' \
+        '' \
+        '    ta.AudioMetaData = AudioMetaData' \
+        '    ta.info = info' \
+        '' \
+        '_patch()' \
+        'del _patch' \
+        > "${SITE}/_torchaudio_compat.py" \
+    && echo "import _torchaudio_compat" > "${SITE}/_torchaudio_compat.pth"
+
+# -- Guard: ensure Jetson CUDA packages are intact ----------------------------
+# pip may have installed CPU-only `onnxruntime` from PyPI to satisfy
+# faster-whisper's transitive dependency, or overwritten torch/torchaudio
+# with PyPI CPU wheels.  Force the Jetson CUDA builds back.
+RUN pip install --force-reinstall --no-deps \
+        --index-url ${JETSON_PIP_INDEX} \
+        onnxruntime-gpu \
+        'torch==2.9.1' \
+        'torchaudio==2.9.1' \
+    2>/dev/null || true
+
+EXPOSE 9000
+
+ENTRYPOINT ["whisper-asr-webservice"]
