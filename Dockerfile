@@ -13,6 +13,7 @@ LABEL org.opencontainers.image.title="Whisper ASR Webservice" \
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq upgrade -y \
+    && apt-get -qq install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/* \
     && pip uninstall -y pip
 
