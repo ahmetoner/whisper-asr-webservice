@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+### Fixed
+
+- The `whisperx` engine failing to start in the CPU Docker image because `libgomp` was missing
+
 [2.0.0] (2026-11-25)
 --------------------
 

@@ -62,6 +62,8 @@ jobs:
           --label "org.opencontainers.image.revision=$GITHUB_SHA" \
           --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
           --platform=${{ matrix.platform }} -t "$IMAGE" -f ${{ matrix.docker_file }} --push
+    - name: Import every engine in the image
+      run: docker run --rm --entrypoint python3 "$IMAGE" -c "import app.asr_models.openai_whisper_engine, app.asr_models.faster_whisper_engine, app.asr_models.mbain_whisperx_engine"
     # Fails on fixable HIGH/CRITICAL vulnerabilities; MEDIUM ones only produce a warning. Accepted findings are in .trivyignore.
     - name: Trivy scan (HIGH, CRITICAL)
       run: $TRIVY image --platform ${{ matrix.platform }} --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 "$IMAGE"
